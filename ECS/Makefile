@@ -6,6 +6,7 @@ SRC_DIR    =    ./src/
 TEST_DIR	=	./tests/
 
 TEST_SRC    =	$(TEST_DIR)testsEntity.cpp	\
+				$(TEST_DIR)testsSparseArray.cpp	\
 
 SRC =	$(SRC_DIR)main.cpp    \
 
