@@ -2,6 +2,8 @@ CXX    =    g++
 
 INCLUDE_DIR	=	./include/
 
+INCLUDE_COMPONENT	=	./include/component/
+
 SRC_DIR    =    ./src/
 TEST_DIR	=	./tests/
 
@@ -17,7 +19,7 @@ TEST_OBJ    = $(TEST_SRC:.cpp=.o)
 
 CXXFLAGS =     -std=c++20 -Wall -Wextra -Werror
 
-CPPFLAGS    =    -iquote $(INCLUDE_DIR)
+CPPFLAGS    =    -iquote $(INCLUDE_DIR) -iquote $(INCLUDE_COMPONENT)
 
 LDFLAGS     = -lcriterion
 
