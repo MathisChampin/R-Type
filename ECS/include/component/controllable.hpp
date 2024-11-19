@@ -3,7 +3,13 @@
 
 namespace component {
     struct controllable {
-        bool is_active;
+        enum Key {
+            Up,
+            Down,
+            Right,
+            Left
+        };
+        Key active_key;
     };
 }
 
