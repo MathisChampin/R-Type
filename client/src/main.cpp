@@ -70,11 +70,11 @@ int main() {
 
             if (event.type == sf::Event::TextEntered) {
                 if (event.text.unicode == '\b' && ipAddress.getSize() > 0) {
-                    ipAddress.erase(ipAddress.getSize() - 1, 1); // Supprime le dernier caractère
+                    ipAddress.erase(ipAddress.getSize() - 1, 1);
                 } else if (event.text.unicode < 128 && event.text.unicode != '\b') {
-                    ipAddress += event.text.unicode; // Ajoute un caractère
+                    ipAddress += event.text.unicode;
                 }
-                ipField.setString(ipAddress); // Met à jour l'affichage de l'IP
+                ipField.setString(ipAddress);
             }
             
             if (currentState == GameState::Menu) {
@@ -94,8 +94,8 @@ int main() {
         switch (currentState) {
             case GameState::Menu:
                 menu.render();
-                window.draw(ipText);  // Affiche l'invite pour l'IP
-                window.draw(ipField); // Affiche le champ de texte avec l'IP entrée
+                window.draw(ipText);  
+                window.draw(ipField);
                 break;
                 
             case GameState::Playing:
