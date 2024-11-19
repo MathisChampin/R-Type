@@ -4,10 +4,7 @@
 ParallaxBackground::ParallaxBackground(const sf::Vector2u& windowSize) 
     : m_windowSize(windowSize) {
     
-    setupLayer("./assets/backgrounds/space_dust.png", 0.2f);     // Poussière spatiale
-    // setupLayer("./assets/backgrounds/space_far.png", 0.01f);      // Étoiles lointaines
-    // setupLayer("assets/backgrounds/space_stars.png", 0.2f);    // Étoiles moyennes
-    // setupLayer("assets/backgrounds/space_near.png", 0.3f);     // Étoiles proches
+    setupLayer("./assets/backgrounds/space_dust.png", 0.2f);
 }
 
 void ParallaxBackground::setupLayer(const std::string& texturePath, float speed) {

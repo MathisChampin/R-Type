@@ -12,7 +12,10 @@ class ParallaxBackground {
             float offset;
         };
 
+        /// @brief Constructeur de la classe ParallaxBackground.
+        /// @param windowSize Taille de la fenêtre où le fond sera affiché.
         ParallaxBackground(const sf::Vector2u& windowSize);
+
         void update(float deltaTime);
         void render(sf::RenderWindow& window);
 

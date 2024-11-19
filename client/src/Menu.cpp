@@ -4,33 +4,61 @@
 Menu::Menu(sf::RenderWindow& window) 
     : m_window(window)
     , m_hoveredItem(-1) {
-    if (!m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf")) {
+    if (!loadFont()) {
         std::cerr << "Erreur : Impossible de charger la police !" << std::endl;
     }
 
-    if (!m_music.openFromFile("./assets/music/background.mp3")) {
+    if (!loadMusic()) {
         std::cerr << "Erreur : Impossible de charger la musique !" << std::endl;
     } else {
-        m_music.setLoop(true);
-        m_music.play();
+        setupMusic();
     }
 
+    setupTitle();
+    setupFooter();
+    setupCredits();
+}
+
+bool Menu::loadFont() {
+    return m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf");
+}
+
+bool Menu::loadMusic() {
+    return m_music.openFromFile("./assets/music/background.mp3");
+}
+
+void Menu::setupMusic() {
+    m_music.setLoop(true);
+    m_music.play();
+}
+
+void Menu::setupTitle() {
     m_title.setFont(m_font);
     m_title.setString("R-Type");
     m_title.setCharacterSize(90);
     m_title.setFillColor(sf::Color::Blue);
+
     sf::Vector2u windowSize = m_window.getSize();
     float centerX = windowSize.x / 2.0f;
+
     m_title.setPosition(centerX, 130); 
     m_title.setOrigin(m_title.getLocalBounds().width / 2, 0);
+}
 
+void Menu::setupFooter() {
     m_footer.setFont(m_font);
     m_footer.setString("Epitech Project 2024");
     m_footer.setCharacterSize(20);
     m_footer.setFillColor(sf::Color::White);
+
+    sf::Vector2u windowSize = m_window.getSize();
+    float centerX = windowSize.x / 2.0f;
+
     m_footer.setPosition(centerX, windowSize.y - 50);
     m_footer.setOrigin(m_footer.getLocalBounds().width / 2, 0);
+}
 
+void Menu::setupCredits() {
     std::vector<std::string> creditNames = {
         "Pablo Peiro",
         "Arthur Baudelot",
@@ -39,9 +67,11 @@ Menu::Menu(sf::RenderWindow& window)
         "Mathis Champin",
     };
 
+    sf::Vector2u windowSize = m_window.getSize();
     float creditYPosition = windowSize.y - 50; 
-    for (size_t i = 0; i < creditNames.size(); ++i) {
-        sf::Text credit(creditNames[i], m_font, 15);
+
+    for (const auto& name : creditNames) {
+        sf::Text credit(name, m_font, 15);
         credit.setFillColor(sf::Color::White);
         credit.setPosition(windowSize.x - 10, creditYPosition);  
         credit.setOrigin(credit.getLocalBounds().width, credit.getLocalBounds().height); 
