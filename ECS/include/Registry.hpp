@@ -17,7 +17,7 @@ using entity_t = Entity;
  * @class registry
  * @brief Manages entities and their associated components in an entity-component system (ECS).
  * The registry allows for component registration, entity creation, component addition, and removal.
- */
+*/
 class registry {
 public:
     using remove_func_t = std::function<void(registry&, entity_t const&)>;
@@ -27,7 +27,7 @@ public:
      * If the component type is already registered, it will return the existing component array.
      * @tparam Component The component type to register.
      * @return A reference to the sparse array of the component type.
-     */
+    */
     template <class Component>
     sparse_array<Component>& register_component() {
         auto type_index = std::type_index(typeid(Component));
@@ -45,7 +45,7 @@ public:
      * @brief Retrieves the sparse array of a specific component type.
      * @tparam Component The component type to retrieve.
      * @return A reference to the sparse array of the component type.
-     */
+    */
     template <class Component>
     sparse_array<Component>& get_components() {
         return std::any_cast<sparse_array<Component>&>(_components_arrays[std::type_index(typeid(Component))]);
@@ -55,7 +55,7 @@ public:
      * @brief Spawns a new entity and returns its ID.
      * If there are available entities, one will be reused. Otherwise, a new ID is generated.
      * @return A new entity with a unique ID.
-     */
+    */
     entity_t spawn_entity() {
         entity_t id = (_available_entities.empty()) ? entity_t(_next_entity_id++) : entity_t(_available_entities.back().get_id());
 
@@ -70,7 +70,7 @@ public:
      * @brief Kills an entity, removing it from the registry.
      * The entity is marked as available for reuse.
      * @param e The entity to kill.
-     */
+    */
     void kill_entity(entity_t const& e) {
         for (auto& func : _remove_functions) {
             func.second(*this, e);
@@ -85,7 +85,7 @@ public:
      * @param to The entity to which the component is added.
      * @param c The component to add.
      * @return A reference to the added component.
-     */
+    */
     template <typename Component>
     typename sparse_array<Component>::reference_type add_component(entity_t const& to, Component&& c) {
         auto& array = register_component<Component>();
@@ -99,7 +99,7 @@ public:
      * @param to The entity to which the component is added.
      * @param params The parameters to construct the component.
      * @return A reference to the added component.
-     */
+    */
     template <typename Component, typename... Params>
     typename sparse_array<Component>::reference_type emplace_component(entity_t const& to, Params&&... params) {
         auto& array = register_component<Component>();
@@ -110,7 +110,7 @@ public:
      * @brief Removes a component from an entity.
      * @tparam Component The type of the component to remove.
      * @param from The entity from which the component is removed.
-     */
+    */
     template <typename Component>
     void remove_component(entity_t const& from) {
         auto& array = get_components<Component>();
