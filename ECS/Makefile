@@ -21,6 +21,8 @@ SRC =	$(SRC_DIR)main.cpp    \
 TEST_SRC    =	$(TEST_DIR)testsEntity.cpp	\
 				$(TEST_DIR)testsSparseArray.cpp	\
 				$(TEST_DIR)testsRegistry.cpp	\
+				$(SRC_SYSTEM)position_system.cpp	\
+				$(SRC_SYSTEM)controllable_system.cpp	\
 				$(TEST_SYS)testsControllable.cpp	\
 				$(TEST_SYS)testsPosition.cpp	\
 
