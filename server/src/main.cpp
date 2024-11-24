@@ -2,9 +2,15 @@
 
 int main()
 {
-    NmpServer::Server s;
+    try
+    {
+        NmpServer::Server server;
+        server.run(); // Démarre le serveur
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
 
-    s.run();
-    s.get_data();
     return 0;
 }
