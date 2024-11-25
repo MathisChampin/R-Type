@@ -5,7 +5,7 @@ int main()
     try
     {
         NmpServer::Server server;
-        server.run(); // Démarre le serveur
+        server.run();
     }
     catch (const std::exception& e)
     {

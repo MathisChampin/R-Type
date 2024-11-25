@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IServer.hpp"
-#include <iostream>
 #include <asio.hpp>
 
 namespace NmpServer {
@@ -10,10 +9,11 @@ namespace NmpServer {
             Server();
 
             void run() override;
-            void send_data() override;
+            void send_data(const std::string& message) override;
             void get_data() override;
 
             void handle_get_data(const std::error_code& error, std::size_t bytes);
+            void handle_send_data(const std::error_code& error, std::size_t bytes);
 
         private:
             asio::io_context _io_context;
