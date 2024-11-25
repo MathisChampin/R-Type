@@ -1,5 +1,6 @@
 #include "../include/Menu.hpp"
 #include "../include/ParallaxBackground.hpp"
+#include "../include/Player.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -61,7 +62,7 @@ void updateGame(float deltaTime, GameState currentState, ParallaxBackground& bac
     }
 }
 
-void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& background, Menu& menu, sf::Text& ipText, sf::Text& ipField) {
+void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& background, Menu& menu, sf::Text& ipText, sf::Text& ipField, Player& player) {
     window.clear();
 
     background.render(window);
@@ -73,6 +74,7 @@ void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackgr
             window.draw(ipField);
             break;
         case GameState::Playing:
+            player.render(window);
             break;
         case GameState::Options:
             break;
@@ -115,12 +117,21 @@ int main() {
     sf::Text ipField("", font, 25);
     ipField.setPosition(850, 310);
 
+    Player player(sf::Vector2f(500, 500));
+
     while (window.isOpen()) {
         float deltaTime = clock.restart().asSeconds();
         sf::Event event;
+
         handleEvents(window, event, currentState, menu, ipAddress, ipField);
+
+        if (currentState == GameState::Playing) {
+            player.handleInput();
+            player.update(deltaTime);
+        }
+
         updateGame(deltaTime, currentState, background, menu);
-        renderGame(window, currentState, background, menu, ipText, ipField);
+        renderGame(window, currentState, background, menu, ipText, ipField, player);
     }
 
     return 0;
