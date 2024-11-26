@@ -3,8 +3,6 @@
 
     #include <string>
 
-class registry;
-
 /**
  * @class Entity
  * @brief Represents an entity in an entity-component system.
@@ -12,6 +10,7 @@ class registry;
 */
 class Entity {
 public:
+    Entity() : value(0) {};
     /**
      * @brief Constructor to initialize an entity with a specific ID.
      * @param val The ID of the entity.

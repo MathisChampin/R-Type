@@ -16,4 +16,3 @@ void System::position_system(registry &reg)
         pos.y += vel.y;
     }
 }
-

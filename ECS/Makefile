@@ -17,14 +17,17 @@ TEST_SYS	=	./tests/system/
 SRC =	$(SRC_DIR)main.cpp    \
 		$(SRC_SYSTEM)position_system.cpp	\
 		$(SRC_SYSTEM)controllable_system.cpp	\
+		$(SRC_SYSTEM)collision_system.cpp	\
 
 TEST_SRC    =	$(TEST_DIR)testsEntity.cpp	\
 				$(TEST_DIR)testsSparseArray.cpp	\
 				$(TEST_DIR)testsRegistry.cpp	\
 				$(SRC_SYSTEM)position_system.cpp	\
 				$(SRC_SYSTEM)controllable_system.cpp	\
+				$(SRC_SYSTEM)collision_system.cpp	\
 				$(TEST_SYS)testsControllable.cpp	\
 				$(TEST_SYS)testsPosition.cpp	\
+				$(TEST_SYS)testsCollision.cpp	\
 
 OBJ    =    $(SRC:.cpp=.o)
 

@@ -101,13 +101,13 @@ Test(RegistryTests, GetComponentsWithManyTypes) {
 Test(RegistryTests, SpawnEntity) {
     registry reg;
 
-    entity_t entity1 = reg.spawn_entity();
-    entity_t entity2 = reg.spawn_entity();
+    Entity entity1 = reg.spawn_entity();
+    Entity entity2 = reg.spawn_entity();
 
     cr_assert_neq(entity1.get_id(), entity2.get_id(), "Les IDs des entités ne sont pas uniques");
 
     reg.kill_entity(entity1);
-    entity_t entity3 = reg.spawn_entity();
+    Entity entity3 = reg.spawn_entity();
 
     cr_assert_eq(entity1.get_id(), entity3.get_id(), "L'ID de l'entité tuée n'a pas été réutilisé correctement");
 }
@@ -117,7 +117,7 @@ Test(RegistryTests, KillEntity) {
 
     auto &positions = reg.register_component<component::position>();
 
-    entity_t entity1 = reg.spawn_entity();
+    Entity entity1 = reg.spawn_entity();
     positions.insert_at(entity1.get_id(), {10, 20});
 
     const auto &pos1 = positions[entity1.get_id()];
@@ -126,7 +126,7 @@ Test(RegistryTests, KillEntity) {
 
     reg.kill_entity(entity1);
 
-    entity_t entity2 = reg.spawn_entity();
+    Entity entity2 = reg.spawn_entity();
     cr_assert_eq(entity1.get_id(), entity2.get_id(), "L'entité n'a pas été réutilisée correctement après suppression");
     cr_assert_eq(positions.size(), 0, "Le composant n'a pas été supprimé correctement lors de la suppression de l'entité");
 }
@@ -136,7 +136,7 @@ Test(RegistryTests, AddComponent) {
 
     auto &positions = reg.register_component<component::position>();
 
-    entity_t entity1 = reg.spawn_entity();
+    Entity entity1 = reg.spawn_entity();
 
     auto &pos_ref = reg.add_component<component::position>(entity1, {10, 20});
 
@@ -151,7 +151,7 @@ Test(RegistryTests, EmplaceComponent) {
 
     auto &positions = reg.register_component<component::position>();
 
-    entity_t entity1 = reg.spawn_entity();
+    Entity entity1 = reg.spawn_entity();
 
     auto &pos_ref = reg.emplace_component<component::position>(entity1, 10, 20);
 
@@ -166,7 +166,7 @@ Test(RegistryTests, RemoveComponent) {
 
     auto &positions = reg.register_component<component::position>();
 
-    entity_t entity1 = reg.spawn_entity();
+    Entity entity1 = reg.spawn_entity();
     positions.insert_at(entity1.get_id(), {10, 20});
 
     const auto &pos1 = positions[entity1.get_id()];

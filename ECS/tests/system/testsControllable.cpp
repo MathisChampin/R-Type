@@ -10,7 +10,7 @@ Test(ControlSystem, MoveRight) {
     auto &velocities = reg.register_component<component::velocity>();
     reg.register_component<component::controllable>();
 
-    entity_t entity = reg.spawn_entity();
+    Entity entity = reg.spawn_entity();
     reg.add_component<component::velocity>(entity, {0, 0});
     reg.add_component<component::controllable>(entity, {component::controllable::Right});
 
@@ -28,7 +28,7 @@ Test(ControlSystem, MoveUp) {
     auto &velocities = reg.register_component<component::velocity>();
     reg.register_component<component::controllable>();
 
-    entity_t entity = reg.spawn_entity();
+    Entity entity = reg.spawn_entity();
     reg.add_component<component::velocity>(entity, {0, 0});
     reg.add_component<component::controllable>(entity, {component::controllable::Up});
 
@@ -46,7 +46,7 @@ Test(ControlSystem, MoveDown) {
     auto &velocities = reg.register_component<component::velocity>();
     reg.register_component<component::controllable>();
 
-    entity_t entity = reg.spawn_entity();
+    Entity entity = reg.spawn_entity();
     reg.add_component<component::velocity>(entity, {0, 0});
     reg.add_component<component::controllable>(entity, {component::controllable::Down});
 
@@ -64,7 +64,7 @@ Test(ControlSystem, MoveLeft) {
     auto &velocities = reg.register_component<component::velocity>();
     reg.register_component<component::controllable>();
 
-    entity_t entity = reg.spawn_entity();
+    Entity entity = reg.spawn_entity();
     reg.add_component<component::velocity>(entity, {0, 0});
     reg.add_component<component::controllable>(entity, {component::controllable::Left});
 
