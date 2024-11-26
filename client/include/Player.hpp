@@ -14,6 +14,7 @@ public:
     void render(sf::RenderWindow& window);
     void shoot();
 
+
 private:
     sf::Sprite m_sprite;                       
     std::vector<sf::Texture> m_textures;        

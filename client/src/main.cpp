@@ -7,7 +7,8 @@
 enum class GameState {
     Menu,
     Playing,
-    Options
+    Options,
+    PlayingInLobby
 };
 
 void initializeWindow(sf::RenderWindow& window) {
@@ -54,30 +55,26 @@ void handleEvents(sf::RenderWindow& window, sf::Event& event, GameState& current
     }
 }
 
-void updateGame(float deltaTime, GameState currentState, ParallaxBackground& background, Menu& menu) {
-    background.update(deltaTime);
-
+void updateGame(float deltaTime, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu) {
     if (currentState == GameState::Menu) {
+        menuBackground.update(deltaTime);
         menu.update();
+    } else if (currentState == GameState::Playing) {
+        playingBackground.update(deltaTime);
     }
 }
 
-void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& background, Menu& menu, sf::Text& ipText, sf::Text& ipField, Player& player) {
+void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, sf::Text& ipText, sf::Text& ipField, Player& player) {
     window.clear();
 
-    background.render(window);
-
-    switch (currentState) {
-        case GameState::Menu:
-            menu.render();
-            window.draw(ipText);
-            window.draw(ipField);
-            break;
-        case GameState::Playing:
-            player.render(window);
-            break;
-        case GameState::Options:
-            break;
+    if (currentState == GameState::Menu) {
+        menuBackground.render(window);
+        menu.render();
+        window.draw(ipText);
+        window.draw(ipField);
+    } else if (currentState == GameState::Playing) {
+        playingBackground.render(window);
+        player.render(window);
     }
 
     window.display();
@@ -88,13 +85,31 @@ int main() {
     initializeWindow(window);
 
     GameState currentState = GameState::Menu;
-    ParallaxBackground background(window.getSize());
+
+    std::vector<std::pair<std::string, float>> menuLayers = {
+        {"./assets/backgrounds/space_dust.png", 0.1f},
+        // {"./assets/backgrounds/space_dust.png", 0.3f} // si ont trouve un autre assets styler a ajouter
+    };
+
+    std::vector<std::pair<std::string, float>> playingLayers = {
+        {"./assets/backgrounds/game_background1.png", 0.2f},
+        // {"./assets/backgrounds/game_background2.png", 0.5f}, next lvl
+    };
+
+    ParallaxBackground menuBackground(window.getSize(), menuLayers);
+    ParallaxBackground playingBackground(window.getSize(), playingLayers);
+
     sf::Clock clock;
     Menu menu(window);
 
     menu.addOption("Jouer", [&currentState]() {
         std::cout << "Démarrage du jeu..." << std::endl;
         currentState = GameState::Playing;
+    });
+
+    menu.addOption("Cree un lobby", [&currentState]() {
+        std::cout << "Création du lobby..." << std::endl;
+        currentState = GameState::PlayingInLobby;
     });
 
     menu.addOption("Options", [&currentState]() {
@@ -114,7 +129,7 @@ int main() {
     sf::Text ipText("Entrez une IP:", font, 25);
     ipText.setPosition(850, 270);
 
-    sf::Text ipField("", font, 25);
+    sf::Text ipField(" ", font, 25);
     ipField.setPosition(850, 310);
 
     Player player(sf::Vector2f(500, 500));
@@ -130,8 +145,8 @@ int main() {
             player.update(deltaTime);
         }
 
-        updateGame(deltaTime, currentState, background, menu);
-        renderGame(window, currentState, background, menu, ipText, ipField, player);
+        updateGame(deltaTime, currentState, menuBackground, playingBackground, menu);
+        renderGame(window, currentState, menuBackground, playingBackground, menu, ipText, ipField, player);
     }
 
     return 0;

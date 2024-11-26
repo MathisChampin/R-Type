@@ -1,10 +1,11 @@
 #include "../include/ParallaxBackground.hpp"
 #include <iostream>
 
-ParallaxBackground::ParallaxBackground(const sf::Vector2u& windowSize) 
+ParallaxBackground::ParallaxBackground(const sf::Vector2u& windowSize, const std::vector<std::pair<std::string, float>>& layers)
     : m_windowSize(windowSize) {
-    
-    setupLayer("./assets/backgrounds/space_dust.png", 0.2f);
+    for (const auto& layerInfo : layers) {
+        setupLayer(layerInfo.first, layerInfo.second);
+    }
 }
 
 void ParallaxBackground::setupLayer(const std::string& texturePath, float speed) {

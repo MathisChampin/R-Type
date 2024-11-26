@@ -56,3 +56,4 @@ void Player::shoot() {
 void Player::render(sf::RenderWindow& window) {
     window.draw(m_sprite);
 }
+
