@@ -1,6 +1,7 @@
 project(r_type_server)
 
-include_directories(include)
+include_directories(includes
+                    include/server)
 
 set(SRC_DIR src)
 
