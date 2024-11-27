@@ -17,8 +17,8 @@ namespace NmpServer {
 
         private:
             asio::io_context _io_context;
-        asio::ip::udp::socket _socket;
-        asio::ip::udp::endpoint _remote_endpoint;
-        std::array<char, 1024> _recv_buffer;
+            asio::ip::udp::socket _socket;
+            asio::ip::udp::endpoint _remote_endpoint;
+            std::array<char, 1024> _recv_buffer;
     };
 }
