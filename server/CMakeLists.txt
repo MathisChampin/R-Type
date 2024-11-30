@@ -1,6 +1,6 @@
 project(r_type_server)
 
-include_directories(includes
+include_directories(include
                     include/server)
 
 set(SRC_DIR src)
@@ -8,6 +8,7 @@ set(SRC_DIR src)
 set(SOURCES
     ${SRC_DIR}/main.cpp
     ${SRC_DIR}/Server.cpp
+    ${SRC_DIR}/Binary.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
