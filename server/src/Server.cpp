@@ -19,7 +19,8 @@ namespace NmpServer
     {
         std::shared_ptr<std::string> shared_message = std::make_shared<std::string>(message);
 
-        _socket.async_send_to(asio::buffer(*shared_message), _remote_endpoint,
+        _binary.serialize(*shared_message, _buffer);
+        _socket.async_send_to(asio::buffer(_buffer), _remote_endpoint,
             [this, shared_message](const std::error_code& error, std::size_t bytes_transferred)
             {
                 this->handle_send_data(error, bytes_transferred);
@@ -43,7 +44,7 @@ namespace NmpServer
     void Server::get_data()
     {
         _socket.async_receive_from(
-            asio::buffer(_recv_buffer), _remote_endpoint,
+            asio::buffer(_test_buffer), _remote_endpoint,
             [this](const std::error_code& error, std::size_t bytes_transferred)
             {
                 this->handle_get_data(error, bytes_transferred);
@@ -56,9 +57,16 @@ namespace NmpServer
     {
         if (!error)
         {
-            std::string data(_recv_buffer.data(), bytes);
-            std::cout << "Message received: " << data << std::endl;
-            this->send_data("Recu: " + data);
+            std::vector<uint32_t> test;
+
+            for (std::size_t i = 0; i < bytes / sizeof(uint32_t); ++i) {
+                uint32_t val = reinterpret_cast<uint32_t*>(_test_buffer.data())[i];
+                test.push_back(val);
+            }
+
+            std::string res = _binary.deserialize(test);
+            std::cout << res << std::endl;
+            this->send_data(res);
             this->get_data();
         }
         else
