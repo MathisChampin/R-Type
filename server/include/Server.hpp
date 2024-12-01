@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IServer.hpp"
+#include "Binary.hpp"
 #include <asio.hpp>
 
 namespace NmpServer {
@@ -19,6 +20,8 @@ namespace NmpServer {
             asio::io_context _io_context;
             asio::ip::udp::socket _socket;
             asio::ip::udp::endpoint _remote_endpoint;
-            std::array<char, 1024> _recv_buffer;
+            std::vector<uint32_t> _buffer;
+            std::array<uint32_t, 1024> _test_buffer;
+            NmpBinary::Binary _binary;
     };
 }

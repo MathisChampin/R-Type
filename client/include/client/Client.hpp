@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IClient.hpp"
+#include "Binary.hpp"
 #include <iostream>
 #include <asio.hpp>
 
@@ -17,6 +18,8 @@ namespace NmpClient {
             asio::ip::udp::resolver _resolver;
             asio::ip::udp::endpoint _receiver_endpoint;
             asio::ip::udp::socket _socket;
-            std::array<char, 1024> buffer;
+            std::vector<uint32_t> _buffer;
+            std::array<uint32_t, 1024> _test_buffer;
+            NmpBinary::Binary _binary;
     };
 }

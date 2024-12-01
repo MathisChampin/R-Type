@@ -39,10 +39,12 @@ namespace NmpBinary
         std::size_t length{buffer.size()};
         std::size_t index{0};
 
+        std::cout << "length: " << length << std::endl;
+
         for (uint32_t val : buffer) {
             result.push_back(static_cast<char>(val));
 
-            if (index++ != length -1)
+            if (index++ != length - 1)
                 result.push_back('/');
         }
         return result;

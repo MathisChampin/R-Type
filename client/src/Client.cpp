@@ -15,19 +15,22 @@ namespace NmpClient
     void Client::get_data()
     {
         asio::ip::udp::endpoint clientEndpoint;
-        std::array<char, 128> recv_buf;
-
-        std::cout << "get data from server" << std::endl;
-        std::size_t bytes = _socket.receive_from(asio::buffer(recv_buf), clientEndpoint);
-        std::cout.write(recv_buf.data(), bytes);
-
+        std::vector<uint32_t> test;
+        
+        std::size_t bytes = _socket.receive_from(asio::buffer(_test_buffer), clientEndpoint);
+        for (std::size_t i = 0; i < bytes / sizeof(uint32_t); ++i) {
+            uint32_t val = reinterpret_cast<uint32_t*>(_test_buffer.data())[i];
+            test.push_back(val);
+        }
+        std::string res = _binary.deserialize(test);
+        std::cout << res << std::endl;
     }
 
     void Client::send_input()
     {
-        std::array<char, 1> send_buf  = {{ 1 }};
-        send_buf[0] = 'c';
-        _socket.send_to(asio::buffer(send_buf), _receiver_endpoint);
+        _binary.serialize("1/2/4/9", _buffer);
+        
+        _socket.send_to(asio::buffer(_buffer), _receiver_endpoint);
         std::cout << "client send input" << std::endl;
     }
 }
