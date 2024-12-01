@@ -1,6 +1,7 @@
 #include "../include/Menu.hpp"
 #include "../include/ParallaxBackground.hpp"
 #include "../include/Player.hpp"
+#include "../include/OptionsMenu.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -24,7 +25,7 @@ void initializeFont(sf::Font& font) {
     }
 }
 
-void handleEvents(sf::RenderWindow& window, sf::Event& event, GameState& currentState, Menu& menu, sf::String& ipAddress, sf::Text& ipField) {
+void handleEvents(sf::RenderWindow& window, sf::Event& event, GameState& currentState, Menu& menu, OptionsMenu& optionsMenu, sf::String& ipAddress, sf::Text& ipField) {
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             window.close();
@@ -51,20 +52,25 @@ void handleEvents(sf::RenderWindow& window, sf::Event& event, GameState& current
 
         if (currentState == GameState::Menu) {
             menu.handleEvent(event);
+        } else if (currentState == GameState::Options) {
+            optionsMenu.handleEvent(event);
         }
     }
 }
 
-void updateGame(float deltaTime, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu) {
+void updateGame(float deltaTime, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu) {
     if (currentState == GameState::Menu) {
         menuBackground.update(deltaTime);
         menu.update();
     } else if (currentState == GameState::Playing) {
         playingBackground.update(deltaTime);
+    } else if (currentState == GameState::Options) {
+        menuBackground.update(deltaTime);
+        optionsMenu.update();
     }
 }
 
-void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, sf::Text& ipText, sf::Text& ipField, Player& player) {
+void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu, sf::Text& ipText, sf::Text& ipField, Player& player) {
     window.clear();
 
     if (currentState == GameState::Menu) {
@@ -75,6 +81,9 @@ void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackgr
     } else if (currentState == GameState::Playing) {
         playingBackground.render(window);
         player.render(window);
+    } else if (currentState == GameState::Options) {
+        menuBackground.render(window);
+        optionsMenu.render();
     }
 
     window.display();
@@ -101,6 +110,7 @@ int main() {
 
     sf::Clock clock;
     Menu menu(window);
+    OptionsMenu optionsMenu(window);
 
     menu.addOption("Jouer", [&currentState]() {
         std::cout << "Démarrage du jeu..." << std::endl;
@@ -138,15 +148,15 @@ int main() {
         float deltaTime = clock.restart().asSeconds();
         sf::Event event;
 
-        handleEvents(window, event, currentState, menu, ipAddress, ipField);
+        handleEvents(window, event, currentState, menu, optionsMenu, ipAddress, ipField);
 
         if (currentState == GameState::Playing) {
             player.handleInput();
             player.update(deltaTime);
         }
 
-        updateGame(deltaTime, currentState, menuBackground, playingBackground, menu);
-        renderGame(window, currentState, menuBackground, playingBackground, menu, ipText, ipField, player);
+        updateGame(deltaTime, currentState, menuBackground, playingBackground, menu, optionsMenu);
+        renderGame(window, currentState, menuBackground, playingBackground, menu, optionsMenu, ipText, ipField, player);
     }
 
     return 0;
