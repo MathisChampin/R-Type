@@ -5,7 +5,8 @@ namespace component {
     struct attribute {
         enum entityType {
             Player,
-            Ennemies
+            Ennemies,
+            None
         };
         entityType _type;
         bool operator==(const attribute& other) const {
