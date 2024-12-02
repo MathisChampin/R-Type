@@ -52,7 +52,6 @@ namespace NmpBinary
     void Binary::clearBuffer(std::vector<uint32_t> &buffer)
     {
         buffer.clear();
-        std::cout << "clear serialize: " << buffer.size() << std::endl;
     }
 
     void Binary::printBuffer(std::vector<uint32_t> &buffer)

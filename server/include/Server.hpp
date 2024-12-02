@@ -20,8 +20,8 @@ namespace NmpServer {
             asio::io_context _io_context;
             asio::ip::udp::socket _socket;
             asio::ip::udp::endpoint _remote_endpoint;
-            std::vector<uint32_t> _bufferSerialize; //est bufferisé
-            std::array<uint32_t, 256> _test_buffer; //en cours 
+            std::vector<uint32_t> _bufferSerialize;
+            std::array<uint32_t, 256> _bufferAsio;
             NmpBinary::Binary _binary;
     };
 }
