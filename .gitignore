@@ -1,5 +1,7 @@
 *.o
 
+.vscode/
+
 r-type_client
 r-type_server
 
@@ -8,7 +10,6 @@ r-type_server
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
-Makefile
 
 *.log
 *.tmp

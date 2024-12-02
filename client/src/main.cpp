@@ -158,6 +158,4 @@ int main() {
         updateGame(deltaTime, currentState, menuBackground, playingBackground, menu, optionsMenu);
         renderGame(window, currentState, menuBackground, playingBackground, menu, optionsMenu, ipText, ipField, player);
     }
-
-    return 0;
 }
