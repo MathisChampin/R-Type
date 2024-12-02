@@ -24,13 +24,18 @@ namespace NmpClient
         }
         std::string res = _binary.deserialize(test);
         std::cout << res << std::endl;
+        _test_buffer.fill(0);
     }
 
     void Client::send_input()
     {
         _binary.serialize("1/2/4/9", _buffer);
+
+        for (auto elem  : _buffer)
+            std::cout << "test bufer: " << elem << std::endl;
         
         _socket.send_to(asio::buffer(_buffer), _receiver_endpoint);
+        _binary.clearBuffer(_buffer);
         std::cout << "client send input" << std::endl;
     }
 }

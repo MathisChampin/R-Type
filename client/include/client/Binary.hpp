@@ -13,6 +13,8 @@ namespace NmpBinary {
 
             void serialize(std::string action,  std::vector<uint32_t> &buffer);
             std::string deserialize(std::vector<uint32_t> &buffer);
+            void clearBuffer(std::vector<uint32_t> &buffer);
+            void printBuffer(std::vector<uint32_t> &buffer);
 
         private:
             std::vector<std::string> getAction(std::string &action);

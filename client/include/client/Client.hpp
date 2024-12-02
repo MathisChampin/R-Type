@@ -19,7 +19,7 @@ namespace NmpClient {
             asio::ip::udp::endpoint _receiver_endpoint;
             asio::ip::udp::socket _socket;
             std::vector<uint32_t> _buffer;
-            std::array<uint32_t, 1024> _test_buffer;
+            std::array<uint32_t, 256> _test_buffer;
             NmpBinary::Binary _binary;
     };
 }
