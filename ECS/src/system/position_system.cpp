@@ -1,7 +1,6 @@
 #include "position.hpp"
 #include "velocity.hpp"
 #include "system.hpp"
-#include <iostream>
 
 void System::position_system(registry &reg)
 {

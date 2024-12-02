@@ -3,13 +3,10 @@
 
     #include "SparseArray.hpp"
     #include "Entity.hpp"
-    #include <string>
     #include <typeindex>
     #include <unordered_map>
     #include <any>
-    #include <stdexcept>
     #include <functional>
-    #include <memory>
 
 /**
  * @class registry

@@ -7,7 +7,8 @@ namespace component {
             Up,
             Down,
             Right,
-            Left
+            Left,
+            NoKey
         };
         Key active_key;
     };
