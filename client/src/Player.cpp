@@ -1,8 +1,9 @@
 #include "../include/Player.hpp"
+#include "../include/client/ClientBinary.hpp"
 #include <iostream>
 
-Player::Player(const sf::Vector2f& startPosition)
-    : m_speed(200.0f), m_currentFrame(0), m_animationTime(0.1f), m_elapsedTime(0.0f)
+Player::Player(const sf::Vector2f& startPosition, NmpClient::Client& client)
+    : m_speed(200.0f), m_currentFrame(0), m_animationTime(0.1f), m_elapsedTime(0.0f), m_client(client)
 {
     for (int i = 1; i <= 5; ++i) {
         sf::Texture texture;
@@ -20,26 +21,50 @@ Player::Player(const sf::Vector2f& startPosition)
     m_sprite.setScale(2.0f, 2.0f);
 }
 
-void Player::handleInput() {
+void Player::handleInput()
+{
+    bool moved = false;
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         m_sprite.move(0, -m_speed * 0.016f); 
+        moved = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
         m_sprite.move(0, m_speed * 0.016f); 
+        moved = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         m_sprite.move(-m_speed * 0.016f, 0); 
+        moved = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         m_sprite.move(m_speed * 0.016f, 0);
+        moved = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
         shoot();
         std::cout << "Pew pew !" << std::endl;
     }
+
+    if (moved) {
+        sf::Vector2f position = m_sprite.getPosition();
+        NmpClient::SpriteInfo spriteInfo;
+        spriteInfo.x = static_cast<int>(position.x);
+        spriteInfo.y = static_cast<int>(position.y);
+
+        NmpClient::Packet packet(NmpClient::EVENT::MOVE, spriteInfo);
+
+        std::vector<uint32_t> buffer;
+        NmpBinary::Binary binary;
+        binary.serialize(packet, buffer);
+
+        m_client.send_input(packet);
+        std::cout << "Position envoyée : " << position.x << ", " << position.y << std::endl;
+    }
 }
 
-void Player::update(float deltaTime) {
+void Player::update(float deltaTime)
+{
     m_elapsedTime += deltaTime;
 
     if (m_elapsedTime >= m_animationTime) {
@@ -49,11 +74,23 @@ void Player::update(float deltaTime) {
     }
 }
 
-void Player::shoot() {
-    
+void Player::shoot()
+{
+    NmpClient::SpriteInfo spriteInfo;
+    spriteInfo.x = 0;
+    spriteInfo.y = 0;
+
+    NmpClient::Packet packet(NmpClient::EVENT::SHOOT, spriteInfo);
+
+    std::vector<uint32_t> buffer;
+    NmpBinary::Binary binary;
+    binary.serialize(packet, buffer);
+
+    m_client.send_input(packet);
+    std::cout << "Action de tir envoyée" << std::endl;
 }
 
-void Player::render(sf::RenderWindow& window) {
+void Player::render(sf::RenderWindow& window)
+{
     window.draw(m_sprite);
 }
-

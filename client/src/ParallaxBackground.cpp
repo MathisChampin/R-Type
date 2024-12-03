@@ -8,7 +8,8 @@ ParallaxBackground::ParallaxBackground(const sf::Vector2u& windowSize, const std
     }
 }
 
-void ParallaxBackground::setupLayer(const std::string& texturePath, float speed) {
+void ParallaxBackground::setupLayer(const std::string& texturePath, float speed)
+{
     sf::Texture texture;
     if (!texture.loadFromFile(texturePath)) {
         std::cerr << "Erreur lors du chargement de la texture : " << texturePath << std::endl;
@@ -28,14 +29,16 @@ void ParallaxBackground::setupLayer(const std::string& texturePath, float speed)
     m_layers.push_back(layer);
 }
 
-void ParallaxBackground::updateLayerScale(sf::Sprite& sprite) {
+void ParallaxBackground::updateLayerScale(sf::Sprite& sprite)
+{
     sf::Vector2u textureSize = sprite.getTexture()->getSize();
     float scaleX = static_cast<float>(m_windowSize.x * 2) / textureSize.x;
     float scaleY = static_cast<float>(m_windowSize.y) / textureSize.y;
     sprite.setScale(scaleX, scaleY);
 }
 
-void ParallaxBackground::update(float deltaTime) {
+void ParallaxBackground::update(float deltaTime)
+{
     for (auto& layer : m_layers) {
         layer.offset += layer.speed * deltaTime * 100.0f;
         
@@ -47,7 +50,8 @@ void ParallaxBackground::update(float deltaTime) {
     }
 }
 
-void ParallaxBackground::render(sf::RenderWindow& window) {
+void ParallaxBackground::render(sf::RenderWindow& window)
+{
     for (auto& layer : m_layers) {
         window.draw(layer.sprite);
         

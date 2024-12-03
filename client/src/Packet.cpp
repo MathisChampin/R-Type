@@ -1,4 +1,4 @@
-#include "ClientPacket.hpp"
+#include "../include/client/ClientPacket.hpp"
 
 namespace NmpClient
 {

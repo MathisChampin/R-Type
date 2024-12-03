@@ -1,5 +1,5 @@
-#include "Client.hpp"
-#include "ClientPacket.hpp"
+#include "../include/client/Client.hpp"
+#include "../include/client/ClientPacket.hpp"
 
 namespace NmpClient 
 {
@@ -24,6 +24,9 @@ namespace NmpClient
             test.push_back(val);
         }
         NmpClient::Packet packet = _binary.deserialize(test);
+        if (packet.getOpCode() == NmpClient::EVENT::MOVE) {
+            std::cout << "client receive move" << std::endl;
+        }
         _bufferAsio.fill(0);
     }
 
