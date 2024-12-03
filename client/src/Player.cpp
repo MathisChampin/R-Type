@@ -1,8 +1,8 @@
 #include "../include/Player.hpp"
 #include <iostream>
 
-Player::Player(const sf::Vector2f& startPosition)
-    : m_speed(200.0f), m_currentFrame(0), m_animationTime(0.1f), m_elapsedTime(0.0f)
+Player::Player(const sf::Vector2f& startPosition, NmpClient::Client& client)
+    : m_speed(200.0f), m_currentFrame(0), m_animationTime(0.1f), m_elapsedTime(0.0f), m_client(client)
 {
     for (int i = 1; i <= 5; ++i) {
         sf::Texture texture;
@@ -20,26 +20,44 @@ Player::Player(const sf::Vector2f& startPosition)
     m_sprite.setScale(2.0f, 2.0f);
 }
 
-void Player::handleInput() {
+void Player::handleInput()
+{
+    bool moved = false; // Indique si le joueur a bougé
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         m_sprite.move(0, -m_speed * 0.016f); 
+        moved = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
         m_sprite.move(0, m_speed * 0.016f); 
+        moved = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         m_sprite.move(-m_speed * 0.016f, 0); 
+        moved = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         m_sprite.move(m_speed * 0.016f, 0);
+        moved = true;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
         shoot();
         std::cout << "Pew pew !" << std::endl;
     }
+
+    // Si le joueur a bougé, envoyer la position au serveur
+    if (moved) {
+        sf::Vector2f position = m_sprite.getPosition();
+        std::string message = "move/" + std::to_string(position.x) + "/" + std::to_string(position.y);
+        std::vector<uint32_t> buffer;
+        m_client.serialize(message, buffer); // Sérialisation de la position
+        m_client.send_input(buffer);         // Envoi au serveur
+        std::cout << "Position envoyée : " << message << std::endl;
+    }
 }
 
-void Player::update(float deltaTime) {
+void Player::update(float deltaTime)
+{
     m_elapsedTime += deltaTime;
 
     if (m_elapsedTime >= m_animationTime) {
@@ -49,11 +67,17 @@ void Player::update(float deltaTime) {
     }
 }
 
-void Player::shoot() {
-    
+void Player::shoot()
+{
+    // Envoi d'un événement de tir au serveur
+    std::string message = "shoot";
+    std::vector<uint32_t> buffer;
+    m_client.serialize(message, buffer);
+    m_client.send_input(buffer);
+    std::cout << "Action envoyée : " << message << std::endl;
 }
 
-void Player::render(sf::RenderWindow& window) {
+void Player::render(sf::RenderWindow& window)
+{
     window.draw(m_sprite);
 }
-

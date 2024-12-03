@@ -12,7 +12,7 @@ OptionsMenu::OptionsMenu(sf::RenderWindow& window)
     }
     m_music.setLoop(true);
     m_music.play();
-    m_music.setVolume(m_volume); // Initialiser le volume de la musique
+    m_music.setVolume(m_volume);
 
     setupTitleText();
     setupVolumeText();
@@ -58,7 +58,7 @@ void OptionsMenu::updateVolumeBar()
 
 void OptionsMenu::updateMusicVolume()
 {
-    m_music.setVolume(m_volume); // Mettre à jour le volume de la musique
+    m_music.setVolume(m_volume);
 }
 
 void OptionsMenu::handleEvent(const sf::Event& event)
@@ -99,10 +99,10 @@ void OptionsMenu::handleEvent(const sf::Event& event)
     }
 }
 
-// void OptionsMenu::update()
-// {
+void OptionsMenu::update()
+{
 
-// }
+}
 
 void OptionsMenu::render()
 {

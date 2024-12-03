@@ -4,16 +4,16 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include "../include/client/Client.hpp"
 
 class Player {
 public:
-    Player(const sf::Vector2f& startPosition);
+    Player(const sf::Vector2f& startPosition, NmpClient::Client& client); // Ajout du client
 
     void handleInput();
     void update(float deltaTime);
     void render(sf::RenderWindow& window);
     void shoot();
-
 
 private:
     sf::Sprite m_sprite;                       
@@ -23,6 +23,8 @@ private:
     int m_currentFrame;                          
     float m_animationTime;                       
     float m_elapsedTime;                         
+
+    NmpClient::Client& m_client; // Référence à l'objet Client pour la communication avec le serveur
 
     void loadTexture(const std::string& textureFile);
 };

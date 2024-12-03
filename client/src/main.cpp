@@ -2,7 +2,9 @@
 #include "../include/ParallaxBackground.hpp"
 #include "../include/Player.hpp"
 #include "../include/OptionsMenu.hpp"
+#include "../include/client/Client.hpp"
 #include <SFML/Graphics.hpp>
+#include <thread>
 #include <iostream>
 
 enum class GameState {
@@ -89,20 +91,29 @@ void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackgr
     window.display();
 }
 
+void listenToServer(NmpClient::Client& client) {
+    while (true) {
+        client.get_data();
+    }
+}
+
 int main() {
     sf::RenderWindow window;
     initializeWindow(window);
 
     GameState currentState = GameState::Menu;
 
+    NmpClient::Client client; // Crée une instance de Client pour la communication réseau
+    Player player(sf::Vector2f(500, 500), client); // Passe Client en argument
+
+    std::thread serverThread(listenToServer, std::ref(client)); // Thread d'écoute
+
     std::vector<std::pair<std::string, float>> menuLayers = {
         {"./assets/backgrounds/space_dust.png", 0.1f},
-        // {"./assets/backgrounds/space_dust.png", 0.3f} // si ont trouve un autre assets styler a ajouter
     };
 
     std::vector<std::pair<std::string, float>> playingLayers = {
         {"./assets/backgrounds/game_background1.png", 0.2f},
-        // {"./assets/backgrounds/game_background2.png", 0.5f}, next lvl
     };
 
     ParallaxBackground menuBackground(window.getSize(), menuLayers);
@@ -142,8 +153,6 @@ int main() {
     sf::Text ipField(" ", font, 25);
     ipField.setPosition(850, 310);
 
-    Player player(sf::Vector2f(500, 500));
-
     while (window.isOpen()) {
         float deltaTime = clock.restart().asSeconds();
         sf::Event event;
@@ -158,4 +167,7 @@ int main() {
         updateGame(deltaTime, currentState, menuBackground, playingBackground, menu, optionsMenu);
         renderGame(window, currentState, menuBackground, playingBackground, menu, optionsMenu, ipText, ipField, player);
     }
+
+    serverThread.join(); // Attendre que le thread se termine
+    return 0;
 }
