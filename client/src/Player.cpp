@@ -1,4 +1,5 @@
 #include "../include/Player.hpp"
+#include "../include/client/ClientBinary.hpp"
 #include <iostream>
 
 Player::Player(const sf::Vector2f& startPosition, NmpClient::Client& client)
@@ -22,7 +23,7 @@ Player::Player(const sf::Vector2f& startPosition, NmpClient::Client& client)
 
 void Player::handleInput()
 {
-    bool moved = false; // Indique si le joueur a bougé
+    bool moved = false;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         m_sprite.move(0, -m_speed * 0.016f); 
@@ -45,14 +46,20 @@ void Player::handleInput()
         std::cout << "Pew pew !" << std::endl;
     }
 
-    // Si le joueur a bougé, envoyer la position au serveur
     if (moved) {
         sf::Vector2f position = m_sprite.getPosition();
-        std::string message = "move/" + std::to_string(position.x) + "/" + std::to_string(position.y);
+        NmpClient::SpriteInfo spriteInfo;
+        spriteInfo.x = static_cast<int>(position.x);
+        spriteInfo.y = static_cast<int>(position.y);
+
+        NmpClient::Packet packet(NmpClient::EVENT::MOVE, spriteInfo);
+
         std::vector<uint32_t> buffer;
-        m_client.serialize(message, buffer); // Sérialisation de la position
-        m_client.send_input(buffer);         // Envoi au serveur
-        std::cout << "Position envoyée : " << message << std::endl;
+        NmpBinary::Binary binary;
+        binary.serialize(packet, buffer);
+
+        m_client.send_input(packet);
+        std::cout << "Position envoyée : " << position.x << ", " << position.y << std::endl;
     }
 }
 
@@ -69,12 +76,18 @@ void Player::update(float deltaTime)
 
 void Player::shoot()
 {
-    // Envoi d'un événement de tir au serveur
-    std::string message = "shoot";
+    NmpClient::SpriteInfo spriteInfo;
+    spriteInfo.x = 0;
+    spriteInfo.y = 0;
+
+    NmpClient::Packet packet(NmpClient::EVENT::SHOOT, spriteInfo);
+
     std::vector<uint32_t> buffer;
-    m_client.serialize(message, buffer);
-    m_client.send_input(buffer);
-    std::cout << "Action envoyée : " << message << std::endl;
+    NmpBinary::Binary binary;
+    binary.serialize(packet, buffer);
+
+    m_client.send_input(packet);
+    std::cout << "Action de tir envoyée" << std::endl;
 }
 
 void Player::render(sf::RenderWindow& window)
