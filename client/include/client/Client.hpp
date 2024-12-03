@@ -10,7 +10,7 @@ namespace NmpClient {
         public:
             Client();
 
-            void send_input() override;
+            void send_input(Packet &packet) override;
             void get_data() override;
 
         private:

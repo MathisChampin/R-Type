@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ClientIPacket.hpp"
+#include "IClientPacket.hpp"
 #include <optional>
 #include <iostream>
 
@@ -9,7 +9,7 @@ namespace NmpClient
     class Packet : public IPacket {
         public:
             Packet(EVENT event, std::optional<DIRECTION> direction = std::nullopt);
-            Packet(SpriteInfo &sprites);
+            Packet(EVENT event, SpriteInfo &sprites);
 
             bool checkPacket() override;
             EVENT getOpCode() override;

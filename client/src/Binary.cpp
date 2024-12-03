@@ -61,7 +61,7 @@ namespace NmpBinary
                 buffer[4],
                 buffer[5] 
             };
-            return NmpClient::Packet(sprite);
+            return NmpClient::Packet(NmpClient::EVENT::NOTHING, sprite);
         }
         return NmpClient::Packet(event);
     }

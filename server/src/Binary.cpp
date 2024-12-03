@@ -25,7 +25,6 @@ namespace NmpBinary
         return value;
     }
 
-    //refaire serialisation / deserialisation
     void Binary::serialize(NmpServer::Packet &packet, std::vector<uint32_t> &buffer)
     {
         NmpServer::EVENT opcode = packet.getOpCode();
@@ -62,7 +61,7 @@ namespace NmpBinary
                 buffer[5],
                 buffer[6] 
             };
-            return NmpServer::Packet(sprite);
+            return NmpServer::Packet(NmpServer::EVENT::NOTHING, sprite);
         }
         return NmpServer::Packet(event);
     }

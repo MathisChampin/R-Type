@@ -9,7 +9,7 @@ namespace NmpServer
     class Packet : public IPacket {
         public:
             Packet(EVENT event, std::optional<DIRECTION> direction = std::nullopt);
-            Packet(SpriteInfo &sprites);
+            Packet(EVENT event, SpriteInfo &sprites);
 
             bool checkPacket() override;
             EVENT getOpCode() override;

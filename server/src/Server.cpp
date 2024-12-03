@@ -1,5 +1,4 @@
 #include "Server.hpp"
-#include "Packet.hpp"
 
 namespace NmpServer
 {
@@ -17,20 +16,18 @@ namespace NmpServer
         std::cout << "Server is running on port 8080..." << std::endl;
     }
 
-    void Server::send_data(const std::string& message)
+    void Server::send_data(Packet &packet) //send Packet
     {
-        std::shared_ptr<std::string> shared_message = std::make_shared<std::string>(message);
+        std::shared_ptr<Packet> shared_packet = std::make_shared<Packet>(packet);
 
-        SpriteInfo sprite = {1, 100, 200, 50, 50};
-        Packet packet(sprite);
         _binary.serialize(packet, _bufferSerialize);
         _socket.async_send_to(asio::buffer(_bufferSerialize), _remote_endpoint,
-            [this, shared_message](const std::error_code& error, std::size_t bytes_transferred)
+            [this, shared_packet](const std::error_code& error, std::size_t bytes_transferred)
             {
                 this->handle_send_data(error, bytes_transferred);
             });
 
-        std::cout << "Message envoyé : " << message << std::endl;
+        std::cout << "SERVER Message envoyé : " << std::endl;
     }
 
     void Server::handle_send_data(const std::error_code& error, std::size_t bytes)
@@ -69,15 +66,13 @@ namespace NmpServer
                 uint32_t val = reinterpret_cast<uint32_t*>(_bufferAsio.data())[i];
                 test.push_back(val);
             }
-
             _bufferAsio.fill(0);
+
             NmpServer::Packet packet = _binary.deserialize(test);
-            if (packet.getOpCode() == EVENT::SHOOT)
-                std::cout << "Message received: " << std::endl;
-                
             std::cout << "Message byte: " << bytes << std::endl;
             std::cout << "END HANDLE GET DATA" << std::endl;
-            this->send_data("okok");
+            //call protocol handler
+            this->send_data(packet);
             this->get_data();
         }
         else

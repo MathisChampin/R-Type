@@ -5,12 +5,12 @@ namespace NmpServer
     Packet::Packet(EVENT event, std::optional<DIRECTION> direction) :
         _opCode(event), _arg(direction)
     {
-        std::cout << "CLIENT PACKET CREATED" << std::endl;
+        std::cout << "SERVER packet input created" << std::endl;
     }
 
-    Packet::Packet(SpriteInfo &sprite) : _opCode(EVENT::NOTHING), _sprite(sprite)
+    Packet::Packet(EVENT event, SpriteInfo &sprite) : _opCode(event), _sprite(sprite)
     {
-        std::cout << "SERVER PACKET CREATED" << std::endl;
+        std::cout << "SERVER packet sprite created" << std::endl;
     }
 
     bool Packet::checkPacket()

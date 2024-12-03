@@ -24,14 +24,11 @@ namespace NmpClient
             test.push_back(val);
         }
         NmpClient::Packet packet = _binary.deserialize(test);
-        auto sprite = packet.getSpriteInfo();
-        std::cout << "ma mere: " << sprite.id << std::endl;
         _bufferAsio.fill(0);
     }
 
-    void Client::send_input()
+    void Client::send_input(Packet &packet)
     {
-        NmpClient::Packet packet(NmpClient::EVENT::MOVE, NmpClient::DIRECTION::LEFT);
         _binary.serialize(packet, _bufferSerialize);
         
         _socket.send_to(asio::buffer(_bufferSerialize), _receiver_endpoint);
