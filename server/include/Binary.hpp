@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Packet.hpp"
 #include <iostream>
 #include <array>
 #include <vector>
@@ -11,8 +12,8 @@ namespace NmpBinary {
             Binary() = default;
             ~Binary() = default;
 
-            void serialize(std::string action,  std::vector<uint32_t> &buffer);
-            std::string deserialize(std::vector<uint32_t> &buffer);
+            void serialize(NmpServer::Packet &packet,  std::vector<uint32_t> &buffer);
+            NmpServer::Packet deserialize(std::vector<uint32_t> &buffer);
             void clearBuffer(std::vector<uint32_t> &buffer);
             void printBuffer(std::vector<uint32_t> &buffer);
 

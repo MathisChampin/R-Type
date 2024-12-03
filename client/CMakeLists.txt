@@ -8,6 +8,7 @@ set(SOURCES
     ${SRC_DIR}/main.cpp
     ${SRC_DIR}/Client.cpp
     ${SRC_DIR}/Binary.cpp
+    ${SRC_DIR}/Packet.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

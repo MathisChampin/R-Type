@@ -10,7 +10,7 @@ namespace NmpServer {
             Server();
 
             void run() override;
-            void send_data(const std::string &message) override;
+            void send_data(Packet &packet) override;
             void get_data() override;
 
             void handle_get_data(const std::error_code &error, std::size_t bytes);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IClient.hpp"
-#include "Binary.hpp"
+#include "ClientBinary.hpp"
 #include <iostream>
 #include <asio.hpp>
 
@@ -10,7 +10,7 @@ namespace NmpClient {
         public:
             Client();
 
-            void send_input() override;
+            void send_input(Packet &packet) override;
             void get_data() override;
 
         private:
