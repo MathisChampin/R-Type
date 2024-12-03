@@ -25,28 +25,46 @@ namespace NmpBinary
         return value;
     }
 
-    void Binary::serialize(std::string action, std::vector<uint32_t> &buffer)
+    //refaire serialisation / deserialisation
+    void Binary::serialize(NmpServer::Packet &packet, std::vector<uint32_t> &buffer)
     {
-        for (char c : action) {
-            if (c != '/')
-                buffer.push_back(static_cast<uint32_t>(c));
+        NmpServer::EVENT opcode = packet.getOpCode();
+
+        buffer.push_back(static_cast<uint32_t>(opcode));
+
+        if (opcode == NmpServer::EVENT::MOVE)
+            buffer.push_back(static_cast<uint32_t>(opcode));
+
+        if (opcode == NmpServer::EVENT::NOTHING) {
+            NmpServer::SpriteInfo sprite = packet.getSpriteInfo();
+            buffer.push_back(sprite.id);
+            buffer.push_back(sprite.x);
+            buffer.push_back(sprite.y);
+            buffer.push_back(sprite.sizeX);
+            buffer.push_back(sprite.sizeY);
         }
     }
 
-    std::string Binary::deserialize(std::vector<uint32_t> &buffer)
+    NmpServer::Packet Binary::deserialize(std::vector<uint32_t> &buffer)
     {
-        std::string result;
-        std::size_t length{buffer.size()};
-        std::size_t index{0};
+        NmpServer::EVENT event = static_cast<NmpServer::EVENT>(buffer[0]);
 
-        for (uint32_t val : buffer) {
-            result.push_back(static_cast<char>(val));
-
-            if (index++ != length -1)
-                result.push_back('/');
+        if (event == NmpServer::EVENT::MOVE) {
+            std::optional<NmpServer::DIRECTION> direction = std::nullopt;
+            direction = static_cast<NmpServer::DIRECTION>(buffer[1]);
+            return NmpServer::Packet(event, direction);
         }
-        buffer.clear();
-        return result;
+        if (event == NmpServer::EVENT::NOTHING) {
+            NmpServer::SpriteInfo sprite = {
+                buffer[2],
+                buffer[3],
+                buffer[4],
+                buffer[5],
+                buffer[6] 
+            };
+            return NmpServer::Packet(sprite);
+        }
+        return NmpServer::Packet(event);
     }
 
     void Binary::clearBuffer(std::vector<uint32_t> &buffer)

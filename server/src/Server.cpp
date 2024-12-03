@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "Packet.hpp"
 
 namespace NmpServer
 {
@@ -20,7 +21,9 @@ namespace NmpServer
     {
         std::shared_ptr<std::string> shared_message = std::make_shared<std::string>(message);
 
-        _binary.serialize(*shared_message, _bufferSerialize);
+        SpriteInfo sprite = {1, 100, 200, 50, 50};
+        Packet packet(sprite);
+        _binary.serialize(packet, _bufferSerialize);
         _socket.async_send_to(asio::buffer(_bufferSerialize), _remote_endpoint,
             [this, shared_message](const std::error_code& error, std::size_t bytes_transferred)
             {
@@ -34,7 +37,7 @@ namespace NmpServer
     {
         if (!error)
         {
-            std::cout << "Envoi réussi (" << bytes << " octets)." << std::endl;
+            std::cout << "Envoi réussi (" << bytes << " octets). \n\n" << std::endl;
             _binary.clearBuffer(_bufferSerialize);
         }
         else
@@ -68,11 +71,13 @@ namespace NmpServer
             }
 
             _bufferAsio.fill(0);
-            std::string res = _binary.deserialize(test);
-            std::cout << "Message received: " << res << std::endl;
+            NmpServer::Packet packet = _binary.deserialize(test);
+            if (packet.getOpCode() == EVENT::SHOOT)
+                std::cout << "Message received: " << std::endl;
+                
             std::cout << "Message byte: " << bytes << std::endl;
             std::cout << "END HANDLE GET DATA" << std::endl;
-            this->send_data(res);
+            this->send_data("okok");
             this->get_data();
         }
         else

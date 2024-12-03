@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IClient.hpp"
-#include "Binary.hpp"
+#include "ClientBinary.hpp"
 #include <iostream>
 #include <asio.hpp>
 

@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "ClientPacket.hpp"
 
 namespace NmpClient 
 {
@@ -22,14 +23,16 @@ namespace NmpClient
             uint32_t val = reinterpret_cast<uint32_t*>(_bufferAsio.data())[i];
             test.push_back(val);
         }
-        std::string res = _binary.deserialize(test);
-        std::cout << res << std::endl;
+        NmpClient::Packet packet = _binary.deserialize(test);
+        auto sprite = packet.getSpriteInfo();
+        std::cout << "ma mere: " << sprite.id << std::endl;
         _bufferAsio.fill(0);
     }
 
     void Client::send_input()
     {
-        _binary.serialize("1/2/4/9", _bufferSerialize);
+        NmpClient::Packet packet(NmpClient::EVENT::MOVE, NmpClient::DIRECTION::LEFT);
+        _binary.serialize(packet, _bufferSerialize);
         
         _socket.send_to(asio::buffer(_bufferSerialize), _receiver_endpoint);
         _binary.clearBuffer(_bufferSerialize);
