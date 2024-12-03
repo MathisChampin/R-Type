@@ -1,4 +1,4 @@
-#include "ClientBinary.hpp"
+#include "../include/client/ClientBinary.hpp"
 
 namespace NmpBinary
 {
