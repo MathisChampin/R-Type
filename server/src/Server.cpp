@@ -16,7 +16,7 @@ namespace NmpServer
         std::cout << "Server is running on port 8080..." << std::endl;
     }
 
-    void Server::send_data(Packet &packet) //send Packet
+    void Server::send_data(Packet &packet)
     {
         std::shared_ptr<Packet> shared_packet = std::make_shared<Packet>(packet);
 
@@ -68,11 +68,8 @@ namespace NmpServer
             }
             _bufferAsio.fill(0);
 
-            NmpServer::Packet packet = _binary.deserialize(test);
-            std::cout << "Message byte: " << bytes << std::endl;
-            std::cout << "END HANDLE GET DATA" << std::endl;
-            //call protocol handler
-            this->send_data(packet);
+            NmpServer::Packet resEcs(EVENT::OK);
+            this->send_data(resEcs);
             this->get_data();
         }
         else

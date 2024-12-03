@@ -9,6 +9,7 @@ namespace NmpClient
         SHOOT = 2,
         QUIT = 3,
         NOTHING = 4,
+        OK = 5
     };
 
     enum class DIRECTION : uint32_t {
