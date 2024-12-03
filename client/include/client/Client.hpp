@@ -18,8 +18,8 @@ namespace NmpClient {
             asio::ip::udp::resolver _resolver;
             asio::ip::udp::endpoint _receiver_endpoint;
             asio::ip::udp::socket _socket;
-            std::vector<uint32_t> _buffer;
-            std::array<uint32_t, 1024> _test_buffer;
+            std::vector<uint32_t> _bufferSerialize;
+            std::array<uint32_t, 256> _bufferAsio;
             NmpBinary::Binary _binary;
     };
 }

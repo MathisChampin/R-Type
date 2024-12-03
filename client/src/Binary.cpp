@@ -39,14 +39,25 @@ namespace NmpBinary
         std::size_t length{buffer.size()};
         std::size_t index{0};
 
-        std::cout << "length: " << length << std::endl;
-
         for (uint32_t val : buffer) {
             result.push_back(static_cast<char>(val));
 
-            if (index++ != length - 1)
+            if (index++ != length -1)
                 result.push_back('/');
         }
+        buffer.clear();
         return result;
+    }
+
+    void Binary::clearBuffer(std::vector<uint32_t> &buffer)
+    {
+        buffer.clear();
+    }
+
+    void Binary::printBuffer(std::vector<uint32_t> &buffer)
+    {
+        for (auto elem : buffer) {
+            std::cout << "bufferSerialize: " << elem << std::endl;
+        }
     }
 }
