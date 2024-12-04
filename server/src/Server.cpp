@@ -72,6 +72,19 @@ namespace NmpServer
             std::cout << "Message byte: " << bytes << std::endl;
             std::cout << "END HANDLE GET DATA" << std::endl;
             //call protocol handler
+            auto direction = packet.getArg();
+            if (direction.has_value())
+                std::cout << "Direction: ";
+            if (direction == DIRECTION::DOWN)
+                std::cout << "DOWN" << std::endl;
+            else if (direction == DIRECTION::UP)
+                std::cout << "UP" << std::endl;
+            else if (direction == DIRECTION::LEFT)
+                std::cout << "LEFT" << std::endl;
+            else if (direction == DIRECTION::RIGHT)
+                std::cout << "RIGHT" << std::endl;
+            else
+                std::cout << "NO DIRECTION" << std::endl;
             this->send_data(packet);
             this->get_data();
         }

@@ -31,8 +31,10 @@ namespace NmpBinary
 
         buffer.push_back(static_cast<uint32_t>(opcode));
 
-        if (opcode == NmpServer::EVENT::MOVE)
-            buffer.push_back(static_cast<uint32_t>(opcode));
+        if (opcode == NmpServer::EVENT::MOVE) {
+            NmpServer::DIRECTION direction = packet.getArg().value();
+            buffer.push_back(static_cast<uint32_t>(direction));
+        }
 
         if (opcode == NmpServer::EVENT::NOTHING) {
             NmpServer::SpriteInfo sprite = packet.getSpriteInfo();

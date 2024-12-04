@@ -23,43 +23,54 @@ Player::Player(const sf::Vector2f& startPosition, NmpClient::Client& client)
 
 void Player::handleInput()
 {
-    bool moved = false;
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         m_sprite.move(0, -m_speed * 0.016f); 
-        moved = true;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        m_sprite.move(0, m_speed * 0.016f); 
-        moved = true;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        m_sprite.move(-m_speed * 0.016f, 0); 
-        moved = true;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        m_sprite.move(m_speed * 0.016f, 0);
-        moved = true;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-        shoot();
-        std::cout << "Pew pew !" << std::endl;
-    }
-
-    if (moved) {
-        sf::Vector2f position = m_sprite.getPosition();
-        NmpClient::SpriteInfo spriteInfo;
-        spriteInfo.x = static_cast<int>(position.x);
-        spriteInfo.y = static_cast<int>(position.y);
-
-        NmpClient::Packet packet(NmpClient::EVENT::MOVE, spriteInfo);
+        NmpClient::Packet packet(NmpClient::EVENT::MOVE, NmpClient::DIRECTION::UP);
 
         std::vector<uint32_t> buffer;
         NmpBinary::Binary binary;
         binary.serialize(packet, buffer);
 
         m_client.send_input(packet);
-        std::cout << "Position envoyée : " << position.x << ", " << position.y << std::endl;
+        std::cout << "Position Up envoyé" << std::endl;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        m_sprite.move(0, m_speed * 0.016f); 
+
+        NmpClient::Packet packet(NmpClient::EVENT::MOVE, NmpClient::DIRECTION::DOWN);
+
+        std::vector<uint32_t> buffer;
+        NmpBinary::Binary binary;
+        binary.serialize(packet, buffer);
+
+        m_client.send_input(packet);
+        std::cout << "Position Down envoyé" << std::endl;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        m_sprite.move(-m_speed * 0.016f, 0);
+        NmpClient::Packet packet(NmpClient::EVENT::MOVE, NmpClient::DIRECTION::LEFT);
+
+        std::vector<uint32_t> buffer;
+        NmpBinary::Binary binary;
+        binary.serialize(packet, buffer);
+
+        m_client.send_input(packet);
+        std::cout << "Position Left envoyé" << std::endl;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        m_sprite.move(m_speed * 0.016f, 0);
+        NmpClient::Packet packet(NmpClient::EVENT::MOVE, NmpClient::DIRECTION::RIGHT);
+
+        std::vector<uint32_t> buffer;
+        NmpBinary::Binary binary;
+        binary.serialize(packet, buffer);
+
+        m_client.send_input(packet);
+        std::cout << "Position Right envoyé" << std::endl;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+        shoot();
+        std::cout << "Pew pew !" << std::endl;
     }
 }
 
