@@ -8,7 +8,7 @@
 
 class Player {
 public:
-    Player(const sf::Vector2f& startPosition, NmpClient::Client& client); // Ajout du client
+    Player(const sf::Vector2f& startPosition, NmpClient::Client& client);
 
     void handleInput();
     void update(float deltaTime);
@@ -24,7 +24,7 @@ private:
     float m_animationTime;                       
     float m_elapsedTime;                         
 
-    NmpClient::Client& m_client; // Référence à l'objet Client pour la communication avec le serveur
+    NmpClient::Client& m_client;
 
     void loadTexture(const std::string& textureFile);
 };

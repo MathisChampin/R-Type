@@ -14,20 +14,23 @@ enum class GameState {
     PlayingInLobby
 };
 
-void initializeWindow(sf::RenderWindow& window) {
+void initializeWindow(sf::RenderWindow& window)
+{
     sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
     window.create(videoMode, "Menu SFML", sf::Style::Fullscreen);
     window.setFramerateLimit(60);
 }
 
-void initializeFont(sf::Font& font) {
+void initializeFont(sf::Font& font)
+{
     if (!font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf")) {
         std::cerr << "Impossible de charger la police!" << std::endl;
         exit(-1);
     }
 }
 
-void handleEvents(sf::RenderWindow& window, sf::Event& event, GameState& currentState, Menu& menu, OptionsMenu& optionsMenu, sf::String& ipAddress, sf::Text& ipField) {
+void handleEvents(sf::RenderWindow& window, sf::Event& event, GameState& currentState, Menu& menu, OptionsMenu& optionsMenu, sf::String& ipAddress, sf::Text& ipField)
+{
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             window.close();
@@ -60,7 +63,8 @@ void handleEvents(sf::RenderWindow& window, sf::Event& event, GameState& current
     }
 }
 
-void updateGame(float deltaTime, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu) {
+void updateGame(float deltaTime, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu)
+{
     if (currentState == GameState::Menu) {
         menuBackground.update(deltaTime);
         menu.update();
@@ -72,7 +76,8 @@ void updateGame(float deltaTime, GameState currentState, ParallaxBackground& men
     }
 }
 
-void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu, sf::Text& ipText, sf::Text& ipField, Player& player) {
+void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu, sf::Text& ipText, sf::Text& ipField, Player& player)
+{
     window.clear();
 
     if (currentState == GameState::Menu) {
@@ -91,22 +96,24 @@ void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackgr
     window.display();
 }
 
-void listenToServer(NmpClient::Client& client) {
+void listenToServer(NmpClient::Client& client)
+{
     while (true) {
         client.get_data();
     }
 }
 
-int main() {
+int main()
+{
     sf::RenderWindow window;
     initializeWindow(window);
 
     GameState currentState = GameState::Menu;
 
-    NmpClient::Client client; // Crée une instance de Client pour la communication réseau
-    Player player(sf::Vector2f(500, 500), client); // Passe Client en argument
+    NmpClient::Client client;
+    Player player(sf::Vector2f(500, 500), client);
 
-    std::thread serverThread(listenToServer, std::ref(client)); // Thread d'écoute
+    std::thread serverThread(listenToServer, std::ref(client));
 
     std::vector<std::pair<std::string, float>> menuLayers = {
         {"./assets/backgrounds/space_dust.png", 0.1f},
@@ -168,6 +175,6 @@ int main() {
         renderGame(window, currentState, menuBackground, playingBackground, menu, optionsMenu, ipText, ipField, player);
     }
 
-    serverThread.join(); // Attendre que le thread se termine
+    serverThread.join();
     return 0;
 }
