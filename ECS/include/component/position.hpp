@@ -3,8 +3,8 @@
 
 namespace component {
     struct position {
-        int x;
-        int y;
+        float x;
+        float y;
 
         bool operator==(const position& other) const {
             return x == other.x && y == other.y;

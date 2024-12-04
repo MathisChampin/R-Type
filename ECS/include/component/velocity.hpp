@@ -3,8 +3,8 @@
 
 namespace component {
     struct velocity {
-        int x;
-        int y;
+        float x;
+        float y;
 
         bool operator==(const velocity& other) const {
             return x == other.x && y == other.y;

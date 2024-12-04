@@ -20,12 +20,12 @@ Test(collision_system, player_vs_enemy_collision)
     Entity player = reg.spawn_entity();
     Entity enemy = reg.spawn_entity();
 
-    reg.add_component<component::position>(player, {10, 20});
-    reg.add_component<component::size>(player, {5, 5});
+    reg.add_component<component::position>(player, {10.0, 20.0});
+    reg.add_component<component::size>(player, {5.0, 5.0});
     reg.add_component<component::attribute>(player, {component::attribute::Player});
 
-    reg.add_component<component::position>(enemy, {12, 22});
-    reg.add_component<component::size>(enemy, {5, 5});
+    reg.add_component<component::position>(enemy, {12.0, 22.0});
+    reg.add_component<component::size>(enemy, {5.0, 5.0});
     reg.add_component<component::attribute>(enemy, {component::attribute::Ennemies});
 
     sys.collision_system(reg);
@@ -47,12 +47,12 @@ Test(collision_system, no_collision)
     Entity player = reg.spawn_entity();
     Entity enemy = reg.spawn_entity();
 
-    reg.add_component<component::position>(player, {10, 20});
-    reg.add_component<component::size>(player, {5, 5});
+    reg.add_component<component::position>(player, {10.0, 20.0});
+    reg.add_component<component::size>(player, {5.0, 5.0});
     reg.add_component<component::attribute>(player, {component::attribute::Player});
 
-    reg.add_component<component::position>(enemy, {30, 40}); // Pas de chevauchement
-    reg.add_component<component::size>(enemy, {5, 5});
+    reg.add_component<component::position>(enemy, {30.0, 40.0}); // Pas de chevauchement
+    reg.add_component<component::size>(enemy, {5.0, 5.0});
     reg.add_component<component::attribute>(enemy, {component::attribute::Ennemies});
 
     sys.collision_system(reg);
@@ -74,12 +74,12 @@ Test(collision_system, no_collision_same_type)
     Entity player = reg.spawn_entity();
     Entity player2 = reg.spawn_entity();
 
-    reg.add_component<component::position>(player, {10, 20});
-    reg.add_component<component::size>(player, {5, 5});
+    reg.add_component<component::position>(player, {10.0, 20.0});
+    reg.add_component<component::size>(player, {5.0, 5.0});
     reg.add_component<component::attribute>(player, {component::attribute::Player});
 
-    reg.add_component<component::position>(player2, {30, 40});
-    reg.add_component<component::size>(player2, {5, 5});
+    reg.add_component<component::position>(player2, {30.0, 40.0});
+    reg.add_component<component::size>(player2, {5.0, 5.0});
     reg.add_component<component::attribute>(player2, {component::attribute::Player});
 
     sys.collision_system(reg);

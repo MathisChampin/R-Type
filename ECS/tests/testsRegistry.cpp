@@ -8,11 +8,11 @@ Test(RegistryTests, RegisterOneComponent) {
 
     auto &positions = reg.register_component<component::position>();
 
-    positions.insert_at(0, {10, 20});
+    positions.insert_at(0, {10.0, 20.0});
     const auto &pos1 = positions[0];
 
-    cr_assert_eq(10, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10, pos1.x);
-    cr_assert_eq(20, pos1.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20, pos1.y);
+    cr_assert_eq(10.0, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10.0, pos1.x);
+    cr_assert_eq(20.0, pos1.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20.0, pos1.y);
 }
 
 Test(RegistryTests, RegisterManyComponent) {
@@ -20,16 +20,16 @@ Test(RegistryTests, RegisterManyComponent) {
 
     auto &positions = reg.register_component<component::position>();
 
-    positions.insert_at(0, {10, 20});
-    positions.insert_at(1, {30, 25});
+    positions.insert_at(0, {10.0, 20.0});
+    positions.insert_at(1, {30.0, 25.0});
 
     const auto &pos1 = positions[0];
     const auto &pos2 = positions[1];
 
-    cr_assert_eq(10, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10, pos1.x);
-    cr_assert_eq(20, pos1.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20, pos1.y);
-    cr_assert_eq(30, pos2.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 30, pos2.x);
-    cr_assert_eq(25, pos2.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 25, pos2.y);
+    cr_assert_eq(10.0, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10.0, pos1.x);
+    cr_assert_eq(20.0, pos1.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20.0, pos1.y);
+    cr_assert_eq(30.0, pos2.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 30.0, pos2.x);
+    cr_assert_eq(25.0, pos2.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 25.0, pos2.y);
 }
 
 Test(RegistryTests, RegisterManyComponentWith2Type) {
@@ -38,20 +38,20 @@ Test(RegistryTests, RegisterManyComponentWith2Type) {
     auto &positions = reg.register_component<component::position>();
     auto &velocity = reg.register_component<component::velocity>();
 
-    positions.insert_at(0, {10, 20});
-    positions.insert_at(1, {30, 25});
-    velocity.insert_at(0, {15, 60});
+    positions.insert_at(0, {10.0, 20.0});
+    positions.insert_at(1, {30.0, 25.0});
+    velocity.insert_at(0, {15.0, 60.0});
 
     const auto &pos1 = positions[0];
     const auto &pos2 = positions[1];
     const auto &vel1 = velocity[0];
 
-    cr_assert_eq(10, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10, pos1.x);
-    cr_assert_eq(20, pos1.y, "La position y n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20, pos1.y);
-    cr_assert_eq(30, pos2.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 30, pos2.x);
-    cr_assert_eq(25, pos2.y, "La position y n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 25, pos2.y);
-    cr_assert_eq(15, vel1.x, "La position vx n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 15, vel1.x);
-    cr_assert_eq(60, vel1.y, "La position vy n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 60, vel1.y);
+    cr_assert_eq(10.0, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10.0, pos1.x);
+    cr_assert_eq(20.0, pos1.y, "La position y n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20.0, pos1.y);
+    cr_assert_eq(30.0, pos2.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 30.0, pos2.x);
+    cr_assert_eq(25.0, pos2.y, "La position y n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 25.0, pos2.y);
+    cr_assert_eq(15.0, vel1.x, "La position vx n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 15.0, vel1.x);
+    cr_assert_eq(60.0, vel1.y, "La position vy n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 60.0, vel1.y);
 }
 
 Test(RegistryTests, GetComponents) {
@@ -59,18 +59,18 @@ Test(RegistryTests, GetComponents) {
 
     auto &positions = reg.register_component<component::position>();
 
-    positions.insert_at(0, {10, 20});
-    positions.insert_at(1, {30, 25});
+    positions.insert_at(0, {10.0, 20.0});
+    positions.insert_at(1, {30.0, 25.0});
 
     auto &getPos = reg.get_components<component::position>();
 
     const auto &pos1 = getPos[0];
     const auto &pos2 = getPos[1];
 
-    cr_assert_eq(10, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10, pos1.x);
-    cr_assert_eq(20, pos1.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20, pos1.y);
-    cr_assert_eq(30, pos2.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 30, pos2.x);
-    cr_assert_eq(25, pos2.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 25, pos2.y);
+    cr_assert_eq(10.0, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10.0, pos1.x);
+    cr_assert_eq(20.0, pos1.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20.0, pos1.y);
+    cr_assert_eq(30.0, pos2.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 30.0, pos2.x);
+    cr_assert_eq(25.0, pos2.y, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 25.0, pos2.y);
 }
 
 Test(RegistryTests, GetComponentsWithManyTypes) {
@@ -79,9 +79,9 @@ Test(RegistryTests, GetComponentsWithManyTypes) {
     auto &positions = reg.register_component<component::position>();
     auto &velocity = reg.register_component<component::velocity>();
 
-    positions.insert_at(0, {10, 20});
-    positions.insert_at(1, {30, 25});
-    velocity.insert_at(0, {15, 60});
+    positions.insert_at(0, {10.0, 20.0});
+    positions.insert_at(1, {30.0, 25.0});
+    velocity.insert_at(0, {15.0, 60.0});
 
     auto &getPos = reg.get_components<component::position>();
     auto &getVel = reg.get_components<component::velocity>();
@@ -90,12 +90,12 @@ Test(RegistryTests, GetComponentsWithManyTypes) {
     const auto &pos2 = getPos[1];
     const auto &vel1 = getVel[0];
 
-    cr_assert_eq(10, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10, pos1.x);
-    cr_assert_eq(20, pos1.y, "La position y n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20, pos1.y);
-    cr_assert_eq(30, pos2.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 30, pos2.x);
-    cr_assert_eq(25, pos2.y, "La position y n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 25, pos2.y);
-    cr_assert_eq(15, vel1.x, "La position vx n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 15, vel1.x);
-    cr_assert_eq(60, vel1.y, "La position vy n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 60, vel1.y);
+    cr_assert_eq(10.0, pos1.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 10.0, pos1.x);
+    cr_assert_eq(20.0, pos1.y, "La position y n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 20.0, pos1.y);
+    cr_assert_eq(30.0, pos2.x, "La position x n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 30.0, pos2.x);
+    cr_assert_eq(25.0, pos2.y, "La position y n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 25.0, pos2.y);
+    cr_assert_eq(15.0, vel1.x, "La position vx n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 15.0, vel1.x);
+    cr_assert_eq(60.0, vel1.y, "La position vy n'est pas la bonne valeur. Attendu: %d, Obtenu: %d", 60.0, vel1.y);
 }
 
 Test(RegistryTests, SpawnEntity) {
@@ -118,11 +118,11 @@ Test(RegistryTests, KillEntity) {
     auto &positions = reg.register_component<component::position>();
 
     Entity entity1 = reg.spawn_entity();
-    positions.insert_at(entity1.get_id(), {10, 20});
+    positions.insert_at(entity1.get_id(), {10.0, 20.0});
 
     const auto &pos1 = positions[entity1.get_id()];
-    cr_assert_eq(10, pos1.x);
-    cr_assert_eq(20, pos1.y);
+    cr_assert_eq(10.0, pos1.x);
+    cr_assert_eq(20.0, pos1.y);
 
     reg.kill_entity(entity1);
 
@@ -138,7 +138,7 @@ Test(RegistryTests, AddComponent) {
 
     Entity entity1 = reg.spawn_entity();
 
-    auto &pos_ref = reg.add_component<component::position>(entity1, {10, 20});
+    auto &pos_ref = reg.add_component<component::position>(entity1, {10.0, 20.0});
 
     const auto &pos1 = positions[entity1.get_id()];
     cr_assert_eq(10.0, pos1.x);
@@ -153,11 +153,11 @@ Test(RegistryTests, EmplaceComponent) {
 
     Entity entity1 = reg.spawn_entity();
 
-    auto &pos_ref = reg.emplace_component<component::position>(entity1, 10, 20);
+    auto &pos_ref = reg.emplace_component<component::position>(entity1, 10.0, 20.0);
 
     const auto &pos1 = positions[entity1.get_id()];
-    cr_assert_eq(10, pos1.x);
-    cr_assert_eq(20, pos1.y);
+    cr_assert_eq(10.0, pos1.x);
+    cr_assert_eq(20.0, pos1.y);
     cr_assert_eq(&pos_ref, &positions[entity1.get_id()], "La référence renvoyée par emplace_component n'est pas correcte");
 }
 
@@ -167,11 +167,11 @@ Test(RegistryTests, RemoveComponent) {
     auto &positions = reg.register_component<component::position>();
 
     Entity entity1 = reg.spawn_entity();
-    positions.insert_at(entity1.get_id(), {10, 20});
+    positions.insert_at(entity1.get_id(), {10.0, 20.0});
 
     const auto &pos1 = positions[entity1.get_id()];
-    cr_assert_eq(10, pos1.x);
-    cr_assert_eq(20, pos1.y);
+    cr_assert_eq(10.0, pos1.x);
+    cr_assert_eq(20.0, pos1.y);
 
     reg.remove_component<component::position>(entity1);
     cr_assert_eq(positions.size(), 0, "Le composant n'a pas été supprimé correctement");

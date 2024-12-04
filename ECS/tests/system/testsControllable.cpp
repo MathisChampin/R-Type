@@ -11,14 +11,14 @@ Test(ControlSystem, MoveRight) {
     reg.register_component<component::controllable>();
 
     Entity entity = reg.spawn_entity();
-    reg.add_component<component::velocity>(entity, {0, 0});
+    reg.add_component<component::velocity>(entity, {0.0, 0.0});
     reg.add_component<component::controllable>(entity, {component::controllable::Right});
 
     sys.control_system(reg);
 
     const auto &vel = velocities[entity.get_id()];
-    cr_assert_eq(vel.x, 1, "Expected velocity x to be 1, but got %d", vel.x);
-    cr_assert_eq(vel.y, 0, "Expected velocity y to be 0, but got %d", vel.y);
+    cr_assert_eq(vel.x, 1.0, "Expected velocity x to be 1.0, but got %d", vel.x);
+    cr_assert_eq(vel.y, 0.0, "Expected velocity y to be 0.0, but got %d", vel.y);
 }
 
 Test(ControlSystem, MoveUp) {
@@ -29,14 +29,14 @@ Test(ControlSystem, MoveUp) {
     reg.register_component<component::controllable>();
 
     Entity entity = reg.spawn_entity();
-    reg.add_component<component::velocity>(entity, {0, 0});
+    reg.add_component<component::velocity>(entity, {0.0, 0.0});
     reg.add_component<component::controllable>(entity, {component::controllable::Up});
 
     sys.control_system(reg);
 
     const auto &vel = velocities[entity.get_id()];
-    cr_assert_eq(vel.x, 0, "Expected velocity x to be 0, but got %d", vel.x);
-    cr_assert_eq(vel.y, -1, "Expected velocity y to be -1, but got %d", vel.y);
+    cr_assert_eq(vel.x, 0.0, "Expected velocity x to be 0.0, but got %d", vel.x);
+    cr_assert_eq(vel.y, -1.0, "Expected velocity y to be -1.0, but got %d", vel.y);
 }
 
 Test(ControlSystem, MoveDown) {
@@ -47,14 +47,14 @@ Test(ControlSystem, MoveDown) {
     reg.register_component<component::controllable>();
 
     Entity entity = reg.spawn_entity();
-    reg.add_component<component::velocity>(entity, {0, 0});
+    reg.add_component<component::velocity>(entity, {0.0, 0.0});
     reg.add_component<component::controllable>(entity, {component::controllable::Down});
 
     sys.control_system(reg);
 
     const auto &vel = velocities[entity.get_id()];
-    cr_assert_eq(vel.x, 0, "Expected velocity x to be 0, but got %d", vel.x);
-    cr_assert_eq(vel.y, 1, "Expected velocity y to be 1, but got %d", vel.y);
+    cr_assert_eq(vel.x, 0.0, "Expected velocity x to be 0.0, but got %d", vel.x);
+    cr_assert_eq(vel.y, 1.0, "Expected velocity y to be 1.0, but got %d", vel.y);
 }
 
 Test(ControlSystem, MoveLeft) {
@@ -65,12 +65,12 @@ Test(ControlSystem, MoveLeft) {
     reg.register_component<component::controllable>();
 
     Entity entity = reg.spawn_entity();
-    reg.add_component<component::velocity>(entity, {0, 0});
+    reg.add_component<component::velocity>(entity, {0.0, 0.0});
     reg.add_component<component::controllable>(entity, {component::controllable::Left});
 
     sys.control_system(reg);
 
     const auto &vel = velocities[entity.get_id()];
-    cr_assert_eq(vel.x, -1, "Expected velocity x to be -1, but got %d", vel.x);
-    cr_assert_eq(vel.y, 0, "Expected velocity y to be 0, but got %d", vel.y);
+    cr_assert_eq(vel.x, -1.0, "Expected velocity x to be -1.0, but got %d", vel.x);
+    cr_assert_eq(vel.y, 0.0, "Expected velocity y to be 0.0, but got %d", vel.y);
 }
