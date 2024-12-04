@@ -18,12 +18,12 @@ int main() {
     Entity player = reg.spawn_entity();
     Entity enemy = reg.spawn_entity();
 
-    reg.add_component<component::position>(player, {10.0, 20.0});
-    reg.add_component<component::size>(player, {5.0, 5.0});
+    reg.add_component<component::position>(player, {10, 20});
+    reg.add_component<component::size>(player, {5, 5});
     reg.add_component<component::attribute>(player, {component::attribute::Player});
 
-    reg.add_component<component::position>(enemy, {12.0, 22.0});
-    reg.add_component<component::size>(enemy, {5.0, 5.0});
+    reg.add_component<component::position>(enemy, {12, 22});
+    reg.add_component<component::size>(enemy, {5, 5});
     reg.add_component<component::attribute>(enemy, {component::attribute::Ennemies});
 
     const auto &pos1 = positions[player.get_id()];

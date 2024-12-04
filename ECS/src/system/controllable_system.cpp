@@ -7,10 +7,10 @@
 void System::control_system(registry& reg)
 {
     std::map<component::controllable::Key, std::pair<int, int>> inputs = {
-        {component::controllable::Up, {0.0, -1.0}},
-        {component::controllable::Down, {0.0, 1.0}},
-        {component::controllable::Left, {-1.0, 0.0}},
-        {component::controllable::Right, {1.0, 0.0}}
+        {component::controllable::Up, {0, -1}},
+        {component::controllable::Down, {0, 1}},
+        {component::controllable::Left, {-1, 0}},
+        {component::controllable::Right, {1, 0}}
     };
 
     auto& velocities = reg.get_components<component::velocity>();

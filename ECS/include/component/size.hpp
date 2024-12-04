@@ -3,8 +3,8 @@
 
 namespace component {
     struct size {
-        float x;
-        float y;
+        int x;
+        int y;
 
         bool operator==(const size& other) const {
             return x == other.x && y == other.y;
