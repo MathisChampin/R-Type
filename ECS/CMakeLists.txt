@@ -37,7 +37,7 @@ set(TEST_SOURCES
 add_library(r_type_ecs STATIC ${SOURCES})
 
 target_include_directories(r_type_ecs PRIVATE ${INCLUDE_DIR} ${INCLUDE_COMPONENT} ${INCLUDE_SYSTEM})
-target_link_libraries(r_type_ecs PRIVATE sfml-system sfml-window sfml-graphics)
+target_link_libraries(r_type_ecs)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} r_type_ecs)
