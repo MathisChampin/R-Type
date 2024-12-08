@@ -2,6 +2,7 @@
 
 #include "IServer.hpp"
 #include "Binary.hpp"
+#include "ProtocolHandler.hpp"
 #include <asio.hpp>
 
 namespace NmpServer {
@@ -23,5 +24,6 @@ namespace NmpServer {
             std::vector<uint32_t> _bufferSerialize;
             std::array<uint32_t, 256> _bufferAsio;
             NmpBinary::Binary _binary;
+            ProtocoleHandler _ptp;
     };
 }

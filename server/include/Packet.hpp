@@ -8,8 +8,11 @@ namespace NmpServer
 {
     class Packet : public IPacket {
         public:
+            Packet() = default;
             Packet(EVENT event, std::optional<DIRECTION> direction = std::nullopt);
             Packet(EVENT event, SpriteInfo &sprites);
+
+            Packet& operator=(const Packet &other);
 
             bool checkPacket() override;
             EVENT getOpCode() override;

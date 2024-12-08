@@ -52,4 +52,15 @@ namespace NmpServer
     {
         return _sprite;
     }
+
+    Packet& Packet::operator=(const Packet &other) {
+        if (this == &other)
+            return *this;
+
+        this->_opCode = other._opCode;
+        this->_arg = other._arg;
+        this->_sprite = other._sprite;
+
+        return *this;
+    }
 }
