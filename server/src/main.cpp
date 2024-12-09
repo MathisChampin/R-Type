@@ -5,7 +5,6 @@ int main()
     try
     {
         NmpServer::Server server;
-        NmpServer::ProtocoleHandler p;
         server.run();
     }
     catch (const std::exception& e)
