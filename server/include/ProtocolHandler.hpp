@@ -18,6 +18,7 @@ namespace NmpServer {
             void evalMove();
             void evalShoot();
             void evalQuit();
+            void evalJoin();
 
         private:
             registry _ecs;
@@ -26,6 +27,7 @@ namespace NmpServer {
                 {{EVENT::MOVE}, [this]{return evalMove();}}, 
                 {{EVENT::SHOOT}, [this]{return evalShoot();}}, 
                 {{EVENT::QUIT}, [this]{return evalQuit();}}, 
+                {{EVENT::JOIN}, [this]{return evalJoin();}}, 
             };
     };
 }

@@ -49,4 +49,9 @@ namespace NmpServer
         std::cout << "evalQuit" << std::endl;
     }
 
+    void ProtocoleHandler::evalJoin()
+    {
+        std::cout << "evalJoin" << std::endl;
+    }
+
 }
