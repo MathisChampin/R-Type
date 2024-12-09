@@ -154,7 +154,6 @@ Test(RegistryTests, EmplaceComponent) {
     Entity entity1 = reg.spawn_entity();
 
     auto &pos_ref = reg.emplace_component<component::position>(entity1, 10, 20);
-
     const auto &pos1 = positions[entity1.get_id()];
     cr_assert_eq(10, pos1.x);
     cr_assert_eq(20, pos1.y);
@@ -175,4 +174,30 @@ Test(RegistryTests, RemoveComponent) {
 
     reg.remove_component<component::position>(entity1);
     cr_assert_eq(positions.size(), 0, "Le composant n'a pas été supprimé correctement");
+}
+
+Test(RegistryTests, GetEntity) {
+    registry reg;
+
+    Entity entity1 = reg.spawn_entity();
+
+    try {
+        Entity retrieved1 = reg.get_entity(entity1.get_id());
+        Entity retrieved2 = reg.get_entity(entity2.get_id());
+
+        cr_assert_eq(retrieved1.get_id(), entity1.get_id(),
+                     "L'ID de l'entité récupérée est incorrect. Attendu: %lu, Obtenu: %lu",
+                     entity1.get_id(), retrieved1.get_id());
+    } catch (const std::exception& e) {
+        cr_assert_fail("Exception levée lors de la récupération de l'entité : %s", e.what());
+    }
+
+    try {
+        reg.get_entity(999);
+        cr_assert_fail("Aucune exception n'a été levée pour un ID inexistant");
+    } catch (const std::runtime_error& e) {
+        cr_assert(true, "Exception correctement levée pour un ID inexistant");
+    } catch (...) {
+        cr_assert_fail("Une exception inattendue a été levée pour un ID inexistant");
+    }
 }

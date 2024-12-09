@@ -45,6 +45,24 @@ public:
     }
 
     /**
+     * @brief Retrieves an entity by its ID.
+     * If the entity does not exist, an exception is thrown.
+     * @param id The ID of the entity to retrieve.
+     * @return The Entity corresponding to the given ID.
+    */
+    Entity get_entity(size_t id) const {
+        auto it = std::find_if(_entities.begin(), _entities.end(), [id](const Entity& e) {
+            return e.get_id() == id;
+        });
+
+        if (it != _entities.end()) {
+            return *it;
+        } else {
+            throw std::runtime_error("Entity with ID " + std::to_string(id) + " does not exist.");
+        }
+    }
+
+    /**
      * @brief Spawns a new entity and returns its ID.
      * If there are available entities, one will be reused. Otherwise, a new ID is generated.
      * @return A new entity with a unique ID.
