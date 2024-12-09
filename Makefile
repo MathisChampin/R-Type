@@ -6,7 +6,7 @@ ECS_BUILD_DIR = $(BUILD_DIR)/ecs
 CMAKE_CMD = cmake
 MAKE_CMD = make
 
-all: ecs srv 
+all: ecs srv client
 
 ecs:
 	@echo "Building ECS..."
@@ -18,10 +18,10 @@ srv:
 	@if [ ! -d "$(SERVER_BUILD_DIR)" ]; then mkdir -p $(SERVER_BUILD_DIR); fi
 	cd $(SERVER_BUILD_DIR) && $(CMAKE_CMD) -DCMAKE_BUILD_TYPE=Release ../../server && $(MAKE_CMD)
 
-# client:
-# 	@echo "Building Client..."
-# 	@if [ ! -d "$(CLIENT_BUILD_DIR)" ]; then mkdir -p $(CLIENT_BUILD_DIR); fi
-# 	cd $(CLIENT_BUILD_DIR) && $(CMAKE_CMD) -DCMAKE_BUILD_TYPE=Release ../../client && $(MAKE_CMD)
+game:
+	@echo "Building Client..."
+	@if [ ! -d "$(CLIENT_BUILD_DIR)" ]; then mkdir -p $(CLIENT_BUILD_DIR); fi
+	cd $(CLIENT_BUILD_DIR) && $(CMAKE_CMD) -DCMAKE_BUILD_TYPE=Release ../../client && $(MAKE_CMD)
 
 clean:
 	@echo "Cleaning up build files..."
