@@ -7,6 +7,7 @@
     #include <unordered_map>
     #include <any>
     #include <functional>
+    #include <stdexcept>
 
 /**
  * @class registry

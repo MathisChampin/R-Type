@@ -183,7 +183,6 @@ Test(RegistryTests, GetEntity) {
 
     try {
         Entity retrieved1 = reg.get_entity(entity1.get_id());
-        Entity retrieved2 = reg.get_entity(entity2.get_id());
 
         cr_assert_eq(retrieved1.get_id(), entity1.get_id(),
                      "L'ID de l'entité récupérée est incorrect. Attendu: %lu, Obtenu: %lu",
