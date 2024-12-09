@@ -11,6 +11,8 @@ namespace NmpClient
 
         _socket.open(asio::ip::udp::v4());
         std::cout << "client bind to server 8080" << std::endl;
+        Packet packetJoin(EVENT::JOIN);
+        this->send_input(packetJoin);
     }
 
     void Client::get_data()
