@@ -2,10 +2,10 @@
 
 namespace NmpServer
 {
-    Packet::Packet(EVENT event, std::optional<DIRECTION> direction) :
-        _opCode(event), _arg(direction)
+    Packet::Packet(std::size_t id, EVENT event, std::optional<DIRECTION> direction) :
+        _opCode(event), _arg(direction), _id(id)
     {
-        std::cout << "SERVER packet input created" << std::endl;
+        std::cout << "SERVER packet input created for id: " << _id <<  std::endl;
     }
 
     Packet::Packet(EVENT event, SpriteInfo &sprite) : _opCode(event), _sprite(sprite)
@@ -53,6 +53,11 @@ namespace NmpServer
         return _sprite;
     }
 
+    std::size_t Packet::getId()
+    {
+        return _id;
+    }
+
     Packet& Packet::operator=(const Packet &other) {
         if (this == &other)
             return *this;
@@ -60,6 +65,7 @@ namespace NmpServer
         this->_opCode = other._opCode;
         this->_arg = other._arg;
         this->_sprite = other._sprite;
+        this->_id = other._id;
 
         return *this;
     }

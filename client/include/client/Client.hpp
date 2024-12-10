@@ -11,9 +11,11 @@ namespace NmpClient {
             Client();
 
             void send_input(Packet &packet) override;
-            void get_data() override;
+            Packet get_data() override;
 
         private:
+            void evalResJoin(Packet &packet);
+
             asio::io_context _io_context;
             asio::ip::udp::resolver _resolver;
             asio::ip::udp::endpoint _receiver_endpoint;
@@ -21,5 +23,6 @@ namespace NmpClient {
             std::vector<uint32_t> _bufferSerialize;
             std::array<uint32_t, 256> _bufferAsio;
             NmpBinary::Binary _binary;
+            std::size_t _id;
     };
 }

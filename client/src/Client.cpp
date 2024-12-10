@@ -11,11 +11,14 @@ namespace NmpClient
 
         _socket.open(asio::ip::udp::v4());
         std::cout << "client bind to server 8080" << std::endl;
-        Packet packetJoin(EVENT::JOIN);
+        Packet packetJoin(42, EVENT::JOIN);
         this->send_input(packetJoin);
+        Packet resJoin = this->get_data();
+        evalResJoin(resJoin);
+        std::cout << "id client: " << _id << std::endl;
     }
 
-    void Client::get_data()
+    Packet Client::get_data()
     {
         asio::ip::udp::endpoint clientEndpoint;
         std::vector<uint32_t> test;
@@ -26,10 +29,8 @@ namespace NmpClient
             test.push_back(val);
         }
         NmpClient::Packet packet = _binary.deserialize(test);
-        if (packet.getOpCode() == NmpClient::EVENT::MOVE) {
-            std::cout << "client receive move" << std::endl;
-        }
         _bufferAsio.fill(0);
+        return packet;
     }
 
     void Client::send_input(Packet &packet)
@@ -39,5 +40,10 @@ namespace NmpClient
         _socket.send_to(asio::buffer(_bufferSerialize), _receiver_endpoint);
         _binary.clearBuffer(_bufferSerialize);
         std::cout << "client send input" << std::endl;
+    }
+
+    void Client::evalResJoin(Packet &packet)
+    {
+        _id = packet.getId();
     }
 }

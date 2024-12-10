@@ -2,15 +2,15 @@
 
 namespace NmpClient
 {
-    Packet::Packet(EVENT event, std::optional<DIRECTION> direction) :
-        _opCode(event), _arg(direction)
+    Packet::Packet(std::size_t id, EVENT event, std::optional<DIRECTION> direction) :
+        _opCode(event), _arg(direction), _id(id)
     {
-        std::cout << "CLIENT PACKET CREATED" << std::endl;
+        std::cout << "CLIENT packet input created for id: " << _id <<  std::endl;
     }
 
     Packet::Packet(EVENT event, SpriteInfo &sprite) : _opCode(event), _sprite(sprite)
     {
-        std::cout << "SERVER packet sprite created" << std::endl;
+        std::cout << "CLIENT packet sprite created" << std::endl;
     }
 
     bool Packet::checkPacket()
@@ -51,6 +51,11 @@ namespace NmpClient
     SpriteInfo Packet::getSpriteInfo()
     {
         return _sprite;
+    }
+
+    std::size_t Packet::getId()
+    {
+        return _id;
     }
 
 }
