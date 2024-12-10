@@ -5,7 +5,6 @@
 #include "velocity.hpp"
 #include "idPlayer.hpp"
 #include "size.hpp"
-#include <iostream>
 
 
 void create_shoot(Entity player, registry &reg)
@@ -14,7 +13,7 @@ void create_shoot(Entity player, registry &reg)
 
     auto &positions = reg.get_components<component::position>();
     auto &pos = positions[player.get_id()];
-    std::cout << pos.x << " & " << pos.y << std::endl;
+
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot});
     reg.add_component<component::position>(shoot, {pos.x, pos.y});
     reg.add_component<component::velocity>(shoot, {10, 0});
