@@ -14,7 +14,10 @@ void position_player(
     const auto &vel = velocities[i];
     const auto &att = attributes[i];
 
-    if (att._type == component::attribute::Player) {
+    if (att._type == component::attribute::Player1 ||
+        att._type == component::attribute::Player2 ||
+        att._type == component::attribute::Player3 ||
+        att._type == component::attribute::Player4) {
         pos.x += vel.x;
         pos.y += vel.y;
     }

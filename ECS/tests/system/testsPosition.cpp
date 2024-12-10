@@ -14,7 +14,7 @@ Test(PositionSystem, UpdatePositionSingleEntity) {
     Entity entity = reg.spawn_entity();
     reg.add_component<component::position>(entity, {10, 20});
     reg.add_component<component::velocity>(entity, {5, -3});
-    reg.add_component<component::attribute>(entity, {component::attribute::Player});
+    reg.add_component<component::attribute>(entity, {component::attribute::Player1});
     sys.position_system(reg);
 
     const auto& pos = positions[entity.get_id()];
@@ -32,7 +32,7 @@ Test(PositionSystem, UpdatePositionMultipleEntities) {
     Entity entity1 = reg.spawn_entity();
     reg.add_component<component::position>(entity1, {10, 20});
     reg.add_component<component::velocity>(entity1, {5, 5});
-    reg.add_component<component::attribute>(entity1, {component::attribute::Player});
+    reg.add_component<component::attribute>(entity1, {component::attribute::Player1});
     Entity entity2 = reg.spawn_entity();
     reg.add_component<component::position>(entity2, {12, 30});
     reg.add_component<component::velocity>(entity2, {-3, 2});
