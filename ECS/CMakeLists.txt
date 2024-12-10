@@ -20,10 +20,7 @@ set(SOURCES
     ${SRC_SYSTEM}position_system.cpp
     ${SRC_SYSTEM}controllable_system.cpp
     ${SRC_SYSTEM}collision_system.cpp
-    ${SRC_SYSTEM}ennemies_system.cpp
     ${SRC_SYSTEM}level_system.cpp
-    ${SRC_SYSTEM}player_system.cpp
-    ${SRC_SYSTEM}registry_system.cpp
 )
 
 set(TEST_SOURCES
@@ -36,7 +33,6 @@ set(TEST_SOURCES
     ${TEST_SYS}testsControllable.cpp
     ${TEST_SYS}testsPosition.cpp
     ${TEST_SYS}testsCollision.cpp
-    ${TEST_SYS}testsCreateEntity.cpp
     ${TEST_SYS}testsLevel.cpp
 )
 
