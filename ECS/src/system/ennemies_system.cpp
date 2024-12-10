@@ -13,8 +13,11 @@
 
 void System::ennemies_system(registry &reg)
 {
+    static std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> dist(0, 1080);
+
     Entity ennemies = reg.spawn_entity();
-    int y = rand();
+    int y = dist(rng);
 
     reg.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
     reg.add_component<component::controllable>(ennemies, {component::controllable::NoKey});
