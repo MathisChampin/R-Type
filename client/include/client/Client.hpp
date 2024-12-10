@@ -12,6 +12,9 @@ namespace NmpClient {
 
             void send_input(Packet &packet) override;
             Packet get_data() override;
+            std::size_t get_id() const{
+                return _id;
+            }
 
         private:
             void evalResJoin(Packet &packet);
