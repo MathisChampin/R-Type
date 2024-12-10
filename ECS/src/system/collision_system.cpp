@@ -2,7 +2,23 @@
 #include "size.hpp"
 #include "system.hpp"
 #include "attribute.hpp"
+#include "life.hpp"
+#include "state.hpp"
+
 #include <iostream>
+
+void decrease_life(int id, registry reg)
+{
+    auto &lifes = reg.get_components<component::life>();
+    auto &states = reg.get_components<component::state>();
+
+    auto &life = lifes[id];
+    auto &state = states[id];
+
+    life.life--;
+    if (life.life <= 0)
+        state._stateKey = component::state::Dead;
+}
 
 void check_collision(
     sparse_array<component::position> &positions,
