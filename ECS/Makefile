@@ -8,6 +8,7 @@ SRC_SYSTEM       = ./src/system/
 SRC =   $(SRC_SYSTEM)controllable_system.cpp \
         $(SRC_SYSTEM)position_system.cpp	\
 		$(SRC_SYSTEM)level_system.cpp		\
+		$(SRC_SYSTEM)collision_system.cpp		\
 		$(SRC_SYSTEM)shoot_system.cpp		\
 
 SRC_MAIN = $(SRC_DIR)main.cpp
@@ -18,6 +19,7 @@ SRC_TEST =  tests/system/testsControllable.cpp \
             tests/testsRegistry.cpp \
             tests/testsSparseArray.cpp	\
 			tests/system/testsLevel.cpp	\
+			tests/system/testsCollision.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

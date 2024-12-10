@@ -104,7 +104,7 @@ public:
     */
     template <typename Component>
     typename sparse_array<Component>::reference_type add_component(Entity const& to, Component&& c) {
-        auto& array = register_component<Component>();
+        auto &array = register_component<Component>();
         return array.insert_at(to.get_id(), std::forward<Component>(c));
     }
 
