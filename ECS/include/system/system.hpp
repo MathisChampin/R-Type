@@ -9,6 +9,8 @@ class System {
         void control_system(registry &reg);
         void collision_system(registry &reg);
         void level_system(registry &reg);
+        void registry_system(registry &reg);
+        void player_system(registry &reg);
 };
 
 #endif /* SYSTEM_HPP_ */
