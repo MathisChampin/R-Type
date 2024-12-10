@@ -11,6 +11,7 @@ SRC =   $(SRC_SYSTEM)collision_system.cpp \
 		$(SRC_SYSTEM)level_system.cpp		\
 		$(SRC_SYSTEM)player_system.cpp		\
 		$(SRC_SYSTEM)registry_system.cpp		\
+		$(SRC_SYSTEM)ennemies_system.cpp		\
 
 
 SRC_MAIN = $(SRC_DIR)main.cpp

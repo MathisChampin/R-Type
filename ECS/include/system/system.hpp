@@ -11,6 +11,7 @@ class System {
         void level_system(registry &reg);
         void registry_system(registry &reg);
         void player_system(registry &reg);
+        void ennemies_system(registry &reg);
 };
 
 #endif /* SYSTEM_HPP_ */
