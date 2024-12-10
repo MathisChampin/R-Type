@@ -104,4 +104,14 @@ namespace NmpServer
             send_data(packet, client_endpoint);
         }
     }
+
+    asio::ip::udp::endpoint Server::getEndpoint() const
+    {
+        return _remote_endpoint;
+    }
+
+    std::unordered_map<std::string, asio::ip::udp::endpoint> Server::getClient() const
+    {
+        return _clients;
+    }
 }

@@ -18,9 +18,9 @@ namespace NmpServer {
 
             void handle_get_data(const std::error_code &error, std::size_t bytes);
             void handle_send_data(const std::error_code &error, std::size_t bytes);
+            asio::ip::udp::endpoint getEndpoint() const;
+            std::unordered_map<std::string, asio::ip::udp::endpoint> getClient() const;
 
-            asio::ip::udp::endpoint _remote_endpoint;
-            std::unordered_map<std::string, asio::ip::udp::endpoint> _clients;
         private:
             asio::io_context _io_context;
             asio::ip::udp::socket _socket;
@@ -32,5 +32,7 @@ namespace NmpServer {
             ProtocoleHandler _ptp;
 
             std::mutex _socket_mutex;
+            asio::ip::udp::endpoint _remote_endpoint;
+            std::unordered_map<std::string, asio::ip::udp::endpoint> _clients;
     };
 }
