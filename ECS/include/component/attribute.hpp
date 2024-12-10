@@ -6,6 +6,7 @@ namespace component {
         enum entityType {
             Player,
             Ennemies,
+            Shoot,
             None
         };
         entityType _type;

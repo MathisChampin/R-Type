@@ -1,0 +1,53 @@
+INCLUDE_DIR      = ./include/
+INCLUDE_SYSTEM   = ./include/system/
+INCLUDE_COMPONENT = ./include/component/
+
+SRC_DIR          = ./src/
+SRC_SYSTEM       = ./src/system/
+
+SRC =   $(SRC_SYSTEM)collision_system.cpp \
+        $(SRC_SYSTEM)controllable_system.cpp \
+        $(SRC_SYSTEM)position_system.cpp
+
+SRC_MAIN = $(SRC_DIR)main.cpp
+
+SRC_TEST =  tests/system/testsCollision.cpp \
+            tests/system/testsControllable.cpp \
+            tests/system/testsPosition.cpp \
+            tests/testsEntity.cpp \
+            tests/testsRegistry.cpp \
+            tests/testsSparseArray.cpp
+
+OBJ = $(SRC:.cpp=.o)
+
+CXXFLAGS = -std=c++20 -Wall -Wextra
+CPPFLAGS = -iquote $(INCLUDE_DIR) -iquote $(INCLUDE_SYSTEM) -iquote $(INCLUDE_COMPONENT)
+
+NAME = ecs
+NAME_TESTS = unit_tests
+
+TTFLAGS = -lcriterion
+CC = g++
+
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	$(CC) -o $(NAME) $(SRC_MAIN) $(OBJ) $(CPPFLAGS) $(CXXFLAGS) -g3 -lgmp
+
+tests_run:
+	$(CC) $(SRC_TEST) $(SRC) -o $(NAME_TESTS) $(TTFLAGS) $(CPPFLAGS) $(CXXFLAGS)
+	./$(NAME_TESTS)
+
+clean:
+	$(RM) $(SRC:.cpp=.o)
+	$(RM) $(SRC_MAIN:.cpp=.o)
+	$(RM) $(SRC_TEST:.cpp=.o)
+	$(RM) *.gcno
+
+fclean: clean
+	$(RM) $(NAME)
+	$(RM) $(NAME_TESTS)
+
+re: fclean all
+
+.PHONY: all clean fclean re tests_run
