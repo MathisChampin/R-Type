@@ -8,7 +8,7 @@ namespace NmpClient
         MOVE = 1,
         SHOOT = 2,
         QUIT = 3,
-        NOTHING = 4,
+        SPRITE = 4,
         JOIN = 5
     };
 

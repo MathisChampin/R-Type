@@ -28,21 +28,14 @@ namespace NmpBinary
      void Binary::serialize(NmpClient::Packet &packet, std::vector<uint32_t> &buffer)
     {
         NmpClient::EVENT opcode = packet.getOpCode();
+        std::size_t id = packet.getId();
 
+        buffer.push_back(static_cast<uint32_t>(id));
         buffer.push_back(static_cast<uint32_t>(opcode));
 
         if (opcode == NmpClient::EVENT::MOVE) {
             NmpClient::DIRECTION direction = packet.getArg().value();
             buffer.push_back(static_cast<uint32_t>(direction));
-        }
-
-        if (opcode == NmpClient::EVENT::NOTHING) {
-            NmpClient::SpriteInfo sprite = packet.getSpriteInfo();
-            buffer.push_back(sprite.id);
-            buffer.push_back(sprite.x);
-            buffer.push_back(sprite.y);
-            buffer.push_back(sprite.sizeX);
-            buffer.push_back(sprite.sizeY);
         }
     }
 
@@ -50,22 +43,18 @@ namespace NmpBinary
     {
         NmpClient::EVENT event = static_cast<NmpClient::EVENT>(buffer[0]);
 
-        if (event == NmpClient::EVENT::MOVE) {
-            std::optional<NmpClient::DIRECTION> direction = std::nullopt;
-            direction = static_cast<NmpClient::DIRECTION>(buffer[1]);
-            return NmpClient::Packet(event, direction);
-        }
-        if (event == NmpClient::EVENT::NOTHING) {
+        if (event == NmpClient::EVENT::SPRITE) {
             NmpClient::SpriteInfo sprite = {
                 buffer[1],
                 buffer[2],
                 buffer[3],
                 buffer[4],
-                buffer[5] 
-            };
-            return NmpClient::Packet(NmpClient::EVENT::NOTHING, sprite);
+                buffer[5]};
+            return NmpClient::Packet(NmpClient::EVENT::SPRITE, sprite);
+        } else {
+            std::size_t id = static_cast<std::size_t>(buffer[1]);
+            return NmpClient::Packet(id, event);
         }
-        return NmpClient::Packet(event);
     }
 
     void Binary::clearBuffer(std::vector<uint32_t> &buffer)
