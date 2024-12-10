@@ -4,7 +4,10 @@
 namespace component {
     struct attribute {
         enum entityType {
-            Player,
+            Player1,
+            Player2,
+            Player3,
+            Player4,
             Ennemies,
             Shoot,
             None

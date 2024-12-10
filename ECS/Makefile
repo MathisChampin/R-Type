@@ -5,21 +5,22 @@ INCLUDE_COMPONENT = ./include/component/
 SRC_DIR          = ./src/
 SRC_SYSTEM       = ./src/system/
 
-SRC =   $(SRC_SYSTEM)collision_system.cpp \
-        $(SRC_SYSTEM)controllable_system.cpp \
+SRC =   $(SRC_SYSTEM)controllable_system.cpp \
         $(SRC_SYSTEM)position_system.cpp	\
 		$(SRC_SYSTEM)level_system.cpp		\
-
+		$(SRC_SYSTEM)collision_system.cpp		\
+		$(SRC_SYSTEM)shoot_system.cpp		\
 
 SRC_MAIN = $(SRC_DIR)main.cpp
 
-SRC_TEST =  tests/system/testsCollision.cpp \
-            tests/system/testsControllable.cpp \
+SRC_TEST =  tests/system/testsControllable.cpp \
             tests/system/testsPosition.cpp \
             tests/testsEntity.cpp \
             tests/testsRegistry.cpp \
             tests/testsSparseArray.cpp	\
 			tests/system/testsLevel.cpp	\
+			tests/system/testsCollision.cpp	\
+			tests/system/testsShoot.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

@@ -1,5 +1,5 @@
 #include "controllable.hpp"
-#include "velocity.hpp"
+#include "position.hpp"
 #include "system.hpp"
 #include <iostream>
 #include <map>
@@ -13,14 +13,13 @@ void System::control_system(registry& reg)
         {component::controllable::Right, {1, 0}}
     };
 
-    auto& velocities = reg.get_components<component::velocity>();
+    auto& positions = reg.get_components<component::position>();
     auto& controllables = reg.get_components<component::controllable>();
 
-    for (size_t i = 0; i < velocities.size() && i < controllables.size(); ++i) {
+    for (size_t i = 0; i < positions.size() && i < controllables.size(); ++i) {
         auto &ctl = controllables[i];
-        auto &vel = velocities[i];
-        vel.x = inputs[ctl.active_key].first;
-        vel.y = inputs[ctl.active_key].second;
-        std::cout << "velx: " << vel.x << " vely: " << vel.y << std::endl;
+        auto &pos = positions[i];
+        pos.x += inputs[ctl.active_key].first;
+        pos.y += inputs[ctl.active_key].second;
     }
 }

@@ -1,9 +1,10 @@
 #ifndef SPARSEARRAY_HPP_
     #define SPARSEARRAY_HPP_
 
-#include <vector>
-#include <algorithm>
-#include <utility>
+    #include <vector>
+    #include <algorithm>
+    #include <utility>
+    #include <iostream>
 
 template <typename Component>
 class sparse_array {
@@ -148,12 +149,12 @@ class sparse_array {
          * @param value The component to insert.
          * @return A reference to the inserted component.
         */
-        reference_type insert_at(size_type pos, Component const& value) {
+        reference_type insert_at(size_type pos, Component const& value)
+        {
             if (pos >= _data.size()) {
-                _data.push_back(value);
-            } else {
-                _data[pos] = value;
+                _data.resize(pos + 1);
             }
+            _data[pos] = value;
             return _data[pos];
         }
 
@@ -164,12 +165,12 @@ class sparse_array {
         * @param value The component to insert (moved).
         * @return A reference to the inserted component.
         */
-        reference_type insert_at(size_type pos, Component&& value) {
+        reference_type insert_at(size_type pos, Component&& value)
+        {
             if (pos >= _data.size()) {
-                _data.push_back(std::move(value));
-            } else {
-                _data[pos] = std::move(value);
+                _data.resize(pos + 1);
             }
+            _data[pos] = std::move(value);
             return _data[pos];
         }
 

@@ -8,6 +8,7 @@ namespace component {
             Down,
             Right,
             Left,
+            Shoot,
             NoKey,
         };
         Key active_key;
