@@ -4,6 +4,7 @@
 #include "Binary.hpp"
 #include "ProtocolHandler.hpp"
 #include <asio.hpp>
+#include <mutex>
 
 namespace NmpServer {
     class Server : public IServer {
@@ -25,5 +26,6 @@ namespace NmpServer {
             std::array<uint32_t, 256> _bufferAsio;
             NmpBinary::Binary _binary;
             ProtocoleHandler _ptp;
+            std::mutex _socket_mutex;
     };
 }
