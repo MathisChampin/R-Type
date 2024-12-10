@@ -19,7 +19,8 @@ void System::control_system(registry& reg)
     for (size_t i = 0; i < velocities.size() && i < controllables.size(); ++i) {
         auto &ctl = controllables[i];
         auto &vel = velocities[i];
-        vel.x += inputs[ctl.active_key].first;
-        vel.y += inputs[ctl.active_key].second;
+        vel.x = inputs[ctl.active_key].first;
+        vel.y = inputs[ctl.active_key].second;
+        std::cout << "velx: " << vel.x << " vely: " << vel.y << std::endl;
     }
 }
