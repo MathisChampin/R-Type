@@ -7,7 +7,7 @@ OptionsMenu::OptionsMenu(sf::RenderWindow& window)
     if (!m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf")) {
         std::cerr << "Erreur : Impossible de charger la police !" << std::endl;
     }
-    if (!m_music.openFromFile("./assets/music/background.mp3")) {
+    if (!m_music.openFromFile("./assets/music/back2.mp3")) {
         std::cerr << "Erreur : Impossible de charger la musique !" << std::endl;
     }
     m_music.setLoop(true);
