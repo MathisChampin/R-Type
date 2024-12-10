@@ -17,19 +17,23 @@ namespace NmpServer
         std::cout << "Server is running on port 8080..." << std::endl;
     }
 
-    void Server::send_data(Packet &packet) //send Packet
+    void Server::send_data(Packet &packet)
     {
-        std::shared_ptr<Packet> shared_packet = std::make_shared<Packet>(packet);
+        std::lock_guard<std::mutex> lock(_socket_mutex);
 
+        std::shared_ptr<Packet> shared_packet = std::make_shared<Packet>(packet);
         _binary.serialize(packet, _bufferSerialize);
-        _socket.async_send_to(asio::buffer(_bufferSerialize), _remote_endpoint,
+
+        _socket.async_send_to(
+            asio::buffer(_bufferSerialize), _remote_endpoint,
             [this, shared_packet](const std::error_code& error, std::size_t bytes_transferred)
             {
                 this->handle_send_data(error, bytes_transferred);
             });
 
-        std::cout << "SERVER Message envoyé : " << std::endl;
+        std::cout << "SERVER Message envoyé." << std::endl;
     }
+
 
     void Server::handle_send_data(const std::error_code& error, std::size_t bytes)
     {
@@ -44,8 +48,9 @@ namespace NmpServer
         }
     }
 
-    void Server::get_data() //non blocking
+    void Server::get_data()
     {
+        std::lock_guard<std::mutex> lock(_socket_mutex);
         _socket.async_receive_from(
             asio::buffer(_bufferAsio), _remote_endpoint,
             [this](const std::error_code& error, std::size_t bytes_transferred)
@@ -55,6 +60,7 @@ namespace NmpServer
 
         std::cout << "Waiting for data..." << std::endl;
     }
+
 
     void Server::handle_get_data(const std::error_code& error, std::size_t bytes)
     {
@@ -82,4 +88,29 @@ namespace NmpServer
             std::cerr << "Error receiving data: " << error.message() << std::endl;
         }
     }
+
+    // void Server::send_data(Packet &packet)
+    // {
+    //     std::shared_ptr<Packet> shared_packet = std::make_shared<Packet>(packet);
+
+    //     _binary.serialize(packet, _bufferSerialize);
+    //     _socket.send_to(asio::buffer(_bufferSerialize), _remote_endpoint);
+    // }
+
+    // void Server::get_data()
+    // {
+    //     std::vector<uint32_t> test;
+
+    //     _socket.receive_from(asio::buffer(_bufferAsio), _remote_endpoint);
+    //     for (std::size_t i = 0; i < bytes / sizeof(uint32_t); ++i) {
+    //         uint32_t val = reinterpret_cast<uint32_t*>(_bufferAsio.data())[i];
+    //         test.push_back(val);
+    //         }
+    //     _bufferAsio.fill(0);
+    //     NmpServer::Packet packet = _binary.deserialize(test);
+    //     std::cout << "Message byte: " << bytes << std::endl;
+    //     call protocol handler
+    //     _ptp.fillPacket(packet);
+    //     _ptp.executeOpCode();
+    // }
 }
