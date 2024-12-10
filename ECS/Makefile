@@ -40,6 +40,7 @@ tests_run:
 
 clean:
 	$(RM) $(SRC:.cpp=.o)
+	$(RM) $(SRC_MAIN:.cpp=.o)
 	$(RM) $(SRC_TEST:.cpp=.o)
 	$(RM) *.gcno
 
