@@ -1,16 +1,30 @@
 #pragma once
 
 #include "Registry.hpp"
-#include "position.hpp"
 #include "Packet.hpp"
+
+#include "attribute.hpp"
+#include "controllable.hpp"
+#include "level.hpp"
+#include "life.hpp"
+#include "position.hpp"
+#include "score.hpp"
+#include "size.hpp"
+#include "state.hpp"
+#include "velocity.hpp"
+#include "system.hpp"
+
+#include <functional>
 #include <iostream>
+#include <random>
 #include <map>
 
 
 namespace NmpServer {
+    class Server;
     class ProtocoleHandler {
         public:
-            ProtocoleHandler();
+            ProtocoleHandler(Server &server);
             ~ProtocoleHandler() = default;
 
             void executeOpCode();
@@ -21,6 +35,11 @@ namespace NmpServer {
             void evalJoin();
 
         private:
+            void initPlayer();
+            void initEnnemies();
+            void initComponents();
+
+            std::reference_wrapper<Server> _refServer;
             registry _ecs;
             Packet _pck;
             std::map<EVENT, std::function<void()>> _mapFctOpCode{
@@ -29,5 +48,6 @@ namespace NmpServer {
                 {{EVENT::QUIT}, [this]{return evalQuit();}}, 
                 {{EVENT::JOIN}, [this]{return evalJoin();}}, 
             };
+            std::vector<Entity> _vecPlayer;
     };
 }

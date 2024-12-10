@@ -4,7 +4,7 @@
 namespace NmpServer
 {
     Server::Server() : _io_context(),
-        _socket(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080))
+        _socket(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)), _ptp(*this)
     {
         _bufferAsio.fill(0);
         std::cout << "Server listening on port 8080" << std::endl;
@@ -71,11 +71,10 @@ namespace NmpServer
 
             NmpServer::Packet packet = _binary.deserialize(test);
             std::cout << "Message byte: " << bytes << std::endl;
-            std::cout << "END HANDLE GET DATA" << std::endl;
             //call protocol handler
             _ptp.fillPacket(packet);
             _ptp.executeOpCode();
-            this->send_data(packet);
+            std::cout << "END HANDLE GET DATA\n" << std::endl;
             this->get_data();
         }
         else
