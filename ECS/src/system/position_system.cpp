@@ -3,26 +3,6 @@
 #include "system.hpp"
 #include "attribute.hpp"
 
-void position_player(
-    sparse_array<component::position> &positions,
-    sparse_array<component::attribute> &attributes,
-    sparse_array<component::velocity> &velocities,
-    int i
-)
-{
-    auto &pos = positions[i];
-    const auto &vel = velocities[i];
-    const auto &att = attributes[i];
-
-    if (att._type == component::attribute::Player1 ||
-        att._type == component::attribute::Player2 ||
-        att._type == component::attribute::Player3 ||
-        att._type == component::attribute::Player4) {
-        pos.x += vel.x;
-        pos.y += vel.y;
-    }
-}
-
 void position_ennemies(
     sparse_array<component::position> &positions,
     sparse_array<component::attribute> &attributes,
@@ -62,7 +42,6 @@ void System::position_system(registry &reg)
     auto &attributes = reg.get_components<component::attribute>();
 
     for (size_t i = 0; i < positions.size() && i < velocities.size() && i < attributes.size(); i++) {        
-        position_player(positions, attributes, velocities, i);
         position_ennemies(positions, attributes, velocities, i);
         position_shoot(positions, attributes, velocities, i);
     }

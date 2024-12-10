@@ -36,7 +36,6 @@ Test(CollisionSystem, PlayerHitByShoot) {
     reg.add_component<component::size>(shoot, {1, 1});
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot});
     reg.add_component<component::idPlayer>(shoot, {enemy.get_id()});
-    std::cout << "id in test = " << enemy.get_id() << std::endl;
     sys.collision_system(reg);
 
     const auto &l = life[player.get_id()];
