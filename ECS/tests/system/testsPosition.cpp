@@ -35,7 +35,7 @@ Test(PositionSystem, UpdatePositionMultipleEntities) {
     reg.add_component<component::attribute>(entity1, {component::attribute::Player});
     Entity entity2 = reg.spawn_entity();
     reg.add_component<component::position>(entity2, {12, 30});
-    reg.add_component<component::velocity>(entity2, {3, 2});
+    reg.add_component<component::velocity>(entity2, {-3, 2});
     reg.add_component<component::attribute>(entity2, {component::attribute::Ennemies});
 
     sys.position_system(reg);
