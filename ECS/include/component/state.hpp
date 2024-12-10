@@ -5,7 +5,6 @@ namespace component {
     struct state {
         enum stateKey {
             Dead,
-            Shoot,
             Alive
         };
         stateKey _stateKey;
