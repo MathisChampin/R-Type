@@ -19,7 +19,8 @@ SRC_TEST =  tests/system/testsControllable.cpp \
             tests/testsRegistry.cpp \
             tests/testsSparseArray.cpp	\
 			tests/system/testsLevel.cpp	\
-			tests/system/testsCollision.cpp
+			tests/system/testsCollision.cpp	\
+			tests/system/testsShoot.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
