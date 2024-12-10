@@ -23,6 +23,7 @@ SRC_TEST =  tests/system/testsCollision.cpp \
             tests/testsRegistry.cpp \
             tests/testsSparseArray.cpp	\
 			tests/system/testsLevel.cpp	\
+			tests/system/testsCreateEntity.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

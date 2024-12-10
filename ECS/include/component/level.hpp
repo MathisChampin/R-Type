@@ -10,7 +10,6 @@ namespace component {
             Level3,
             Level4,
             Level5,
-            NoLevel
         };
         levelKey _levelKey;
     };
