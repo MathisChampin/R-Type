@@ -80,7 +80,8 @@ namespace NmpServer
         auto lastPlayer = _vecPlayer.back();
 
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
-        _refServer.get().send_data(joinPacket);
+        auto lastendpoint = _refServer.get().getEndpoint();
+        _refServer.get().send_data(joinPacket, lastendpoint);
     }
 
     void ProtocoleHandler::initComponents()

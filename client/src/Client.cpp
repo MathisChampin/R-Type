@@ -46,4 +46,9 @@ namespace NmpClient
     {
         _id = packet.getId();
     }
+
+    std::size_t Client::get_id() const
+    {
+        return _id;
+    }
 }

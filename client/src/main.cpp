@@ -120,7 +120,7 @@ int main()
     };
 
     std::vector<std::pair<std::string, float>> playingLayers = {
-        {"./assets/backgrounds/game_background1.png", 0.2f},
+        {"./assets/backgrounds/space_dust.png", 0.2f},
     };
 
     ParallaxBackground menuBackground(window.getSize(), menuLayers);
