@@ -13,6 +13,12 @@ namespace NmpClient
         std::cout << "CLIENT packet sprite created" << std::endl;
     }
 
+    Packet::Packet(EVENT event, int x, int y) :
+        _opCode(event), _x(x), _y(y)
+    {
+        std::cout << "CLIENT packet pos created for id: " << _id <<  std::endl;
+    }
+
     bool Packet::checkPacket()
     {
         if (_opCode != EVENT::MOVE && _opCode != EVENT::SHOOT && _opCode != EVENT::QUIT) {
@@ -56,6 +62,16 @@ namespace NmpClient
     std::size_t Packet::getId()
     {
         return _id;
+    }
+
+    int Packet::getX() const
+    {
+        return _x;
+    }
+
+    int Packet::getY() const
+    {
+        return _y;
     }
 
 }

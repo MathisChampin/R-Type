@@ -43,6 +43,11 @@ namespace NmpBinary
     {
         NmpClient::EVENT event = static_cast<NmpClient::EVENT>(buffer[0]);
 
+        if (event == NmpClient::EVENT::MOVE) {
+            int x = static_cast<int>(buffer[1]);
+            int y = static_cast<int>(buffer[2]);
+            return NmpClient::Packet(event, x, y);
+        }
         if (event == NmpClient::EVENT::SPRITE) {
             NmpClient::SpriteInfo sprite = {
                 buffer[1],
