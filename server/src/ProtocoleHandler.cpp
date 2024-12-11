@@ -73,7 +73,17 @@ namespace NmpServer
 
     void ProtocoleHandler::evalShoot()
     {
-        std::cout << "evalShoot" << std::endl;
+        std::cout << "evalMove" << std::endl;
+        std::cout << "id client: " << _pck.getId() << std::endl;
+
+        std::size_t idClient{ _pck.getId()};
+        //auto &pos = _ecs.get_components<component::position>();
+        auto player = _ecs.get_entity(idClient);
+        //auto &position = pos[player.get_id()];
+        System sys;
+
+        _ecs.emplace_component<component::controllable>(player, component::controllable::Shoot);
+        sys.shoot_system_player(_ecs);
     }
 
     void ProtocoleHandler::evalQuit()
