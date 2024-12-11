@@ -3,6 +3,7 @@
 #include "../include/Player.hpp"
 #include "../include/OptionsMenu.hpp"
 #include "../include/client/Client.hpp"
+#include "../include/Enemy.hpp"
 #include <SFML/Graphics.hpp>
 #include <thread>
 #include <iostream>
@@ -63,20 +64,22 @@ void handleEvents(sf::RenderWindow& window, sf::Event& event, GameState& current
     }
 }
 
-void updateGame(float deltaTime, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu)
+
+void updateGame(float deltaTime, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu, Enemy& enemy)
 {
     if (currentState == GameState::Menu) {
         menuBackground.update(deltaTime);
         menu.update();
     } else if (currentState == GameState::Playing) {
         playingBackground.update(deltaTime);
+        enemy.update(deltaTime);
     } else if (currentState == GameState::Options) {
         menuBackground.update(deltaTime);
         optionsMenu.update();
     }
 }
 
-void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu, sf::Text& ipText, sf::Text& ipField, Player& player)
+void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu, sf::Text& ipText, sf::Text& ipField, Player& player, Enemy& enemy)
 {
     window.clear();
 
@@ -88,6 +91,7 @@ void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackgr
     } else if (currentState == GameState::Playing) {
         playingBackground.render(window);
         player.render(window);
+        enemy.render(window);
     } else if (currentState == GameState::Options) {
         menuBackground.render(window);
         optionsMenu.render();
@@ -112,6 +116,7 @@ int main()
 
     NmpClient::Client client;
     Player player(sf::Vector2f(500, 500), client);
+    Enemy enemy(sf::Vector2f(1500, 500));
 
     std::thread serverThread(listenToServer, std::ref(client));
 
@@ -171,31 +176,10 @@ int main()
             player.update(deltaTime);
         }
 
-        updateGame(deltaTime, currentState, menuBackground, playingBackground, menu, optionsMenu);
-        renderGame(window, currentState, menuBackground, playingBackground, menu, optionsMenu, ipText, ipField, player);
+        updateGame(deltaTime, currentState, menuBackground, playingBackground, menu, optionsMenu, enemy);
+        renderGame(window, currentState, menuBackground, playingBackground, menu, optionsMenu, ipText, ipField, player, enemy);
     }
 
     serverThread.join();
     return 0;
 }
-
-// #include "../include/client/Client.hpp"
-// #include <thread> // Ajouter cette inclusion pour std::this_thread::sleep_for
-// #include <chrono> 
-
-// int main(void)
-// {
-//     NmpClient::Client c;
-
-
-
-//     for (;;) {
-//         NmpClient::Packet p(c._id, NmpClient::EVENT::MOVE, NmpClient::DIRECTION::DOWN);
-//         c.send_input(p);
-//         auto packet = c.get_data();
-//         std::cout << packet.getX() << std::endl;
-//         std::cout << packet.getY() << std::endl;
-//         // Attendre 200 ms avant la prochaine itération
-//         std::this_thread::sleep_for(std::chrono::milliseconds(200));
-//     }
-// }
