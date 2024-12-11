@@ -13,6 +13,18 @@ else
 	CPM_FETCH = wget -O cmake/CPM.cmake https://github.com/cpm-cmake/CPM.cmake/releases/latest/download/get_cpm.cmake
 endif
 
+CMAKE_GENERATED_FILES = \
+	CMakeCache.txt \
+	CPackConfig.cmake \
+	CPackSourceConfig.cmake \
+	cmake_install.cmake \
+	cpm-package-lock.cmake
+
+CMAKE_GENERATED_DIRS = \
+	CMakeFiles \
+	CPM_modules \
+	_deps
+
 all: prepare build
 
 prepare:
@@ -34,3 +46,9 @@ server:
 
 clean:
 	$(RM) $(BUILD_DIR)
+	@for file in $(CMAKE_GENERATED_FILES); do \
+		[ -f $$file ] && $(RM) $$file; \
+	done
+	@for dir in $(CMAKE_GENERATED_DIRS); do \
+		[ -d $$dir ] && $(RM) $$dir; \
+	done
