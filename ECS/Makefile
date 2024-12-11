@@ -11,6 +11,8 @@ SRC =   $(SRC_SYSTEM)controllable_system.cpp \
 		$(SRC_SYSTEM)collision_system.cpp		\
 		$(SRC_SYSTEM)shoot_system.cpp		\
 
+SRC_MAIN	=	$(SRC_DIR)main.cpp
+
 SRC_TEST =  tests/system/testsControllable.cpp \
             tests/system/testsPosition.cpp \
             tests/testsEntity.cpp \
@@ -34,7 +36,7 @@ CC = g++
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) -o $(NAME) $(OBJ) $(CPPFLAGS) $(CXXFLAGS) -g3 -lgmp
+	$(CC) -o $(NAME) $(SRC_MAIN) $(OBJ) $(CPPFLAGS) $(CXXFLAGS) -g3 -lgmp
 
 tests_run:
 	$(CC) $(SRC_TEST) $(SRC) -o $(NAME_TESTS) $(TTFLAGS) $(CPPFLAGS) $(CXXFLAGS)
