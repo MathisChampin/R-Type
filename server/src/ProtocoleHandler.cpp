@@ -151,7 +151,7 @@ namespace NmpServer
         _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
         _ecs.add_component<component::level>(ennemies, {component::level::Level0});
         _ecs.add_component<component::life>(ennemies, {1});
-        _ecs.add_component<component::position>(ennemies, {1920, y});
+        _ecs.add_component<component::position>(ennemies, {1880, y});
         _ecs.add_component<component::size>(ennemies, {33, 36});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
         _ecs.add_component<component::velocity>(ennemies, {20, 0});
