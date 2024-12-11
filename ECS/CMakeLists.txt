@@ -3,8 +3,12 @@ project(ECS)
 
 set(CXX g++)
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -g3")
-
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")  
+    add_definitions(-D_WIN32_WINNT=0x0601) 
+elseif(UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror") 
+endif()
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(INCLUDE_COMPONENT ${INCLUDE_DIR}/component)
 set(INCLUDE_SYSTEM ${INCLUDE_DIR}/system)
@@ -26,7 +30,7 @@ set(SOURCES
 set(MAIN_SOURCES
     ${SRC_DIR}/main.cpp  
 )
-
+if(UNIX)
 set(TEST_SOURCES
     ${TEST_DIR}/testsEntity.cpp
     ${TEST_DIR}/testsSparseArray.cpp
@@ -40,6 +44,7 @@ set(TEST_SOURCES
     ${TEST_SYS}/testsLevel.cpp
     ${TEST_SYS}/testsShoot.cpp
 )
+endif()
 
 if (NOT TARGET r_type_ecs)
     add_library(r_type_ecs STATIC ${SOURCES})
@@ -51,6 +56,7 @@ if (NOT TARGET bootstrap_rtype)
     target_link_libraries(bootstrap_rtype r_type_ecs)
 endif()
 
+if(UNIX)
 if (NOT TARGET unit_tests)
     add_executable(unit_tests ${TEST_SOURCES})
     target_link_libraries(unit_tests r_type_ecs criterion)
@@ -61,6 +67,8 @@ if (NOT TARGET unit_tests)
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 endif()
+endif()
+
 
 if (NOT TARGET clean_all)
     add_custom_target(clean_all
