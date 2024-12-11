@@ -18,5 +18,10 @@ set(SOURCES
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${Asio_SOURCE_DIR}/asio/include)
-target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs pthread)
+if(MSVC)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include)
+    target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs ws2_32)
+elseif(UNIX)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${Asio_SOURCE_DIR}/asio/include)
+    target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs pthread)
+endif()
