@@ -30,7 +30,7 @@ namespace NmpServer
         std::cout << "id client: " << _pck.getId() << std::endl;
 
         std::size_t idClient{ _pck.getId()};
-        auto &pos = _ecs.register_component<component::position>();
+        auto &pos = _ecs.get_components<component::position>();
         auto player = _ecs.get_entity(idClient);
         auto &position = pos[player.get_id()];
         System sys;
@@ -42,22 +42,30 @@ namespace NmpServer
                 std::cout << "DOWN" << std::endl;
                 _ecs.emplace_component<component::controllable>(player, component::controllable::Down);
                 sys.control_system(_ecs);
-                sys.position_system(_ecs);
+                auto endpoint = _refServer.get().getEndpoint();
+                Packet packetPos(EVENT::MOVE, position.x, position.y);
+                _refServer.get().send_data(packetPos, endpoint);
             } else if (direction == DIRECTION::UP) {
                 std::cout << "UP" << std::endl;
                 _ecs.emplace_component<component::controllable>(player, component::controllable::Up);
                 sys.control_system(_ecs);
-                sys.position_system(_ecs);
+                auto endpoint = _refServer.get().getEndpoint();
+                Packet packetPos(EVENT::MOVE, position.x, position.y);
+                _refServer.get().send_data(packetPos, endpoint);
             } else if (direction == DIRECTION::LEFT) {
                 std::cout << "LEFT" << std::endl;
                 _ecs.emplace_component<component::controllable>(player, component::controllable::Left);
                 sys.control_system(_ecs);
-                sys.position_system(_ecs);
+                auto endpoint = _refServer.get().getEndpoint();
+                Packet packetPos(EVENT::MOVE, position.x, position.y);
+                _refServer.get().send_data(packetPos, endpoint);
             } else if (direction == DIRECTION::RIGHT) {
                 std::cout << "RIGHT" << std::endl;
                 _ecs.emplace_component<component::controllable>(player, component::controllable::Right);
                 sys.control_system(_ecs);
-                sys.position_system(_ecs);
+                auto endpoint = _refServer.get().getEndpoint();
+                Packet packetPos(EVENT::MOVE, position.x, position.y);
+                _refServer.get().send_data(packetPos, endpoint);
             } else
                 std::cout << "NO DIRECTION" << std::endl;
         std::cout << "x " << position.x << " y " << position.y << std::endl;
@@ -101,7 +109,16 @@ namespace NmpServer
     {
         Entity player = _ecs.spawn_entity();
 
-        _ecs.add_component<component::attribute>(player, {component::attribute::Player});
+        for (size_t i = 0; i < 4; i++) {
+            if (_vecPlayer.size() == 0)
+                _ecs.add_component<component::attribute>(player, {component::attribute::Player1});
+            if (_vecPlayer.size() == 1)
+                _ecs.add_component<component::attribute>(player, {component::attribute::Player2});
+            if (_vecPlayer.size() == 2)
+                _ecs.add_component<component::attribute>(player, {component::attribute::Player3});
+            if (_vecPlayer.size() == 3)
+                _ecs.add_component<component::attribute>(player, {component::attribute::Player4});
+        }
         _ecs.add_component<component::controllable>(player, {component::controllable::NoKey});
         _ecs.add_component<component::level>(player, {component::level::Level0});
         _ecs.add_component<component::life>(player, {4});

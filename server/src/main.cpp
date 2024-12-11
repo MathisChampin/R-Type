@@ -19,7 +19,7 @@ int main()
                 if (client.size() >= 1) {
                     std::cout << "has client" << std::endl;
                     NmpServer::Packet res(42, NmpServer::EVENT::JOIN);
-                    server.broadcast(res);
+                    //server.broadcast(res);
                     std::cout << "end" << std::endl;
                 }else 
                     std::cout << "no client" << std::endl;

@@ -29,7 +29,14 @@ namespace NmpBinary
     {
         NmpServer::EVENT opcode = packet.getOpCode();
         std::size_t id = packet.getId();
+        int x = packet.getX();
+        int y = packet.getY();
         
+        if (opcode == NmpServer::EVENT::MOVE) {
+            buffer.push_back(static_cast<uint32_t>(opcode));
+            buffer.push_back(static_cast<uint32_t>(x));
+            buffer.push_back(static_cast<uint32_t>(y));
+        }
         if (opcode == NmpServer::EVENT::SPRITE) {
             buffer.push_back(static_cast<uint32_t>(opcode));
             NmpServer::SpriteInfo sprite = packet.getSpriteInfo();
