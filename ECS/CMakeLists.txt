@@ -16,11 +16,11 @@ set(TEST_SYS ./tests/system/)
 include_directories(${INCLUDE_DIR} ${INCLUDE_COMPONENT} ${INCLUDE_SYSTEM})
 
 set(SOURCES
-    ${SRC_DIR}main.cpp
     ${SRC_SYSTEM}position_system.cpp
     ${SRC_SYSTEM}controllable_system.cpp
     ${SRC_SYSTEM}collision_system.cpp
     ${SRC_SYSTEM}level_system.cpp
+    ${SRC_SYSTEM}shoot_system.cpp
 )
 
 set(TEST_SOURCES
@@ -34,6 +34,7 @@ set(TEST_SOURCES
     ${TEST_SYS}testsPosition.cpp
     ${TEST_SYS}testsCollision.cpp
     ${TEST_SYS}testsLevel.cpp
+    ${TEST_SYS}testsShoot.cpp
 )
 
 add_library(r_type_ecs STATIC ${SOURCES})
