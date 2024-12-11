@@ -13,6 +13,7 @@ namespace NmpClient {
             void send_input(Packet &packet) override;
             Packet get_data() override;
 
+            std::size_t _id;
         private:
             void evalResJoin(Packet &packet);
 
@@ -23,6 +24,5 @@ namespace NmpClient {
             std::vector<uint32_t> _bufferSerialize;
             std::array<uint32_t, 256> _bufferAsio;
             NmpBinary::Binary _binary;
-            std::size_t _id;
     };
 }

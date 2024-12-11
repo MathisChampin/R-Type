@@ -1,4 +1,5 @@
 #include "Server.hpp"
+
 #include <thread>
 
 int main()
@@ -14,6 +15,14 @@ int main()
         while (true) {
             {
                 std::cout << "can send ecs entity" << std::endl;
+                if (server._clients.size() >= 1) {
+                    std::cout << "has client" << std::endl;
+                    NmpServer::Packet res(42, NmpServer::EVENT::JOIN);
+                    server.broadcast(res);
+                    std::cout << "end" << std::endl;
+                }
+                std::cout << "no client" << std::endl;
+
             }
 
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
