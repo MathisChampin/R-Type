@@ -40,29 +40,33 @@ namespace NmpServer
                 std::cout << "Direction: ";
             if (direction == DIRECTION::DOWN) {
                 std::cout << "DOWN" << std::endl;
-                _ecs.emplace_component<component::controllable>(player, component::controllable::Down);
+                _ecs.add_component<component::controllable>(player, {component::controllable::Down});
                 sys.control_system(_ecs);
                 auto endpoint = _refServer.get().getEndpoint();
+                std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
                 _refServer.get().send_data(packetPos, endpoint);
             } else if (direction == DIRECTION::UP) {
                 std::cout << "UP" << std::endl;
-                _ecs.emplace_component<component::controllable>(player, component::controllable::Up);
+                _ecs.add_component<component::controllable>(player, {component::controllable::Up});
                 sys.control_system(_ecs);
+                std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
                 auto endpoint = _refServer.get().getEndpoint();
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
                 _refServer.get().send_data(packetPos, endpoint);
             } else if (direction == DIRECTION::LEFT) {
                 std::cout << "LEFT" << std::endl;
-                _ecs.emplace_component<component::controllable>(player, component::controllable::Left);
+                _ecs.add_component<component::controllable>(player, {component::controllable::Left});
                 sys.control_system(_ecs);
+                std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
                 auto endpoint = _refServer.get().getEndpoint();
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
                 _refServer.get().send_data(packetPos, endpoint);
             } else if (direction == DIRECTION::RIGHT) {
                 std::cout << "RIGHT" << std::endl;
-                _ecs.emplace_component<component::controllable>(player, component::controllable::Right);
+                _ecs.add_component<component::controllable>(player, {component::controllable::Right});
                 sys.control_system(_ecs);
+                std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
                 auto endpoint = _refServer.get().getEndpoint();
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
                 _refServer.get().send_data(packetPos, endpoint);

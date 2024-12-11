@@ -16,7 +16,7 @@ namespace NmpClient
     Packet::Packet(EVENT event, int x, int y) :
         _opCode(event), _x(x), _y(y)
     {
-        std::cout << "CLIENT packet pos created for id: " << _id <<  std::endl;
+        std::cout << "CLIENT packet pos created" <<  std::endl;
     }
 
     bool Packet::checkPacket()

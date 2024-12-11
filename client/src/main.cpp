@@ -100,13 +100,6 @@ void renderGame(sf::RenderWindow& window, GameState currentState, ParallaxBackgr
     window.display();
 }
 
-void listenToServer(NmpClient::Client& client)
-{
-    while (true) {
-        client.get_data();
-    }
-}
-
 int main()
 {
     sf::RenderWindow window;
@@ -117,8 +110,6 @@ int main()
     NmpClient::Client client;
     Player player(sf::Vector2f(500, 500), client);
     Enemy enemy(sf::Vector2f(1500, 500));
-
-    std::thread serverThread(listenToServer, std::ref(client));
 
     std::vector<std::pair<std::string, float>> menuLayers = {
         {"./assets/backgrounds/space_dust.png", 0.1f},
@@ -179,7 +170,5 @@ int main()
         updateGame(deltaTime, currentState, menuBackground, playingBackground, menu, optionsMenu, enemy);
         renderGame(window, currentState, menuBackground, playingBackground, menu, optionsMenu, ipText, ipField, player, enemy);
     }
-
-    serverThread.join();
     return 0;
 }

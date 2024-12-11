@@ -21,8 +21,6 @@ private:
     std::vector<sf::Texture> m_textures;
     std::vector<sf::Sprite> m_bullets;
     float m_speed;
-    // sf::Music m_shootSound;
-
     int m_currentFrame;
     float m_animationTime;
     float m_elapsedTime;
@@ -30,6 +28,7 @@ private:
     NmpClient::Client &m_client;
     sf::Texture m_bulletTexture;
 
+    void sendMovementPacket(NmpClient::DIRECTION direction);
     void loadTexture(const std::string &textureFile);
 };
 
