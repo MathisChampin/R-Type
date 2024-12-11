@@ -34,6 +34,10 @@ namespace NmpServer {
             void evalQuit();
             void evalJoin();
 
+            registry getRegistry() {
+                return _ecs;
+            }
+
         private:
             void initPlayer();
             void initEnnemies();

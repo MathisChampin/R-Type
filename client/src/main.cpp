@@ -64,6 +64,7 @@ void handleEvents(sf::RenderWindow& window, sf::Event& event, GameState& current
     }
 }
 
+
 void updateGame(float deltaTime, GameState currentState, ParallaxBackground& menuBackground, ParallaxBackground& playingBackground, Menu& menu, OptionsMenu& optionsMenu, Enemy& enemy)
 {
     if (currentState == GameState::Menu) {
