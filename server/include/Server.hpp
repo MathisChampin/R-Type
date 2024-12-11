@@ -20,6 +20,10 @@ namespace NmpServer {
             void handle_send_data(const std::error_code &error, std::size_t bytes);
             asio::ip::udp::endpoint getEndpoint() const;
             std::unordered_map<std::string, asio::ip::udp::endpoint> getClient() const;
+            
+            registry getEcs() {
+                return _ptp.getRegistry(); 
+            }
 
         private:
             asio::io_context _io_context;

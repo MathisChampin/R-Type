@@ -7,6 +7,8 @@ int main()
     try
     {
         NmpServer::Server server;
+        System sys;
+        registry ecs = server.getEcs();
 
         std::thread server_thread([&server]() {
             server.run();
@@ -20,8 +22,9 @@ int main()
                     std::cout << "has client" << std::endl;
                     NmpServer::Packet res(42, NmpServer::EVENT::JOIN);
                     //server.broadcast(res);
+                    sys.position_system(ecs);
                     std::cout << "end" << std::endl;
-                }else 
+                } else 
                     std::cout << "no client" << std::endl;
 
             }
