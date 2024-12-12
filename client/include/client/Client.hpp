@@ -14,14 +14,15 @@ namespace NmpClient {
             Packet get_data() override;
             std::size_t get_id() const;
 
-            std::size_t _id;
         private:
             void evalResJoin(Packet &packet);
 
+            std::size_t _id;
             asio::io_context _io_context;
             asio::ip::udp::resolver _resolver;
             asio::ip::udp::endpoint _receiver_endpoint;
-            asio::ip::udp::socket _socket;
+            asio::ip::udp::socket _socket_Read;
+            asio::ip::udp::socket _socket_Send;
             std::vector<uint32_t> _bufferSerialize;
             std::array<uint32_t, 256> _bufferAsio;
             NmpBinary::Binary _binary;
