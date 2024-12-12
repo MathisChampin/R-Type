@@ -37,7 +37,7 @@ jobs:
       
       - name: Run Cppcheck on ECS Sources
         run: |
-          cppcheck --enable=all --std=c++17 --language=c++ --include=ecs/include ecs/src/
+          cppcheck --enable=all --std=c++17 --language=c++ --include=ECS/include ECS/src/
       
       - name: Run Cppcheck on Server Sources
         run: |
