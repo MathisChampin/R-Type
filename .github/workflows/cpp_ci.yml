@@ -18,21 +18,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Cppcheck
-        run: sudo apt-get update && sudo apt-get install -y cppcheck
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck build-essential
 
       - name: Install Node.js and Commitlint
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - run: npm install
+      - name: Install Commitlint Dependencies
+        run: npm install --save-dev @commitlint/config-conventional @commitlint/cli
 
       - name: Run Cppcheck
-        run: cppcheck --enable=all --std=c++17 --language=c++ src/
-        
+        run: |
+          # Adjust this path to the correct src directory if not in the root
+          cppcheck --enable=all --std=c++17 --language=c++ --project=compile_commands.json ./src/
+          cppcheck --enable=all --std=c++17 --language=c++ ./src/
+
       - name: Lint Commit Messages
         run: |
           npx --no-install commitlint --from=$(git rev-parse HEAD^)
-
-     
