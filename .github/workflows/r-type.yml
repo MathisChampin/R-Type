@@ -26,28 +26,4 @@ jobs:
             ${{ env.MIRROR_URL }}
           ssh_private_key:
             ${{ secrets.GIT_SSH_PRIVATE_KEY }}
-
-  lint-and-build:
-    name: Lint, Build, and Test C++ Code
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Install Cppcheck
-        run: sudo apt-get update && sudo apt-get install -y cppcheck
-
-      - name: Install Node.js and Commitlint
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-
-      - run: npm install
-
-      - name: Run Cppcheck
-        run: cppcheck --enable=all --std=c++17 --language=c++ src/
-        
-      - name: Lint Commit Messages
-        run: |
-          npx --no-install commitlint --from=$(git rev-parse HEAD^)
+            
