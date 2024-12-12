@@ -19,6 +19,7 @@
   "homepage": "https://github.com/MathisChampin/R-Type#readme",
   "devDependencies": {
     "@commitlint/cli": "^19.6.0",
-    "@commitlint/config-conventional": "^19.6.0"
+    "@commitlint/config-conventional": "^19.6.0",
+    "husky": "^9.1.7"
   }
 }
