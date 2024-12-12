@@ -1,0 +1,24 @@
+{
+  "name": "r-type",
+  "version": "1.0.0",
+  "description": "This repository contains the structure for an R-Type project with a **client** and a **server**, each in its own directory. The project uses CMake to manage configuration and compilation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathisChampin/R-Type.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MathisChampin/R-Type/issues"
+  },
+  "homepage": "https://github.com/MathisChampin/R-Type#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0"
+  }
+}
