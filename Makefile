@@ -25,11 +25,7 @@ CMAKE_GENERATED_DIRS = \
 	CPM_modules \
 	_deps
 
-all: prepare build
-
-prepare:
-	$(MKDIR) cmake
-	@test -f cmake/CPM.cmake || $(CPM_FETCH)
+all: build
 
 build:
 	cmake -S . -B $(BUILD_DIR) -DCMAKE_BUILD_TYPE=Release
@@ -45,10 +41,4 @@ server:
 	cmake --build $(BUILD_DIR) --target server
 
 clean:
-	$(RM) $(BUILD_DIR)
-	@for file in $(CMAKE_GENERATED_FILES); do \
-		[ -f $$file ] && $(RM) $$file; \
-	done
-	@for dir in $(CMAKE_GENERATED_DIRS); do \
-		[ -d $$dir ] && $(RM) $$dir; \
-	done
+	$(RM) $(BUILD_DIR) $(CMAKE_GENERATED_FILES) $(CMAKE_GENERATED_DIRS)
