@@ -46,4 +46,4 @@ jobs:
 
       - name: Lint Commit Messages
         run: |
-          npx --no-install commitlint --from=$(git rev-parse HEAD^)
+          npx --no-install commitlint --from=$(git rev-parse Client_socket)
