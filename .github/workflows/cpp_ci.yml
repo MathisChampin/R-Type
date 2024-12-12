@@ -31,11 +31,20 @@ jobs:
       - name: Install Commitlint Dependencies
         run: npm install --save-dev @commitlint/config-conventional @commitlint/cli
 
-      - name: Run Cppcheck
+      - name: Run Cppcheck on Client Sources
         run: |
-          # Adjust this path to the correct src directory if not in the root
-          cppcheck --enable=all --std=c++17 --language=c++ --project=compile_commands.json ./src/
-          cppcheck --enable=all --std=c++17 --language=c++ ./src/
+          cppcheck --enable=all --std=c++17 --language=c++ --project=compile_commands.json ../../client/src/
+          cppcheck --enable=all --std=c++17 --language=c++ ../../client/src/
+
+      - name: Run Cppcheck on ECS Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --project=compile_commands.json ../../ecs/src/
+          cppcheck --enable=all --std=c++17 --language=c++ ../../ecs/src/
+
+      - name: Run Cppcheck on Server Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --project=compile_commands.json ../../server/src/
+          cppcheck --enable=all --std=c++17 --language=c++ ../../server/src/
 
       - name: Lint Commit Messages
         run: |
