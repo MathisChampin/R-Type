@@ -97,7 +97,8 @@ namespace NmpServer
 {
     Server::Server() : _io_context(),
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
-        _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081))
+        _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081)),
+        _ptp(*this)
     {
         _bufferAsio.fill(0);
     }
@@ -114,25 +115,27 @@ namespace NmpServer
 
     void Server::send_data(Packet &packet)
     {
+        std::cout << "send packet" << std::endl;
         _binary.serialize(packet, _bufferSerialize);
         _socketSend.send_to(asio::buffer(_bufferSerialize), _remote_endpoint);
     }
 
-    void Server::get_data()
+    void Server::get_data() //devenir non bloquant
     {
         std::error_code ignored_error;
         std::size_t bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
 
         std::cout << "bytes: " << bytes << std::endl;
 
-        extract_bytes(bytes);       
+        extract_bytes(bytes);
+        NmpServer::Packet packet = _binary.deserialize(_bufferSerialize);
+        _ptp.fillPacket(packet);
+        _ptp.executeOpCode();
     }
 
     void Server::extract_bytes(std::size_t &bytes)
     {
-            std::cout << "wsh" << std::endl;
         for (std::size_t i = 0; i < bytes / sizeof(uint32_t); i++) {
-            std::cout << "test" << std::endl;
             uint32_t val = _bufferAsio[i];
             _bufferSerialize.push_back(val);
         }

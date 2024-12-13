@@ -21,6 +21,7 @@ namespace NmpClient {
             asio::io_context _io_context;
             asio::ip::udp::resolver _resolver;
             asio::ip::udp::endpoint _receiver_endpoint;
+            asio::ip::udp::endpoint _sender_endpoint;
             asio::ip::udp::socket _socket_Read;
             asio::ip::udp::socket _socket_Send;
             std::vector<uint32_t> _bufferSerialize;

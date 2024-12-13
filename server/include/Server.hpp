@@ -34,7 +34,7 @@ namespace NmpServer {
             std::queue<Packet> _queueInput;
 
             NmpBinary::Binary _binary;
-            //ProtocoleHandler _ptp;
+            ProtocoleHandler _ptp;
 
     };
 }
