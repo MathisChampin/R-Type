@@ -20,8 +20,19 @@ namespace NmpServer
 
     void ProtocoleHandler::fillPacket(Packet &packet)
     {
-        std::cout << "test id: " << packet.getId() << std::endl;
-        _pck = packet;
+        // std::queue<Packet> queue = _refServer.get()._queueInput;
+        // std::queue<Packet> tmp;
+        // std::size_t idx;
+
+        // for (; !queue.empty(); queue.pop()) {
+        //     Packet elem = queue.front();
+        //     tmp.push(elem);
+        //     std::cout << "package: " << idx++ << std::endl;
+        // }
+        // for (; !tmp.empty(); tmp.pop())
+        //     queue.push(tmp.front());
+        // std::cout << "test id: " << packet.getId() << std::endl;
+         _pck = packet;
     }
 
     void ProtocoleHandler::evalMove()
@@ -42,34 +53,30 @@ namespace NmpServer
                 std::cout << "DOWN" << std::endl;
                 _ecs.add_component<component::controllable>(player, {component::controllable::Down});
                 sys.control_system(_ecs);
-                auto endpoint = _refServer.get().getEndpoint();
                 std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos, endpoint);
+                _refServer.get().send_data(packetPos);
             } else if (direction == DIRECTION::UP) {
                 std::cout << "UP" << std::endl;
                 _ecs.add_component<component::controllable>(player, {component::controllable::Up});
                 sys.control_system(_ecs);
                 std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
-                auto endpoint = _refServer.get().getEndpoint();
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos, endpoint);
+                _refServer.get().send_data(packetPos);
             } else if (direction == DIRECTION::LEFT) {
                 std::cout << "LEFT" << std::endl;
                 _ecs.add_component<component::controllable>(player, {component::controllable::Left});
                 sys.control_system(_ecs);
                 std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
-                auto endpoint = _refServer.get().getEndpoint();
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos, endpoint);
+                _refServer.get().send_data(packetPos);
             } else if (direction == DIRECTION::RIGHT) {
                 std::cout << "RIGHT" << std::endl;
                 _ecs.add_component<component::controllable>(player, {component::controllable::Right});
                 sys.control_system(_ecs);
                 std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
-                auto endpoint = _refServer.get().getEndpoint();
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos, endpoint);
+                _refServer.get().send_data(packetPos);
             } else
                 std::cout << "NO DIRECTION" << std::endl;
         std::cout << "x " << position.x << " y " << position.y << std::endl;
@@ -102,8 +109,7 @@ namespace NmpServer
         auto lastPlayer = _vecPlayer.back();
 
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
-        auto lastendpoint = _refServer.get().getEndpoint();
-        _refServer.get().send_data(joinPacket, lastendpoint);
+        _refServer.get().send_data(joinPacket);
     }
 
     void ProtocoleHandler::initComponents()
