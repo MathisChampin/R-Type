@@ -46,6 +46,7 @@ namespace NmpBinary
             buffer.push_back(sprite.sizeX);
             buffer.push_back(sprite.sizeY);
         } else {
+            std::cout << "send id: " << id << std::endl;
             buffer.push_back(static_cast<uint32_t>(opcode));
             buffer.push_back(static_cast<uint32_t>(id));
         }
@@ -54,13 +55,16 @@ namespace NmpBinary
     NmpServer::Packet Binary::deserialize(std::vector<uint32_t> &buffer)
     {
         std::size_t id = static_cast<std::size_t>(buffer[0]);
+        std::cout << "id server deserialize: " << id << std::endl;
         NmpServer::EVENT event = static_cast<NmpServer::EVENT>(buffer[1]);
 
         if (event == NmpServer::EVENT::MOVE) {
             std::optional<NmpServer::DIRECTION> direction = std::nullopt;
             direction = static_cast<NmpServer::DIRECTION>(buffer[2]);
+            this->clearBuffer(buffer);
             return NmpServer::Packet(id, event, direction);
         }
+        this->clearBuffer(buffer);
         return NmpServer::Packet(id, event);
     }
 

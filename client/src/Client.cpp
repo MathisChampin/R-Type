@@ -8,9 +8,9 @@ namespace NmpClient
         asio::ip::udp::resolver::results_type endpoints =
             _resolver.resolve(asio::ip::udp::v4(), "127.0.0.1", "8080");
         _receiver_endpoint = *endpoints.begin();
-
         _socket.open(asio::ip::udp::v4());
         std::cout << "client bind to server 8080" << std::endl;
+
         Packet packetJoin(42, EVENT::JOIN);
         this->send_input(packetJoin);
         Packet resJoin = this->get_data();
