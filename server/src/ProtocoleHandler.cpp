@@ -5,17 +5,47 @@ namespace NmpServer
 {
     void ProtocoleHandler::executeOpCode()
     {
+        System sys;
         std::cout << "CALL PROTOCOLE" << std::endl;
         EVENT key = _pck.getOpCode();
         auto it = _mapFctOpCode.find(key);
         if (it != _mapFctOpCode.end()) {
             it->second();
         }
-
-        //
+        createEnnemies();
+        shootEnnemies();
+        sys.position_system(_ecs);
+        sys.collision_system(_ecs);
+        sys.kill_system(_ecs);
     }
 
-    ProtocoleHandler::ProtocoleHandler(Server &server) : _refServer(server)
+    void ProtocoleHandler::createEnnemies()
+    {
+        auto now = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsed = now - _lastEnemyCreationTime;
+
+        if (elapsed.count() >= 2.0) {
+            std::cout << "creation of ennemies" << std::endl;
+            initEnnemies();
+            _lastEnemyCreationTime = now;
+        }
+    }
+
+    void ProtocoleHandler::shootEnnemies()
+    {
+        System sys;
+
+        auto now = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsed = now - _lastShootCreationTime;
+
+        if (elapsed.count() >= 3.0) {
+            std::cout << "shoot of ennemies" << std::endl;
+            sys.shoot_system_ennemies(_ecs);
+            _lastShootCreationTime = now;
+        }
+    }
+
+    ProtocoleHandler::ProtocoleHandler(Server &server) : _refServer(server), _lastEnemyCreationTime(std::chrono::steady_clock::now()), _lastShootCreationTime(std::chrono::steady_clock::now())
     {
         std::cout << "protocole Handler create" << std::endl;
         this->initComponents();
@@ -23,8 +53,9 @@ namespace NmpServer
 
     void ProtocoleHandler::fillPacket(Packet &packet)
     {
-         _pck = packet;
+        _pck = packet;
     }
+
 
 
     void ProtocoleHandler::evalMove()

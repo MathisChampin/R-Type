@@ -80,11 +80,11 @@ void System::collision_system(registry &reg)
     auto &lifes = reg.get_components<component::life>();
     auto &scores = reg.get_components<component::score>();
     auto &attributes = reg.get_components<component::attribute>();
-    auto &idPlayers = reg.get_components<component::idPlayer>();
     auto &states = reg.get_components<component::state>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Shoot) {
+            auto &idPlayers = reg.get_components<component::idPlayer>();
             auto &shoot_id = idPlayers[i];
             for (size_t j = 0; j < attributes.size(); j++) {
                 if (should_check_collision(j, attributes, shoot_id)) {

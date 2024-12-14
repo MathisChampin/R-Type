@@ -36,7 +36,6 @@ namespace NmpServer
             Packet packet;
             {
                 std::unique_lock<std::mutex> lock(_queueMutex);
-
                 _cv.wait(lock, [this] { return !_queue.empty(); });
                 packet = _queue.front();
                 _queue.pop();
@@ -45,6 +44,7 @@ namespace NmpServer
 
             _ptp.fillPacket(packet);
             _ptp.executeOpCode();
+
         }
     }
 
