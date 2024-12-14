@@ -25,6 +25,7 @@ set(SOURCES
     ${SRC_SYSTEM}/collision_system.cpp
     ${SRC_SYSTEM}/level_system.cpp
     ${SRC_SYSTEM}/shoot_system.cpp
+    ${SRC_SYSTEM}/kill_system.cpp
 )
 
 set(MAIN_SOURCES
@@ -43,6 +44,7 @@ set(TEST_SOURCES
     ${TEST_SYS}/testsCollision.cpp
     ${TEST_SYS}/testsLevel.cpp
     ${TEST_SYS}/testsShoot.cpp
+    ${TEST_SYS}/testsKill.cpp
 )
 endif()
 

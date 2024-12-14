@@ -91,8 +91,17 @@ public:
         for (auto& func : _remove_functions) {
             func.second(*this, e);
         }
+    
+        auto it = std::find_if(_entities.begin(), _entities.end(), [&e](const Entity& entity) {
+            return entity.get_id() == e.get_id();
+        });
+    
+        if (it != _entities.end()) {
+            _entities.erase(it);
+        }
         _available_entities.push_back(e);
     }
+
 
     /**
      * @brief Adds a component to an entity by copying the provided component.

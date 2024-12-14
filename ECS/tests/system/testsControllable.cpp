@@ -20,7 +20,7 @@ Test(ControlSystem, MoveRight) {
     sys.control_system(reg);
 
     const auto &pos = positions[entity.get_id()];
-    cr_assert_eq(pos.x, 1, "Expected position x to be 1, but got %d", pos.x);
+    cr_assert_eq(pos.x, 10, "Expected position x to be 10, but got %d", pos.x);
     cr_assert_eq(pos.y, 0, "Expected position y to be 0, but got %d", pos.y);
 }
 
@@ -39,7 +39,7 @@ Test(ControlSystem, MoveUp) {
 
     const auto &pos = positions[entity.get_id()];
     cr_assert_eq(pos.x, 0, "Expected position x to be 0, but got %d", pos.x);
-    cr_assert_eq(pos.y, -1, "Expected position y to be -1, but got %d", pos.y);
+    cr_assert_eq(pos.y, -10, "Expected position y to be -10, but got %d", pos.y);
 }
 
 Test(ControlSystem, MoveDown) {
@@ -57,7 +57,7 @@ Test(ControlSystem, MoveDown) {
 
     const auto &pos = positions[entity.get_id()];
     cr_assert_eq(pos.x, 0, "Expected position x to be 0, but got %d", pos.x);
-    cr_assert_eq(pos.y, 1, "Expected position y to be 1, but got %d", pos.y);
+    cr_assert_eq(pos.y, 10, "Expected position y to be 10, but got %d", pos.y);
 }
 
 Test(ControlSystem, MoveLeft) {
@@ -74,7 +74,7 @@ Test(ControlSystem, MoveLeft) {
     sys.control_system(reg);
 
     const auto &pos = positions[entity.get_id()];
-    cr_assert_eq(pos.x, -1, "Expected position x to be -1, but got %d", pos.x);
+    cr_assert_eq(pos.x, -10, "Expected position x to be -10, but got %d", pos.x);
     cr_assert_eq(pos.y, 0, "Expected position y to be 0, but got %d", pos.y);
 }
 
