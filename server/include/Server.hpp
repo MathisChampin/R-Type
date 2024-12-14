@@ -19,11 +19,13 @@ namespace NmpServer {
             void send_data(Packet &packet) override;
             void extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec) override;
 
-            void handle_get_data(const std::error_code &error, std::size_t bytes);
-            void handle_send_data(const std::error_code &error, std::size_t bytes);
-            void add_to_queue(Packet &packet);
-
         private:
+            void threadInput();
+            void threadEcs();
+            std::queue<Packet> _queue;
+            std::mutex _queueMutex;
+            std::condition_variable _cv;
+
             asio::io_context _io_context;
             asio::ip::udp::socket _socketRead;
             asio::ip::udp::socket _socketSend;

@@ -11,6 +11,8 @@ namespace NmpServer
         if (it != _mapFctOpCode.end()) {
             it->second();
         }
+
+        //
     }
 
     ProtocoleHandler::ProtocoleHandler(Server &server) : _refServer(server)
@@ -89,9 +91,7 @@ namespace NmpServer
         std::cout << "id client: " << _pck.getId() << std::endl;
 
         std::size_t idClient{ _pck.getId()};
-        //auto &pos = _ecs.get_components<component::position>();
         auto player = _ecs.get_entity(idClient);
-        //auto &position = pos[player.get_id()];
         System sys;
 
         _ecs.emplace_component<component::controllable>(player, component::controllable::Shoot);

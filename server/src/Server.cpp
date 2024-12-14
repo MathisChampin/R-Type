@@ -107,9 +107,36 @@ namespace NmpServer
     {
         _io_context.run();
 
+        std::thread inputThread(&Server::threadInput, this);
+        std::thread ecsThread(&Server::threadEcs, this);
+
+        inputThread.join();
+        ecsThread.join();
+    }
+
+    void Server::threadInput()
+    {
         while (true) {
-            std::cout << "Server is running on port 8080..." << std::endl;
-            this->get_data();
+            get_data();
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+    }
+
+    void Server::threadEcs()
+    {
+        while (true) {
+            Packet packet;
+            {
+                std::unique_lock<std::mutex> lock(_queueMutex);
+
+                _cv.wait(lock, [this] { return !_queue.empty(); });
+                packet = _queue.front();
+                _queue.pop();
+            }
+
+            _ptp.fillPacket(packet);
+            _ptp.executeOpCode();
         }
     }
 
@@ -117,7 +144,6 @@ namespace NmpServer
     {
         std::cout << "send packet" << std::endl;
 
-        // Afficher le contenu de _remote_endpoint avant l'envoi
         std::cout << "Sending to remote endpoint: " 
                   << _remote_endpoint.address().to_string() << ":"
                   << _remote_endpoint.port() << std::endl;
@@ -150,8 +176,10 @@ namespace NmpServer
 
                 extract_bytes(bytes, rawData);
                 NmpServer::Packet packet = _binary.deserialize(rawData);
-                _ptp.fillPacket(packet);
-                _ptp.executeOpCode();
+
+                std::lock_guard<std::mutex> lock(_queueMutex);
+                _queue.push(packet);
+                _cv.notify_one();
             } else {
                 std::cout << "No data available, continuing..." << std::endl;
             }
@@ -159,7 +187,6 @@ namespace NmpServer
             std::cout << "Error while receiving data: " << e.what() << std::endl;
         }
 
-        // Si nécessaire, réinitialisez le mode non-bloquant
         _socketRead.non_blocking(false);
     }
 
