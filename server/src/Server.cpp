@@ -130,23 +130,37 @@ namespace NmpServer
         _bufferSerialize.clear();
     }
 
-    void Server::get_data() //devenir non bloquant
+    void Server::get_data() 
     {
         std::vector<uint32_t> rawData;
         std::error_code ignored_error;
-        std::size_t bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
 
-        // Afficher le contenu de _remote_endpoint après réception
-        std::cout << "Received data from remote endpoint: " 
-                  << _remote_endpoint.address().to_string() << ":"
-                  << _remote_endpoint.port() << std::endl;
+        _socketRead.non_blocking(true);
 
-        std::cout << "bytes: " << bytes << std::endl;
+        std::size_t bytes = 0;
+        try {
+            bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
 
-        extract_bytes(bytes, rawData);
-        NmpServer::Packet packet = _binary.deserialize(rawData);
-        _ptp.fillPacket(packet);
-        _ptp.executeOpCode();
+            if (bytes > 0) {
+                std::cout << "Received data from remote endpoint: " 
+                          << _remote_endpoint.address().to_string() << ":"
+                          << _remote_endpoint.port() << std::endl;
+
+                std::cout << "bytes: " << bytes << std::endl;
+
+                extract_bytes(bytes, rawData);
+                NmpServer::Packet packet = _binary.deserialize(rawData);
+                _ptp.fillPacket(packet);
+                _ptp.executeOpCode();
+            } else {
+                std::cout << "No data available, continuing..." << std::endl;
+            }
+        } catch (const std::system_error& e) {
+            std::cout << "Error while receiving data: " << e.what() << std::endl;
+        }
+
+        // Si nécessaire, réinitialisez le mode non-bloquant
+        _socketRead.non_blocking(false);
     }
 
 
