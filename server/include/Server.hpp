@@ -16,9 +16,10 @@ namespace NmpServer {
 
             void run() override;
             void get_data() override;
-            void send_data(Packet &packet) override;
+            void send_data(Packet &packet, asio::ip::udp::endpoint enpoint) override;
             void extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec) override;
 
+            asio::ip::udp::endpoint getLastEndpoint() const;
         private:
             void threadInput();
             void threadEcs();
@@ -30,6 +31,7 @@ namespace NmpServer {
             asio::ip::udp::socket _socketRead;
             asio::ip::udp::socket _socketSend;
             asio::ip::udp::endpoint _remote_endpoint;
+            asio::ip::udp::endpoint _copy_endpoint;
 
             std::vector<uint32_t> _bufferSerialize;
             std::array<uint32_t, 256> _bufferAsio;

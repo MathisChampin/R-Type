@@ -23,20 +23,9 @@ namespace NmpServer
 
     void ProtocoleHandler::fillPacket(Packet &packet)
     {
-        // std::queue<Packet> queue = _refServer.get()._queueInput;
-        // std::queue<Packet> tmp;
-        // std::size_t idx;
-
-        // for (; !queue.empty(); queue.pop()) {
-        //     Packet elem = queue.front();
-        //     tmp.push(elem);
-        //     std::cout << "package: " << idx++ << std::endl;
-        // }
-        // for (; !tmp.empty(); tmp.pop())
-        //     queue.push(tmp.front());
-        // std::cout << "test id: " << packet.getId() << std::endl;
          _pck = packet;
     }
+
 
     void ProtocoleHandler::evalMove()
     {
@@ -46,6 +35,14 @@ namespace NmpServer
         std::size_t idClient{ _pck.getId()};
         auto &pos = _ecs.get_components<component::position>();
         auto player = _ecs.get_entity(idClient);
+    
+         asio::ip::udp::endpoint foundEndpoint;
+        for (const auto &pair : _vecPlayer) {
+            if (pair.first == player) {
+                foundEndpoint = pair.second;
+                break;
+            }
+        }
         auto &position = pos[player.get_id()];
         System sys;
 
@@ -58,28 +55,28 @@ namespace NmpServer
                 sys.control_system(_ecs);
                 std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos);
+                _refServer.get().send_data(packetPos, foundEndpoint);
             } else if (direction == DIRECTION::UP) {
                 std::cout << "UP" << std::endl;
                 _ecs.add_component<component::controllable>(player, {component::controllable::Up});
                 sys.control_system(_ecs);
                 std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos);
+                _refServer.get().send_data(packetPos, foundEndpoint);
             } else if (direction == DIRECTION::LEFT) {
                 std::cout << "LEFT" << std::endl;
                 _ecs.add_component<component::controllable>(player, {component::controllable::Left});
                 sys.control_system(_ecs);
                 std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos);
+                _refServer.get().send_data(packetPos, foundEndpoint);
             } else if (direction == DIRECTION::RIGHT) {
                 std::cout << "RIGHT" << std::endl;
                 _ecs.add_component<component::controllable>(player, {component::controllable::Right});
                 sys.control_system(_ecs);
                 std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
                 Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos);
+                _refServer.get().send_data(packetPos, foundEndpoint);
             } else
                 std::cout << "NO DIRECTION" << std::endl;
         std::cout << "x " << position.x << " y " << position.y << std::endl;
@@ -107,11 +104,12 @@ namespace NmpServer
     {
         Entity player;
         this->initPlayer();
-        auto lastPlayer = _vecPlayer.back();
+        auto lastPlayer = _vecPlayer.back().first;
+        auto lastEndpoint = _vecPlayer.back().second;
 
-        std::cout << "id new client: " << lastPlayer.get_id() << std::endl;
+        
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
-        _refServer.get().send_data(joinPacket);
+        _refServer.get().send_data(joinPacket, lastEndpoint);
     }
 
     void ProtocoleHandler::initComponents()
@@ -130,6 +128,7 @@ namespace NmpServer
     void ProtocoleHandler::initPlayer()
     {
         Entity player = _ecs.spawn_entity();
+        auto lastEndpoint = _refServer.get().getLastEndpoint();
 
         for (size_t i = 0; i < 4; i++) {
             if (_vecPlayer.size() == 0)
@@ -149,7 +148,7 @@ namespace NmpServer
         _ecs.add_component<component::size>(player, {32, 14});
         _ecs.add_component<component::state>(player, {component::state::Alive});
         _ecs.add_component<component::velocity>(player, {0, 0});
-        _vecPlayer.push_back(player);  
+        _vecPlayer.push_back(std::make_pair(player, lastEndpoint));  
     }
 
     void ProtocoleHandler::initEnnemies()

@@ -16,6 +16,8 @@
 
 #include <functional>
 #include <iostream>
+#include <asio.hpp>
+#include <utility>
 #include <random>
 #include <map>
 
@@ -52,6 +54,6 @@ namespace NmpServer {
                 {{EVENT::QUIT}, [this]{return evalQuit();}}, 
                 {{EVENT::JOIN}, [this]{return evalJoin();}}, 
             };
-            std::vector<Entity> _vecPlayer;
+            std::vector<std::pair<Entity, asio::ip::udp::endpoint>> _vecPlayer;
     };
 }
