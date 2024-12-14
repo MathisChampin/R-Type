@@ -35,21 +35,34 @@ bool is_player(const component::attribute& attribute)
     return false;
 }
 
-void handle_collision_with_player(size_t j, sparse_array<component::life>& lifes)
+void handle_collision_with_player(size_t j,
+    sparse_array<component::life> &lifes,
+    sparse_array<component::state> &states)
 {
     auto &life = lifes[j];
+    auto &state = states[j];
+
     if (life.life > 0) {
         life.life -= 1;
     }
+    if (life.life <= 0) {
+        state._stateKey = component::state::stateKey::Dead;
+    }
 }
 
-void handle_collision_with_enemy(size_t shoot_id, sparse_array<component::score>& scores)
+void handle_collision_with_enemy(size_t shoot_id, size_t idEnnemy,
+    sparse_array<component::score> &scores,
+    sparse_array<component::state> &states)
 {
     auto &score = scores[shoot_id];
+    auto &state = states[idEnnemy];
     score.score += 10;
+    state._stateKey = component::state::stateKey::Dead;
 }
 
-bool should_check_collision(size_t j, const sparse_array<component::attribute>& attributes, const component::idPlayer& shoot_id)
+bool should_check_collision(size_t j,
+    const sparse_array<component::attribute> &attributes,
+    const component::idPlayer &shoot_id)
 {
     if ((attributes[j]._type == component::attribute::Player1 ||
         attributes[j]._type == component::attribute::Player2 ||
@@ -68,6 +81,7 @@ void System::collision_system(registry &reg)
     auto &scores = reg.get_components<component::score>();
     auto &attributes = reg.get_components<component::attribute>();
     auto &idPlayers = reg.get_components<component::idPlayer>();
+    auto &states = reg.get_components<component::state>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Shoot) {
@@ -76,9 +90,9 @@ void System::collision_system(registry &reg)
                 if (should_check_collision(j, attributes, shoot_id)) {
                     if (check_collision(positions, sizes, i, j)) {
                         if (is_player(attributes[j])) {
-                            handle_collision_with_player(j, lifes);
+                            handle_collision_with_player(j, lifes, states);
                         } else if (attributes[j]._type == component::attribute::Ennemies) {
-                            handle_collision_with_enemy(shoot_id.id, scores);
+                            handle_collision_with_enemy(shoot_id.id, j, scores, states);
                         }
                     }
                 }
