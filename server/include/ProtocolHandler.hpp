@@ -43,6 +43,8 @@ namespace NmpServer {
             void initComponents();
             void createEnnemies();
             void shootEnnemies();
+            void sendEntity();
+            uint32_t getId(component::attribute &att);
 
             std::reference_wrapper<Server> _refServer;
             registry _ecs;

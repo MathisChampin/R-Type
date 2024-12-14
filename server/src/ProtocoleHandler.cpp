@@ -17,6 +17,7 @@ namespace NmpServer
         sys.position_system(_ecs);
         sys.collision_system(_ecs);
         sys.kill_system(_ecs);
+        sendEntity();
     }
 
     void ProtocoleHandler::createEnnemies()
@@ -42,6 +43,49 @@ namespace NmpServer
             std::cout << "shoot of ennemies" << std::endl;
             sys.shoot_system_ennemies(_ecs);
             _lastShootCreationTime = now;
+        }
+    }
+
+    uint32_t ProtocoleHandler::getId(component::attribute &att)
+    {
+        uint32_t id = 0;
+
+        if (att._type == component::attribute::Player1 ||
+            att._type == component::attribute::Player2 ||
+            att._type == component::attribute::Player3 ||
+            att._type == component::attribute::Player4)
+            id = 1;
+        if (att._type == component::attribute::Ennemies)
+            id = 2;
+        if (att._type == component::attribute::Shoot)
+            id = 3;
+        return id;
+    }
+
+    void ProtocoleHandler::sendEntity()
+    {
+        auto &positions = _ecs.get_components<component::position>();
+        auto &states = _ecs.get_components<component::state>();
+        auto &sizes = _ecs.get_components<component::size>();
+        auto &attributes = _ecs.get_components<component::attribute>();
+        int id = 0;
+
+        for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
+            auto &st = states[i];
+            auto &att = attributes[i];
+            if (st._stateKey == component::state::stateKey::Alive) {
+                id = getId(att);
+                auto &pos = positions[i];
+                auto &s = sizes[i];
+                SpriteInfo sprite = {
+                    id,
+                    pos.x,
+                    pos.y,
+                    s.x,
+                    s.y
+                };
+                Packet packet(EVENT::SPRITE, sprite);
+            }
         }
     }
 
