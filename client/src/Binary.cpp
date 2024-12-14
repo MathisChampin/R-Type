@@ -47,8 +47,7 @@ namespace NmpBinary
             int x = static_cast<int>(buffer[1]);
             int y = static_cast<int>(buffer[2]);
             return NmpClient::Packet(event, x, y);
-        }
-        if (event == NmpClient::EVENT::SPRITE) {
+        } else if (event == NmpClient::EVENT::SPRITE) {
             NmpClient::SpriteInfo sprite = {
                 buffer[1],
                 buffer[2],
@@ -56,10 +55,12 @@ namespace NmpBinary
                 buffer[4],
                 buffer[5]};
             return NmpClient::Packet(NmpClient::EVENT::SPRITE, sprite);
-        } else {
+        } else if (event == NmpClient::EVENT::JOIN) {
             std::size_t id = static_cast<std::size_t>(buffer[1]);
+            std::cout << "id deserialize: " << id << std::endl;
             return NmpClient::Packet(id, event);
         }
+        return NmpClient::Packet(event, 0, 0);
     }
 
     void Binary::clearBuffer(std::vector<uint32_t> &buffer)
