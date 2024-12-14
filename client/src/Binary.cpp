@@ -30,11 +30,15 @@ namespace NmpBinary
         NmpClient::EVENT opcode = packet.getOpCode();
         std::size_t id = packet.getId();
 
+        std::cout << "id serialize: " << id << std::endl;
+        std::cout << static_cast<int>(opcode) << std::endl;
         buffer.push_back(static_cast<uint32_t>(id));
         buffer.push_back(static_cast<uint32_t>(opcode));
 
         if (opcode == NmpClient::EVENT::MOVE) {
             NmpClient::DIRECTION direction = packet.getArg().value();
+            std::cout << static_cast<int>(direction) << std::endl;
+
             buffer.push_back(static_cast<uint32_t>(direction));
         }
     }

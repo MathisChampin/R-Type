@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <queue>
+#include <mutex>
 #include "../include/client/Client.hpp"
 
 class Player
@@ -15,6 +17,7 @@ public:
     void update(float deltaTime);
     void render(sf::RenderWindow &window);
     void shoot();
+    void sendQueuedMovements();
 
 private:
     sf::Sprite m_sprite;
@@ -27,6 +30,8 @@ private:
 
     NmpClient::Client &m_client;
     sf::Texture m_bulletTexture;
+    std::queue<NmpClient::Packet> m_movementQueue;
+    std::mutex m_queueMutex;
 
     void sendMovementPacket(NmpClient::DIRECTION direction);
     void loadTexture(const std::string &textureFile);
