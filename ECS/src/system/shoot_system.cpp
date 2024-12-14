@@ -4,6 +4,7 @@
 #include "attribute.hpp"
 #include "velocity.hpp"
 #include "idPlayer.hpp"
+#include "state.hpp"
 #include "size.hpp"
 
 
@@ -19,6 +20,7 @@ void create_shoot(Entity entity, registry &reg)
     reg.add_component<component::velocity>(shoot, {10, 0});
     reg.add_component<component::size>(shoot, {10, 10});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
 }
 
 void create_shoot_ennemie(Entity entity, registry &reg)
@@ -33,6 +35,7 @@ void create_shoot_ennemie(Entity entity, registry &reg)
     reg.add_component<component::velocity>(shoot, {10, 0});
     reg.add_component<component::size>(shoot, {-10, 10});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
 }
 
 void System::shoot_system_player(registry &reg)
