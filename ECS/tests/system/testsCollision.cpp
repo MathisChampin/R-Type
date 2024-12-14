@@ -40,13 +40,17 @@ Test(CollisionSystem, PlayerHitByShoot) {
     reg.add_component<component::size>(shoot, {1, 1});
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot});
     reg.add_component<component::idPlayer>(shoot, {enemy.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+
     sys.collision_system(reg);
 
     const auto &l = life[player.get_id()];
     const auto &s = state[enemy.get_id()];
+    const auto &state_shoot = state[shoot.get_id()];
 
     cr_assert_eq(l.life, 2, "Player's life should be decremented by 1, but is %d", l.life);
     cr_assert_eq(s._stateKey, 1, "Ennemy's should be alive = 1, but is %d", s._stateKey);
+    cr_assert_eq(state_shoot._stateKey, 0, "shoot's should be dead = 0, but is %d", state_shoot._stateKey);
 }
 
 Test(CollisionSystem, EnemyHitByShoot) {
@@ -80,15 +84,17 @@ Test(CollisionSystem, EnemyHitByShoot) {
     reg.add_component<component::size>(shoot, {1, 1});
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot});
     reg.add_component<component::idPlayer>(shoot, {player.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
 
     sys.collision_system(reg);
 
     const auto &s = score[player.get_id()];
     const auto &st = state[enemy.get_id()];
+    const auto &state_shoot = state[shoot.get_id()];
 
     cr_assert_eq(s.score, 10, "Player's score should be increased by 10, but is %d", s.score);
     cr_assert_eq(st._stateKey, 0, "Ennemy's should be dead = 0, but is %d", st._stateKey);
-
+    cr_assert_eq(state_shoot._stateKey, 0, "shoot's should be dead = 0, but is %d", state_shoot._stateKey);
 }
 
 Test(CollisionSystem, NoCollisionBetweenPlayerAndEnemy) {
@@ -116,6 +122,7 @@ Test(CollisionSystem, NoCollisionBetweenPlayerAndEnemy) {
     reg.add_component<component::size>(shoot, {1, 1});
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot});
     reg.add_component<component::idPlayer>(shoot, {player.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
 
     Entity enemy = reg.spawn_entity();
     reg.add_component<component::position>(enemy, {50, 50});
@@ -134,7 +141,9 @@ Test(CollisionSystem, NoCollisionBetweenPlayerAndEnemy) {
 
     const auto &st = state[enemy.get_id()];
     cr_assert_eq(st._stateKey, 1, "Ennemy's should be alive = 1, but is %d", st._stateKey);
-
+    
+    const auto &state_shoot = state[shoot.get_id()];
+    cr_assert_eq(state_shoot._stateKey, 1, "shoot's should be alive = 1, but is %d", state_shoot._stateKey);
 }
 
 Test(CollisionSystem, MultipleCollisions) {
@@ -179,12 +188,14 @@ Test(CollisionSystem, MultipleCollisions) {
     reg.add_component<component::size>(shoot1, {1, 1});
     reg.add_component<component::attribute>(shoot1, {component::attribute::Shoot});
     reg.add_component<component::idPlayer>(shoot1, {player.get_id()});
+    reg.add_component<component::state>(shoot1, {component::state::stateKey::Alive});
 
     Entity shoot2 = reg.spawn_entity();
     reg.add_component<component::position>(shoot2, {50, 50});
     reg.add_component<component::size>(shoot2, {1, 1});
     reg.add_component<component::attribute>(shoot2, {component::attribute::Shoot});
     reg.add_component<component::idPlayer>(shoot2, {player.get_id()});
+    reg.add_component<component::state>(shoot2, {component::state::stateKey::Alive});
 
     sys.collision_system(reg);
     auto &l = life[player.get_id()];
@@ -196,4 +207,8 @@ Test(CollisionSystem, MultipleCollisions) {
     cr_assert_eq(st._stateKey, 0, "Ennemy's should be dead = 0, but is %d", st._stateKey);
     const auto &st2 = state[enemy2.get_id()];
     cr_assert_eq(st2._stateKey, 0, "Ennemy's should be dead = 0, but is %d", st2._stateKey);
+    const auto &state_shoot1 = state[shoot1.get_id()];
+    cr_assert_eq(state_shoot1._stateKey, 0, "shoot's should be dead = 0, but is %d", state_shoot1._stateKey);
+    const auto &state_shoot2 = state[shoot2.get_id()];
+    cr_assert_eq(state_shoot2._stateKey, 0, "shoot's should be dead = 0, but is %d", state_shoot2._stateKey);
 }

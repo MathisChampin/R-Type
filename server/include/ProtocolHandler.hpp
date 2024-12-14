@@ -16,7 +16,10 @@
 
 #include <functional>
 #include <iostream>
+#include <asio.hpp>
+#include <utility>
 #include <random>
+#include <chrono>
 #include <map>
 
 
@@ -29,19 +32,19 @@ namespace NmpServer {
 
             void executeOpCode();
             void fillPacket(Packet &packet);
+
+        private:
             void evalMove();
             void evalShoot();
             void evalQuit();
             void evalJoin();
-
-            registry getRegistry() {
-                return _ecs;
-            }
-
-        private:
             void initPlayer();
             void initEnnemies();
             void initComponents();
+            void createEnnemies();
+            void shootEnnemies();
+            void sendEntity();
+            uint32_t getId(component::attribute &att);
 
             std::reference_wrapper<Server> _refServer;
             registry _ecs;
@@ -52,6 +55,8 @@ namespace NmpServer {
                 {{EVENT::QUIT}, [this]{return evalQuit();}}, 
                 {{EVENT::JOIN}, [this]{return evalJoin();}}, 
             };
-            std::vector<Entity> _vecPlayer;
+            std::vector<std::pair<Entity, asio::ip::udp::endpoint>> _vecPlayer;
+            std::chrono::steady_clock::time_point _lastEnemyCreationTime;
+            std::chrono::steady_clock::time_point _lastShootCreationTime;
     };
 }
