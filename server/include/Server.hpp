@@ -17,7 +17,7 @@ namespace NmpServer {
             void run() override;
             void get_data() override;
             void send_data(Packet &packet) override;
-            void extract_bytes(std::size_t &bytes) override;
+            void extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec) override;
 
             void handle_get_data(const std::error_code &error, std::size_t bytes);
             void handle_send_data(const std::error_code &error, std::size_t bytes);

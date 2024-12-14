@@ -5,6 +5,7 @@ namespace NmpServer
 {
     void ProtocoleHandler::executeOpCode()
     {
+        std::cout << "CALL PROTOCOLE" << std::endl;
         EVENT key = _pck.getOpCode();
         auto it = _mapFctOpCode.find(key);
         if (it != _mapFctOpCode.end()) {
@@ -108,6 +109,7 @@ namespace NmpServer
         this->initPlayer();
         auto lastPlayer = _vecPlayer.back();
 
+        std::cout << "id new client: " << lastPlayer.get_id() << std::endl;
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
         _refServer.get().send_data(joinPacket);
     }

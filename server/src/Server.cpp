@@ -116,28 +116,45 @@ namespace NmpServer
     void Server::send_data(Packet &packet)
     {
         std::cout << "send packet" << std::endl;
+
+        // Afficher le contenu de _remote_endpoint avant l'envoi
+        std::cout << "Sending to remote endpoint: " 
+                  << _remote_endpoint.address().to_string() << ":"
+                  << _remote_endpoint.port() << std::endl;
+
         _binary.serialize(packet, _bufferSerialize);
+        for (auto elem: _bufferSerialize) {
+            std::cout << "elem: " << elem << std::endl;
+        }
         _socketSend.send_to(asio::buffer(_bufferSerialize), _remote_endpoint);
+        _bufferSerialize.clear();
     }
 
     void Server::get_data() //devenir non bloquant
     {
+        std::vector<uint32_t> rawData;
         std::error_code ignored_error;
         std::size_t bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
 
+        // Afficher le contenu de _remote_endpoint après réception
+        std::cout << "Received data from remote endpoint: " 
+                  << _remote_endpoint.address().to_string() << ":"
+                  << _remote_endpoint.port() << std::endl;
+
         std::cout << "bytes: " << bytes << std::endl;
 
-        extract_bytes(bytes);
-        NmpServer::Packet packet = _binary.deserialize(_bufferSerialize);
+        extract_bytes(bytes, rawData);
+        NmpServer::Packet packet = _binary.deserialize(rawData);
         _ptp.fillPacket(packet);
         _ptp.executeOpCode();
     }
 
-    void Server::extract_bytes(std::size_t &bytes)
+
+    void Server::extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec)
     {
         for (std::size_t i = 0; i < bytes / sizeof(uint32_t); i++) {
             uint32_t val = _bufferAsio[i];
-            _bufferSerialize.push_back(val);
+            vec.push_back(val);
         }
 
         _bufferAsio.fill(0);
