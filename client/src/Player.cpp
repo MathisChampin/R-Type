@@ -71,12 +71,14 @@ void Player::handleInput()
     }
 
     // Gestion du tir
+    static sf::Clock shootClock;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-        if (!keyStates[sf::Keyboard::Space]) {
+        if (shootClock.getElapsedTime().asSeconds() >= 0.2f) {
             shoot();
             std::cout << "Pew pew !" << std::endl;
-            keyStates[sf::Keyboard::Space] = true;
+            shootClock.restart();
         }
+        keyStates[sf::Keyboard::Space] = true;
     } else {
         keyStates[sf::Keyboard::Space] = false;
     }
