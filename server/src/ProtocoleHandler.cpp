@@ -85,6 +85,10 @@ namespace NmpServer
                     s.y
                 };
                 Packet packet(EVENT::SPRITE, sprite);
+
+                for (const auto &[entity, endpoint] : _vecPlayer) {
+                    _refServer.get().send_data(packet, endpoint);
+                }
             }
         }
     }
