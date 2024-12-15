@@ -12,8 +12,8 @@ namespace NmpServer
         if (it != _mapFctOpCode.end()) {
             it->second();
         }
-        createEnnemies();
-        shootEnnemies();
+        //createEnnemies();
+        //shootEnnemies();
         sys.position_system(_ecs);
         sys.collision_system(_ecs);
         sys.kill_system(_ecs);
@@ -22,14 +22,14 @@ namespace NmpServer
 
     void ProtocoleHandler::createEnnemies()
     {
-        auto now = std::chrono::steady_clock::now();
-        std::chrono::duration<double> elapsed = now - _lastEnemyCreationTime;
+        // auto now = std::chrono::steady_clock::now();
+        // std::chrono::duration<double> elapsed = now - _lastEnemyCreationTime;
 
-        if (elapsed.count() >= 2.0) {
-            std::cout << "creation of ennemies" << std::endl;
-            initEnnemies();
-            _lastEnemyCreationTime = now;
-        }
+        // if (elapsed.count() >= 2.0) {
+        //     std::cout << "creation of ennemies" << std::endl;
+        //     initEnnemies();
+        //     _lastEnemyCreationTime = now;
+        // }
     }
 
     void ProtocoleHandler::shootEnnemies()
@@ -93,6 +93,7 @@ namespace NmpServer
     {
         std::cout << "protocole Handler create" << std::endl;
         this->initComponents();
+        this->createEnnemies();
     }
 
     void ProtocoleHandler::fillPacket(Packet &packet)
