@@ -1,6 +1,6 @@
 #include "../include/Player.hpp"
 #include "../include/client/ClientBinary.hpp"
-#include <thread> // Ajouter cette inclusion pour std::this_thread::sleep_for
+#include <thread>
 #include <chrono>
 #include <iostream>
 #include <algorithm>
@@ -39,8 +39,6 @@ void Player::handleInput()
         {sf::Keyboard::Space, false}
     };
 
-    bool hasMoved = false;
-
     const std::vector<std::pair<sf::Keyboard::Key, NmpClient::DIRECTION>> directions = {
         {sf::Keyboard::Up, NmpClient::DIRECTION::UP},
         {sf::Keyboard::Down, NmpClient::DIRECTION::DOWN},
@@ -48,23 +46,31 @@ void Player::handleInput()
         {sf::Keyboard::Right, NmpClient::DIRECTION::RIGHT}
     };
 
+    bool movementDetected = false;
+
     for (const auto& [key, direction] : directions) {
         if (sf::Keyboard::isKeyPressed(key)) {
-            if (!keyStates[key]) {
-                sendMovementPacket(direction);
-                keyStates[key] = true; 
-                hasMoved = true;
+            std::cout << "Key pressed: " << key << std::endl;
+            NmpClient::Packet packet(m_client.get_id(), NmpClient::EVENT::MOVE, direction);
+            {
+                std::lock_guard<std::mutex> lock(m_queueMutex);
+                m_movementQueue.push(packet);
             }
+            keyStates[key] = true;
+            movementDetected = true;
         } else {
             keyStates[key] = false;
         }
+
+        sendQueuedMovements();
     }
 
-    if (hasMoved) {
+    if (movementDetected) {
         NmpClient::Packet newData = m_client.get_data();
         m_sprite.setPosition(newData.getX(), newData.getY());
     }
 
+    // Gestion du tir
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
         if (!keyStates[sf::Keyboard::Space]) {
             shoot();
@@ -75,6 +81,7 @@ void Player::handleInput()
         keyStates[sf::Keyboard::Space] = false;
     }
 }
+
 
 void Player::update(float deltaTime)
 {
@@ -94,6 +101,7 @@ void Player::update(float deltaTime)
         return bullet.getPosition().x > 800 || bullet.getPosition().x < 0 ||
                bullet.getPosition().y > 600 || bullet.getPosition().y < 0;
     }), m_bullets.end());
+    sendQueuedMovements();
 }
 
 void Player::shoot()
@@ -129,4 +137,20 @@ void Player::sendMovementPacket(NmpClient::DIRECTION direction)
     binary.serialize(packet, buffer);
     m_client.send_input(packet);
     std::cout << "Position " << static_cast<int>(direction) << " envoyée" << std::endl;
+}
+
+void Player::sendQueuedMovements()
+{
+    std::lock_guard<std::mutex> lock(m_queueMutex);
+    while (!m_movementQueue.empty()) {
+        NmpClient::Packet packet = m_movementQueue.front();
+
+        if (packet.getDirection().has_value()) {
+            std::cout << "Sending packet with direction: " << static_cast<int>(packet.getDirection().value()) << std::endl;
+        } else {
+            std::cout << "Sending packet with no direction" << std::endl;
+        }
+        m_client.send_input(packet);
+        m_movementQueue.pop();
+    }
 }

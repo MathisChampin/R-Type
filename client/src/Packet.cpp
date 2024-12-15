@@ -73,5 +73,9 @@ namespace NmpClient
     {
         return _y;
     }
+std::optional<DIRECTION> Packet::getDirection() const
+{
+    return _arg;
+}
 
 }
