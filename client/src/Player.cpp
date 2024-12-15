@@ -83,7 +83,18 @@ void Player::handleInput()
         NmpClient::Packet newData = m_client.get_data();
         m_sprite.setPosition(newData.getX(), newData.getY());
     }
-
+    // Gestion du tir
+    static sf::Clock shootClock;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+        if (shootClock.getElapsedTime().asSeconds() >= 0.2f) {
+            shoot();
+            std::cout << "Pew pew !" << std::endl;
+            shootClock.restart();
+        }
+        keyStates[sf::Keyboard::Space] = true;
+    } else {
+        keyStates[sf::Keyboard::Space] = false;
+    }
 }
 
 void Player::update(float deltaTime)
