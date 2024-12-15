@@ -165,6 +165,7 @@ int main()
         if (currentState == GameState::Playing) {
             player.handleInput();
             player.update(deltaTime);
+            player.sendQueuedMovements();
         }
 
         updateGame(deltaTime, currentState, menuBackground, playingBackground, menu, optionsMenu, enemy);
