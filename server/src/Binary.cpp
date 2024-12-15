@@ -40,11 +40,11 @@ namespace NmpBinary
         if (opcode == NmpServer::EVENT::SPRITE) {
             buffer.push_back(static_cast<uint32_t>(opcode));
             NmpServer::SpriteInfo sprite = packet.getSpriteInfo();
-            buffer.push_back(sprite.id);
-            buffer.push_back(sprite.x);
-            buffer.push_back(sprite.y);
-            buffer.push_back(sprite.sizeX);
-            buffer.push_back(sprite.sizeY);
+            buffer.push_back(static_cast<uint32_t>(sprite.id));
+            buffer.push_back(static_cast<uint32_t>(sprite.x));
+            buffer.push_back(static_cast<uint32_t>(sprite.y));
+            buffer.push_back(static_cast<uint32_t>(sprite.sizeX));
+            buffer.push_back(static_cast<uint32_t>(sprite.sizeY));
         } else {
             std::cout << "send id: " << id << std::endl;
             buffer.push_back(static_cast<uint32_t>(opcode));
