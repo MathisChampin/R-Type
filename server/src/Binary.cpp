@@ -45,7 +45,7 @@ namespace NmpBinary
             buffer.push_back(static_cast<uint32_t>(sprite.y));
             buffer.push_back(static_cast<uint32_t>(sprite.sizeX));
             buffer.push_back(static_cast<uint32_t>(sprite.sizeY));
-        } else {
+        } else if (opcode == NmpServer::EVENT::JOIN) { 
             std::cout << "send id: " << id << std::endl;
             buffer.push_back(static_cast<uint32_t>(opcode));
             buffer.push_back(static_cast<uint32_t>(id));

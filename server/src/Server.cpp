@@ -88,8 +88,6 @@ namespace NmpServer
                 std::lock_guard<std::mutex> lock(_queueMutex);
                 _queue.push(packet);
                 _cv.notify_one();
-            } else {
-                std::cout << "No data available, continuing..." << std::endl;
             }
         } catch (const std::system_error& e) {
             std::cout << "Error while receiving data: " << e.what() << std::endl;
