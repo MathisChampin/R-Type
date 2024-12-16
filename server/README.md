@@ -107,3 +107,36 @@ La communication est basée sur des **opcodes** pour définir les actions possib
    Exemple : `Packet3(EVENT::SPRITE, spriteInfo)`
 
 ---
+
+### **7. Gestion des Erreurs**
+
+Le serveur inclut des mécanismes pour gérer les erreurs de réception et d'envoi de paquets.
+
+#### **Réception des Paquets**
+
+Lors de la réception des paquets, le serveur utilise un bloc `try-catch` pour capturer les exceptions :
+
+```cpp
+try {
+    bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
+    if (bytes > 0) {
+        // Traitement des données reçues
+    }
+} catch (const std::system_error& e) {
+    std::cerr << "Erreur lors de la réception des données : " << e.what() << std::endl;
+}
+```
+
+#### **Envoi des Paquets**
+
+De même, lors de l'envoi des paquets, les erreurs sont capturées et journalisées :
+
+```cpp
+try {
+    _socketSend.send_to(asio::buffer(_bufferSerialize), endpoint);
+} catch (const std::system_error& e) {
+    std::cerr << "Erreur lors de l'envoi des données : " << e.what() << std::endl;
+}
+```
+
+Ces mécanismes permettent de garantir que le serveur continue de fonctionner même en cas d'erreurs de réseau.
