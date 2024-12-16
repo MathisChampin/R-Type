@@ -12,24 +12,24 @@ namespace NmpServer
         if (it != _mapFctOpCode.end()) {
             it->second();
         }
-        //createEnnemies();
-        //shootEnnemies();
+        //createEnnemies(); //en fraire un thread 
+        //shootEnnemies();  //en fraire un thread
         sys.position_system(_ecs);
         sys.collision_system(_ecs);
         sys.kill_system(_ecs);
-        sendEntity();
+        //sendEntity(); //reste dans ce thread
     }
 
     void ProtocoleHandler::createEnnemies()
     {
-        // auto now = std::chrono::steady_clock::now();
-        // std::chrono::duration<double> elapsed = now - _lastEnemyCreationTime;
+        auto now = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsed = now - _lastEnemyCreationTime;
 
-        // if (elapsed.count() >= 2.0) {
-        //     std::cout << "creation of ennemies" << std::endl;
-        //     initEnnemies();
-        //     _lastEnemyCreationTime = now;
-        // }
+        if (elapsed.count() >= 2.0) {
+            std::cout << "creation of ennemies" << std::endl;
+            initEnnemies();
+            _lastEnemyCreationTime = now;
+        }
     }
 
     void ProtocoleHandler::shootEnnemies()
@@ -50,24 +50,23 @@ namespace NmpServer
     {
         uint32_t id = 0;
 
-        if (att._type == component::attribute::Player1 ||
-            att._type == component::attribute::Player2 ||
-            att._type == component::attribute::Player3 ||
-            att._type == component::attribute::Player4)
+        if (att._type == component::attribute::Player1 || att._type == component::attribute::Player2 
+        || att._type == component::attribute::Player3 || att._type == component::attribute::Player4) {
             id = 1;
-        if (att._type == component::attribute::Ennemies)
+        } 
+        else if (att._type == component::attribute::Ennemies) {
             id = 2;
-        if (att._type == component::attribute::Shoot)
+        } else if (att._type == component::attribute::Shoot)
             id = 3;
         return id;
     }
 
     void ProtocoleHandler::sendEntity()
     {
-        auto &positions = _ecs.get_components<component::position>();
-        auto &states = _ecs.get_components<component::state>();
-        auto &sizes = _ecs.get_components<component::size>();
-        auto &attributes = _ecs.get_components<component::attribute>();
+        sparse_array<component::position> &positions = _ecs.get_components<component::position>();
+        sparse_array<component::state> &states = _ecs.get_components<component::state>();
+        sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
+        sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
         int id = 0;
 
         for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
@@ -77,23 +76,20 @@ namespace NmpServer
                 id = getId(att);
                 auto &pos = positions[i];
                 auto &s = sizes[i];
-                SpriteInfo sprite = {
-                    id,
-                    pos.x,
-                    pos.y,
-                    s.x,
-                    s.y
-                };
+                SpriteInfo sprite = {id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
 
-                for (const auto &[entity, endpoint] : _vecPlayer) {
+                for (const auto &[entity, endpoint] : _vecPlayer) { //send la sprite a tout les clients
                     _refServer.get().send_data(packet, endpoint);
                 }
             }
         }
     }
 
-    ProtocoleHandler::ProtocoleHandler(Server &server) : _refServer(server), _lastEnemyCreationTime(std::chrono::steady_clock::now()), _lastShootCreationTime(std::chrono::steady_clock::now())
+    ProtocoleHandler::ProtocoleHandler(Server &server) : 
+        _refServer(server),
+        _lastEnemyCreationTime(std::chrono::steady_clock::now()),
+        _lastShootCreationTime(std::chrono::steady_clock::now())
     {
         std::cout << "protocole Handler create" << std::endl;
         this->initComponents();
@@ -106,57 +102,62 @@ namespace NmpServer
     }
 
 
+    std::optional<asio::ip::udp::endpoint> ProtocoleHandler::foundEndpointByClient(Entity &player)
+    {
+        std::optional<asio::ip::udp::endpoint> optionEndpoint{std::nullopt};
+
+        for (const auto &pair : _vecPlayer) {
+            if (pair.first == player) {
+                return optionEndpoint = pair.second;
+            }
+        }
+        return optionEndpoint;
+    }
+
+    void ProtocoleHandler::updateMoveEcs(
+        Entity &player, 
+        component::controllable::Key &control, 
+        sparse_array<component::position>::value_type &pos)
+    {
+        System sys;
+        std::optional<asio::ip::udp::endpoint> foundEndpoint{this->foundEndpointByClient(player)}; 
+
+        if (foundEndpoint.has_value()) {
+            _ecs.add_component<component::controllable>(player, {control});
+            sys.control_system(_ecs);
+            std::cout << "pos x: " << pos.x << " pos y: " << pos.y << std::endl;
+            Packet packetPos(EVENT::MOVE, pos.x, pos.y);
+            _refServer.get().send_data(packetPos, foundEndpoint.value());
+        } else {
+            std::cout << "no endpoint found for this client" << std::endl;
+        }
+    }
 
     void ProtocoleHandler::evalMove()
     {
         std::cout << "evalMove" << std::endl;
         std::cout << "id client: " << _pck.getId() << std::endl;
-
         std::size_t idClient{ _pck.getId()};
-        auto &pos = _ecs.get_components<component::position>();
-        auto player = _ecs.get_entity(idClient);
-    
-         asio::ip::udp::endpoint foundEndpoint;
-        for (const auto &pair : _vecPlayer) {
-            if (pair.first == player) {
-                foundEndpoint = pair.second;
-                break;
-            }
-        }
-        auto &position = pos[player.get_id()];
-        System sys;
+        sparse_array<component::position> &pos = _ecs.get_components<component::position>();
+        Entity player = _ecs.get_entity(idClient);
+        sparse_array<component::position>::value_type &position = pos[player.get_id()];
+        std::optional<NmpServer::DIRECTION> direction = _pck.getArg();
 
-        auto direction = _pck.getArg();
-            if (direction.has_value())
-                std::cout << "Direction: ";
             if (direction == DIRECTION::DOWN) {
                 std::cout << "DOWN" << std::endl;
-                _ecs.add_component<component::controllable>(player, {component::controllable::Down});
-                sys.control_system(_ecs);
-                std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
-                Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos, foundEndpoint);
+                auto control = component::controllable::Down;
+                updateMoveEcs(player, control, position);
             } else if (direction == DIRECTION::UP) {
                 std::cout << "UP" << std::endl;
-                _ecs.add_component<component::controllable>(player, {component::controllable::Up});
-                sys.control_system(_ecs);
-                std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
-                Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos, foundEndpoint);
+                auto control = component::controllable::Up;
+                updateMoveEcs(player, control, position);
             } else if (direction == DIRECTION::LEFT) {
                 std::cout << "LEFT" << std::endl;
-                _ecs.add_component<component::controllable>(player, {component::controllable::Left});
-                sys.control_system(_ecs);
-                std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
-                Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos, foundEndpoint);
+                auto control = component::controllable::Left;
+                updateMoveEcs(player, control, position);
             } else if (direction == DIRECTION::RIGHT) {
-                std::cout << "RIGHT" << std::endl;
-                _ecs.add_component<component::controllable>(player, {component::controllable::Right});
-                sys.control_system(_ecs);
-                std::cout << "pos x: " << position.x << " pos y: " << position.y << std::endl;
-                Packet packetPos(EVENT::MOVE, position.x, position.y);
-                _refServer.get().send_data(packetPos, foundEndpoint);
+                auto control = component::controllable::Right;
+                updateMoveEcs(player, control, position);
             } else
                 std::cout << "NO DIRECTION" << std::endl;
         std::cout << "x " << position.x << " y " << position.y << std::endl;
@@ -187,7 +188,6 @@ namespace NmpServer
         auto lastPlayer = _vecPlayer.back().first;
         auto lastEndpoint = _vecPlayer.back().second;
 
-        
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
         _refServer.get().send_data(joinPacket, lastEndpoint);
     }

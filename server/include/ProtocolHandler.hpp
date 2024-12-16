@@ -34,16 +34,22 @@ namespace NmpServer {
             void fillPacket(Packet &packet);
 
         private:
+            void sendEntity();
+
             void evalMove();
             void evalShoot();
             void evalQuit();
             void evalJoin();
+
             void initPlayer();
             void initEnnemies();
             void initComponents();
+
             void createEnnemies();
             void shootEnnemies();
-            void sendEntity();
+
+            void updateMoveEcs(Entity &player, component::controllable::Key &control, sparse_array<component::position>::value_type &pos);
+            std::optional<asio::ip::udp::endpoint> foundEndpointByClient(Entity &player);
             uint32_t getId(component::attribute &att);
 
             std::reference_wrapper<Server> _refServer;
@@ -52,7 +58,7 @@ namespace NmpServer {
             std::map<EVENT, std::function<void()>> _mapFctOpCode{
                 {{EVENT::MOVE}, [this]{return evalMove();}}, 
                 {{EVENT::SHOOT}, [this]{return evalShoot();}}, 
-                {{EVENT::QUIT}, [this]{return evalQuit();}}, 
+                {{EVENT::QUIT}, [this]{return evalQuit();}},
                 {{EVENT::JOIN}, [this]{return evalJoin();}}, 
             };
             std::vector<std::pair<Entity, asio::ip::udp::endpoint>> _vecPlayer;
