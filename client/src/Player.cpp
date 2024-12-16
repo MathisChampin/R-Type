@@ -81,6 +81,8 @@ void Player::handleInput()
 
         // Mettre à jour la position du sprite avec les nouvelles données
         auto newData = m_client.get_data();
+        if (!newData.has_value())
+            return;
         auto p = newData.value();
         m_sprite.setPosition(p.getX(), p.getY());
     }

@@ -20,6 +20,7 @@ namespace NmpClient
     };
 
     struct SpriteInfo {
+        int idClient;
         int id;
         int x;
         int y;

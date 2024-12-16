@@ -40,6 +40,7 @@ namespace NmpBinary
         if (opcode == NmpServer::EVENT::SPRITE) {
             buffer.push_back(static_cast<uint32_t>(opcode));
             NmpServer::SpriteInfo sprite = packet.getSpriteInfo();
+            buffer.push_back(static_cast<uint32_t>(sprite.idClient));
             buffer.push_back(static_cast<uint32_t>(sprite.id));
             buffer.push_back(static_cast<uint32_t>(sprite.x));
             buffer.push_back(static_cast<uint32_t>(sprite.y));

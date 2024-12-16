@@ -15,9 +15,11 @@ namespace NmpServer
         //createEnnemies(); //en fraire un thread 
         //shootEnnemies();  //en fraire un thread
         sys.position_system(_ecs);
-        sys.collision_system(_ecs);
+        std::cout << "position system" << std::endl;
+        //sys.collision_system(_ecs);
         sys.kill_system(_ecs);
         sendEntity();
+        std::cout << "send entity system" << std::endl;
     }
 
     void ProtocoleHandler::createEnnemies()
@@ -50,6 +52,11 @@ namespace NmpServer
     {
         uint32_t id = 0;
 
+        if (att._type == component::attribute::Player1 ||
+            att._type == component::attribute::Player2 ||
+            att._type == component::attribute::Player3 ||
+            att._type == component::attribute::Player4)
+            id = 1;
         if (att._type == component::attribute::Ennemies)
             id = 2;
         if (att._type == component::attribute::Shoot)
@@ -72,7 +79,8 @@ namespace NmpServer
                 id = getId(att);
                 auto &pos = positions[i];
                 auto &s = sizes[i];
-                SpriteInfo sprite = {id, pos.x, pos.y, s.x, s.y};
+                std::cout << "id client: "  << i << std::endl;
+                SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
 
                 for (const auto &[entity, endpoint] : _vecPlayer) {
@@ -122,7 +130,7 @@ namespace NmpServer
             _ecs.add_component<component::controllable>(player, {control});
             sys.control_system(_ecs);
             std::cout << "pos x: " << pos.x << " pos y: " << pos.y << std::endl;
-            Packet packetPos(EVENT::MOVE, pos.x, pos.y);
+            //Packet packetPos(EVENT::MOVE, pos.x, pos.y);
             //_refServer.get().send_data(packetPos, foundEndpoint.value());
         } else {
             std::cout << "no endpoint found for this client" << std::endl;

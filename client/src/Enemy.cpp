@@ -29,7 +29,7 @@ void Enemy::update(float deltaTime)
         m_sprite.setTexture(m_textures[m_currentFrame]);
     }
 
-    m_sprite.move(0, m_speed * deltaTime * m_direction);
+    // m_sprite.move(0, m_speed * deltaTime * m_direction);
 
     // Changement de direction si le sprite atteint les bords de l'écran
     if (m_sprite.getPosition().y <= 0 || m_sprite.getPosition().y + m_sprite.getGlobalBounds().height >= 600) {

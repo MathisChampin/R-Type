@@ -36,7 +36,7 @@ public:
         return _id;
     };
     void updatePosition(const sf::Vector2f &position) {
-        m_position.x = position.x;
+        m_sprite.setPosition(position.x, position.y);
     }
     void sendQueuedMovements();
     sf::Vector2f getPosition() const { return m_position; };

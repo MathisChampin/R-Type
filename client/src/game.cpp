@@ -34,23 +34,17 @@ void Game::get_player()
         return;
     auto spriteInfo = data.getSpriteInfo();
     bool playerExists = false;
-    std::cout << "je suis dans la player" << std::endl;
-    std::cout << "Raw Sprite Data - ID: " << spriteInfo.id 
-          << ", x: " << spriteInfo.x 
-          << ", y: " << spriteInfo.y << "\n\n\n";
-
     if (spriteInfo.id == 1) {
-        std::cout << "je suis dans player" << std::endl;
-        for (const auto& player : m_players) {
-            if (player.get_id() == spriteInfo.id) {
+        for (auto& player : m_players) {
+            if (player.get_id() == spriteInfo.idClient) {
                 playerExists = true;
-                //player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
                 break;
             }
         }
         if (!playerExists) {
             if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
-                m_players.push_back(Player(spriteInfo.id, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
+                m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
                 std::cout << "je suis en train de remplir player x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
             } else {
                 std::cerr << "Invalid player position received: x = " << spriteInfo.x << ", y = " << spriteInfo.y << std::endl;
@@ -64,30 +58,24 @@ void Game::get_ennemies() {
     bool enemyExists = false;
 
     auto packet = m_client.get_data();
-    std::cout << "je recupere le packet" << std::endl;
     if (!packet.has_value())
         return;
     auto data = packet.value();
-    std::cout << "je recupere la value" << std::endl;
     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
         return;
     auto spriteInfo = data.getSpriteInfo();
 
-    std::cout << "je suis dans ennemie" << std::endl;
-    std::cout << "Raw Sprite Data - ID: " << spriteInfo.id 
-          << ", x: " << spriteInfo.x 
-          << ", y: " << spriteInfo.y << "\n\n\n";
-
     if (spriteInfo.id == 2) {
-        for (const auto& enemy : m_enemies) {
-            if (enemy.get_id() == spriteInfo.id) {
+        for (auto& enemy : m_enemies) {
+            if (enemy.get_id() == spriteInfo.idClient) {
+                enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
                 enemyExists = true;
                 break;
             }
         }
         if (!enemyExists) {
             if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
-                m_enemies.push_back(Enemy(spriteInfo.id, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+                m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
                 std::cout << "je suis en train de remplir ennemi avec x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
             } else {
                 std::cerr << "Invalid enemy position received: x = " << spriteInfo.x << ", y = " << spriteInfo.y << std::endl;
@@ -110,7 +98,6 @@ void Game::initializeFont() {
 }
 
 void Game::initializeMenuOptions() {
-    // Initialize menu background layers
     std::vector<std::pair<std::string, float>> menuLayers = {
         {"./assets/backgrounds/space_dust.png", 0.1f},
     };
@@ -120,7 +107,6 @@ void Game::initializeMenuOptions() {
     m_menuBackground = ParallaxBackground(m_window.getSize(), menuLayers);
     m_playingBackground = ParallaxBackground(m_window.getSize(), playingLayers);
 
-    // Add menu options with lambda functions
     m_menu.addOption("Jouer", [this]() {
         std::cout << "Démarrage du jeu..." << std::endl;
         m_currentState = GameState::Playing;

@@ -57,7 +57,8 @@ namespace NmpBinary
                 static_cast<int>(buffer[2]),
                 static_cast<int>(buffer[3]),
                 static_cast<int>(buffer[4]),
-                static_cast<int>(buffer[5])};
+                static_cast<int>(buffer[5]),
+                static_cast<int>(buffer[6])};
             return NmpClient::Packet(NmpClient::EVENT::SPRITE, sprite);
         } else if (event == NmpClient::EVENT::JOIN) {
             std::size_t id = static_cast<std::size_t>(buffer[1]);

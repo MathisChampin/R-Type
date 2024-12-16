@@ -14,6 +14,9 @@ public:
     int get_id() const {
         return _id;
     };
+    void updatePosition(const sf::Vector2f &position) {
+        m_sprite.setPosition(position.x, position.y);
+    }
     sf::Vector2f getPosition() const { return m_position; };
 
 private:
