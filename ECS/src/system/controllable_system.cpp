@@ -6,25 +6,24 @@
 
 int check_position_x(int posx, int input)
 {
-    if (posx += input >= 1920)
-        posx = 1920;
-    else if (posx += input <= 0)
-        posx = 0;
-    else
-        posx += input;
+    posx += input;
+    if (posx >= 1870)
+        posx = 1870;
+    if (posx <= 30)
+        posx = 30;
     return posx;
 }
 
 int check_position_y(int posy, int input)
 {
-    if (posy += input >= 1080)
-        posy = 1080;
-    else if (posy += input <= 0)
-        posy = 0;
-    else
-        posy += input;   
+    posy += input;
+    if (posy >= 1030)
+        posy = 1030;
+    if (posy <= 20)
+        posy = 20;
     return posy;
 }
+
 
 void System::control_system(registry& reg)
 {
