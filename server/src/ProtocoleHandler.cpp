@@ -50,13 +50,9 @@ namespace NmpServer
     {
         uint32_t id = 0;
 
-        if (att._type == component::attribute::Player1 || att._type == component::attribute::Player2 
-        || att._type == component::attribute::Player3 || att._type == component::attribute::Player4) {
-            id = 1;
-        } 
-        else if (att._type == component::attribute::Ennemies) {
+        if (att._type == component::attribute::Ennemies)
             id = 2;
-        } else if (att._type == component::attribute::Shoot)
+        if (att._type == component::attribute::Shoot)
             id = 3;
         return id;
     }
@@ -79,7 +75,7 @@ namespace NmpServer
                 SpriteInfo sprite = {id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
 
-                for (const auto &[entity, endpoint] : _vecPlayer) { //send la sprite a tout les clients
+                for (const auto &[entity, endpoint] : _vecPlayer) {
                     _refServer.get().send_data(packet, endpoint);
                 }
             }
@@ -243,7 +239,7 @@ namespace NmpServer
         _ecs.add_component<component::level>(ennemies, {component::level::Level0});
         _ecs.add_component<component::life>(ennemies, {1});
         _ecs.add_component<component::position>(ennemies, {1800, y});
-        _ecs.add_component<component::size>(ennemies, {32, 14});
+        _ecs.add_component<component::size>(ennemies, {33, 36});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
         _ecs.add_component<component::velocity>(ennemies, {-20, 0});
     }
