@@ -26,7 +26,12 @@ Game::~Game() {
 
 void Game::get_player()
 {
-    auto data = m_client.get_data();
+    auto packet = m_client.get_data();
+    if (!packet.has_value())
+        return;
+    auto data = packet.value();
+    if (data.getOpCode() != NmpClient::EVENT::SPRITE)
+        return;
     auto spriteInfo = data.getSpriteInfo();
     bool playerExists = false;
     std::cout << "je suis dans la player" << std::endl;
@@ -58,7 +63,14 @@ void Game::get_player()
 void Game::get_ennemies() {
     bool enemyExists = false;
 
-    auto data = m_client.get_data();
+    auto packet = m_client.get_data();
+    std::cout << "je recupere le packet" << std::endl;
+    if (!packet.has_value())
+        return;
+    auto data = packet.value();
+    std::cout << "je recupere la value" << std::endl;
+    if (data.getOpCode() != NmpClient::EVENT::SPRITE)
+        return;
     auto spriteInfo = data.getSpriteInfo();
 
     std::cout << "je suis dans ennemie" << std::endl;
@@ -148,6 +160,11 @@ void Game::run() {
     while (m_window.isOpen()) {
         float deltaTime = m_clock.restart().asSeconds();
         handleEvents();
+        std::cout << "JE SORS DE HANDLEEVENTS" << std::endl;
+        get_ennemies();
+        std::cout << "je sors de get ennemies" << std::endl;
+        get_player();
+        std::cout << "je sors de get player" << std::endl;
         update(deltaTime);
         render();
         std::cout << "JE SORS DE RENDER" << std::endl;
@@ -231,8 +248,6 @@ void Game::render() {
 
     } else if (m_currentState == GameState::Playing) {
         m_playingBackground.render(m_window);
-        get_ennemies();
-        get_player();
         // Render each player
         for (auto& player : m_players) {
             player.render(m_window);

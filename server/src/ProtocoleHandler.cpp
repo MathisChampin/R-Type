@@ -12,8 +12,8 @@ namespace NmpServer
         if (it != _mapFctOpCode.end()) {
             it->second();
         }
-        createEnnemies(); //en fraire un thread 
-        shootEnnemies();  //en fraire un thread
+        //createEnnemies(); //en fraire un thread 
+        //shootEnnemies();  //en fraire un thread
         sys.position_system(_ecs);
         sys.collision_system(_ecs);
         sys.kill_system(_ecs);
@@ -190,7 +190,6 @@ namespace NmpServer
 
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
         _refServer.get().send_data(joinPacket, lastEndpoint);
-        sendEntity();
     }
 
     void ProtocoleHandler::initComponents()

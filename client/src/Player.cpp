@@ -80,8 +80,9 @@ void Player::handleInput()
         sendQueuedMovements();
 
         // Mettre à jour la position du sprite avec les nouvelles données
-        NmpClient::Packet newData = m_client.get_data();
-        m_sprite.setPosition(newData.getX(), newData.getY());
+        auto newData = m_client.get_data();
+        auto p = newData.value();
+        m_sprite.setPosition(p.getX(), p.getY());
     }
     // Gestion du tir
     static sf::Clock shootClock;
