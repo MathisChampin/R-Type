@@ -1,26 +1,32 @@
 #ifndef ENEMY_HPP
-    #define ENEMY_HPP
+#define ENEMY_HPP
 
-    #include <SFML/Graphics.hpp>
-    #include <vector>
-    #include <string>
+#include <SFML/Graphics.hpp>
+#include <vector>
+#include <string>
 
 class Enemy
 {
-    public:
-        Enemy(const sf::Vector2f &startPosition);
-        void update(float deltaTime);
-        void render(sf::RenderWindow &window);
+public:
+    Enemy(int id, const sf::Vector2f &startPosition);
+    void update(float deltaTime);
+    void render(sf::RenderWindow &window);
+    int get_id() const {
+        return _id;
+    };
+    sf::Vector2f getPosition() const { return m_position; };
 
-    private:
-        sf::Sprite m_sprite;
-        std::vector<sf::Texture> m_textures;
-        float m_speed;
-        int m_currentFrame;
-        float m_animationTime;
-        float m_elapsedTime;
-        int m_direction;
-        void loadTexture(const std::string &textureFile);
+private:
+    sf::Sprite m_sprite;
+    std::vector<sf::Texture> m_textures;
+    float m_speed;
+    int m_currentFrame;
+    float m_animationTime;
+    float m_elapsedTime;
+    int m_direction;
+    int _id;
+    sf::Vector2f m_position;
+    void loadTexture(const std::string &textureFile);
 };
 
 #endif // ENEMY_HPP

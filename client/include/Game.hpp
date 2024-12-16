@@ -24,6 +24,7 @@ public:
     Game();
     ~Game();
 
+    void boucle();
     void run();
 
 private:
@@ -32,15 +33,15 @@ private:
     void initializeFont();
     void initializeMenuOptions();
     void initializeIpAddressText();
-
+    void get_join_packet();
     // Event handling
     void handleEvents();
     void processInput(sf::Event& event);
-
     // Game loop methods
     void update(float deltaTime);
     void render();
-
+    void get_player();
+    void get_ennemies();
     // Member variables
     sf::RenderWindow m_window;
     sf::Font m_font;

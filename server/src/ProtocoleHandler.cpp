@@ -12,12 +12,12 @@ namespace NmpServer
         if (it != _mapFctOpCode.end()) {
             it->second();
         }
-        //createEnnemies(); //en fraire un thread 
-        //shootEnnemies();  //en fraire un thread
+        createEnnemies(); //en fraire un thread 
+        shootEnnemies();  //en fraire un thread
         sys.position_system(_ecs);
         sys.collision_system(_ecs);
         sys.kill_system(_ecs);
-        //sendEntity(); //reste dans ce thread
+        sendEntity();
     }
 
     void ProtocoleHandler::createEnnemies()
@@ -93,7 +93,7 @@ namespace NmpServer
     {
         std::cout << "protocole Handler create" << std::endl;
         this->initComponents();
-        this->createEnnemies();
+        this->initEnnemies();
     }
 
     void ProtocoleHandler::fillPacket(Packet &packet)
@@ -127,7 +127,7 @@ namespace NmpServer
             sys.control_system(_ecs);
             std::cout << "pos x: " << pos.x << " pos y: " << pos.y << std::endl;
             Packet packetPos(EVENT::MOVE, pos.x, pos.y);
-            _refServer.get().send_data(packetPos, foundEndpoint.value());
+            //_refServer.get().send_data(packetPos, foundEndpoint.value());
         } else {
             std::cout << "no endpoint found for this client" << std::endl;
         }
@@ -190,6 +190,7 @@ namespace NmpServer
 
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
         _refServer.get().send_data(joinPacket, lastEndpoint);
+        sendEntity();
     }
 
     void ProtocoleHandler::initComponents()
@@ -242,10 +243,10 @@ namespace NmpServer
         _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
         _ecs.add_component<component::level>(ennemies, {component::level::Level0});
         _ecs.add_component<component::life>(ennemies, {1});
-        _ecs.add_component<component::position>(ennemies, {1920, y});
+        _ecs.add_component<component::position>(ennemies, {1800, y});
         _ecs.add_component<component::size>(ennemies, {32, 14});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
-        _ecs.add_component<component::velocity>(ennemies, {20, 0});
+        _ecs.add_component<component::velocity>(ennemies, {-20, 0});
     }
 
 }

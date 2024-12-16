@@ -9,7 +9,6 @@ Game::Game()
     , m_optionsMenu(m_window)
     , m_menuBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.1f}})
     , m_playingBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.2f}})
-    , m_client()
     , m_ipAddress()
     , m_ipText()
     , m_ipField()
@@ -19,19 +18,70 @@ Game::Game()
     initializeFont();
     initializeMenuOptions();
     initializeIpAddressText();
-
-    //FONCTION QUI FAIS GET DATA QUI REGARDE YA CB DE PLAYER DE CB ET D'ENNEMY PUIS JE PUSH BACK EN BALLE DANS LE VECTEUR
-
-    // Initialize the player vector with one player
-    // m_players.push_back(Player(sf::Vector2f(500, 500), m_client)); // Add the player
-    // Initialize the enemies vector with a few enemies
-    // m_enemies.push_back(Enemy(sf::Vector2f(1500, 500))); // Add the first enemy
-    // m_enemies.push_back(Enemy(sf::Vector2f(1600, 600))); // Add another enemy
-    // Add more enemies as needed
 }
 
 Game::~Game() {
     // Any cleanup if needed
+}
+
+void Game::get_player()
+{
+    auto data = m_client.get_data();
+    auto spriteInfo = data.getSpriteInfo();
+    bool playerExists = false;
+    std::cout << "je suis dans la player" << std::endl;
+    std::cout << "Raw Sprite Data - ID: " << spriteInfo.id 
+          << ", x: " << spriteInfo.x 
+          << ", y: " << spriteInfo.y << "\n\n\n";
+
+    if (spriteInfo.id == 1) {
+        std::cout << "je suis dans player" << std::endl;
+        for (const auto& player : m_players) {
+            if (player.get_id() == spriteInfo.id) {
+                playerExists = true;
+                //player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                break;
+            }
+        }
+        if (!playerExists) {
+            if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
+                m_players.push_back(Player(spriteInfo.id, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
+                std::cout << "je suis en train de remplir player x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
+            } else {
+                std::cerr << "Invalid player position received: x = " << spriteInfo.x << ", y = " << spriteInfo.y << std::endl;
+            }
+        }
+    } else
+        return; 
+}
+
+void Game::get_ennemies() {
+    bool enemyExists = false;
+
+    auto data = m_client.get_data();
+    auto spriteInfo = data.getSpriteInfo();
+
+    std::cout << "je suis dans ennemie" << std::endl;
+    std::cout << "Raw Sprite Data - ID: " << spriteInfo.id 
+          << ", x: " << spriteInfo.x 
+          << ", y: " << spriteInfo.y << "\n\n\n";
+
+    if (spriteInfo.id == 2) {
+        for (const auto& enemy : m_enemies) {
+            if (enemy.get_id() == spriteInfo.id) {
+                enemyExists = true;
+                break;
+            }
+        }
+        if (!enemyExists) {
+            if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
+                m_enemies.push_back(Enemy(spriteInfo.id, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+                std::cout << "je suis en train de remplir ennemi avec x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
+            } else {
+                std::cerr << "Invalid enemy position received: x = " << spriteInfo.x << ", y = " << spriteInfo.y << std::endl;
+            }
+        }
+    }
 }
 
 void Game::initializeWindow() {
@@ -55,7 +105,6 @@ void Game::initializeMenuOptions() {
     std::vector<std::pair<std::string, float>> playingLayers = {
         {"./assets/backgrounds/space_dust.png", 0.2f},
     };
-
     m_menuBackground = ParallaxBackground(m_window.getSize(), menuLayers);
     m_playingBackground = ParallaxBackground(m_window.getSize(), playingLayers);
 
@@ -98,10 +147,10 @@ void Game::initializeIpAddressText() {
 void Game::run() {
     while (m_window.isOpen()) {
         float deltaTime = m_clock.restart().asSeconds();
-        
         handleEvents();
         update(deltaTime);
         render();
+        std::cout << "JE SORS DE RENDER" << std::endl;
     }
 }
 
@@ -179,9 +228,11 @@ void Game::render() {
         m_menu.render();
         m_window.draw(m_ipText);
         m_window.draw(m_ipField);
+
     } else if (m_currentState == GameState::Playing) {
         m_playingBackground.render(m_window);
-
+        get_ennemies();
+        get_player();
         // Render each player
         for (auto& player : m_players) {
             player.render(m_window);
