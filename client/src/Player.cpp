@@ -5,8 +5,8 @@
 #include <iostream>
 #include <algorithm>
 
-Player::Player(const sf::Vector2f& startPosition, NmpClient::Client& client)
-    : m_speed(200.0f), m_currentFrame(0), m_animationTime(0.1f), m_elapsedTime(0.0f), m_client(client), m_bulletTexture()
+Player::Player(int id, const sf::Vector2f& startPosition, NmpClient::Client& client)
+    : m_speed(200.0f), m_currentFrame(0), m_animationTime(0.1f), m_elapsedTime(0.0f), m_client(client), m_bulletTexture(), m_position(startPosition), _id(id)
 {
     for (int i = 1; i <= 5; ++i) {
         sf::Texture texture;
@@ -24,7 +24,7 @@ Player::Player(const sf::Vector2f& startPosition, NmpClient::Client& client)
     }
 
     m_sprite.setTexture(m_textures[m_currentFrame]);
-    m_sprite.setPosition(startPosition);
+    m_sprite.setPosition(m_position);
     m_sprite.setOrigin(m_textures[0].getSize().x / 2.0f, m_textures[0].getSize().y / 2.0f);
     m_sprite.setScale(2.0f, 2.0f);
 }
@@ -80,8 +80,9 @@ void Player::handleInput()
         sendQueuedMovements();
 
         // Mettre à jour la position du sprite avec les nouvelles données
-        NmpClient::Packet newData = m_client.get_data();
-        m_sprite.setPosition(newData.getX(), newData.getY());
+        auto newData = m_client.get_data();
+        auto p = newData.value();
+        m_sprite.setPosition(p.getX(), p.getY());
     }
     // Gestion du tir
     static sf::Clock shootClock;

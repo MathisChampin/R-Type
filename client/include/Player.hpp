@@ -11,13 +11,35 @@
 class Player
 {
 public:
-    Player(const sf::Vector2f &startPosition, NmpClient::Client &client);
+    Player(int id, const sf::Vector2f &startPosition, NmpClient::Client &client);
+    Player(Player&& other) noexcept
+        : m_sprite(std::move(other.m_sprite)), 
+          m_textures(std::move(other.m_textures)),
+          m_bullets(std::move(other.m_bullets)),
+          m_speed(other.m_speed),
+          m_currentFrame(other.m_currentFrame),
+          m_animationTime(other.m_animationTime),
+          m_elapsedTime(other.m_elapsedTime),
+          m_client(other.m_client),
+          m_bulletTexture(std::move(other.m_bulletTexture)),
+          m_position(std::move(other.m_position)),
+          _id(std::move(other._id))
+    {}
+    
+    ~Player() = default;
 
     void handleInput();
     void update(float deltaTime);
     void render(sf::RenderWindow &window);
     void shoot();
+    int get_id() const {
+        return _id;
+    };
+    void updatePosition(const sf::Vector2f &position) {
+        m_position.x = position.x;
+    }
     void sendQueuedMovements();
+    sf::Vector2f getPosition() const { return m_position; };
 
 private:
     sf::Sprite m_sprite;
@@ -30,6 +52,8 @@ private:
 
     NmpClient::Client &m_client;
     sf::Texture m_bulletTexture;
+    sf::Vector2f m_position;
+    int _id;
     std::queue<NmpClient::Packet> m_movementQueue;
     std::mutex m_queueMutex;
 

@@ -11,7 +11,7 @@ public:
         float speed;
         float offset;
     };
-
+    ParallaxBackground() = default; // Default constructor
     ParallaxBackground(const sf::Vector2u& windowSize, const std::vector<std::pair<std::string, float>>& layers);
 
     void update(float deltaTime);
