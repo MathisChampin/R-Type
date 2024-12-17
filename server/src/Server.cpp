@@ -28,10 +28,13 @@ namespace NmpServer
 
         inputThread.join();
         ecsThread.join();
+        _systemThread.join();
     }
 
-    void Server::startSystemThread() {
+    void Server::startSystemThread()
+    {
         _systemThread = std::thread(&Server::systemLoop, this);
+
     }
 
     void Server::stopSystemThread() {
@@ -42,23 +45,30 @@ namespace NmpServer
     }
 
     void Server::systemLoop() {
-        System sys;
-        while (_running) {
-            const auto frameDuration = std::chrono::milliseconds(20);
-            auto startTime = std::chrono::steady_clock::now();
-            {
-                std::lock_guard<std::mutex> lock(_ecsMutex);
-                auto &ecs = _ptp.getECS();
-                sys.shoot_system_player(ecs);
-                sys.position_system(ecs);
-                sys.collision_system(ecs);
-                sys.kill_system(ecs);
-                send_entity(ecs);
-                std::cout << "je suis la" << std::endl;
-            }
-            std::this_thread::sleep_until(startTime + frameDuration);
+    System sys;
+    const auto frameDuration = std::chrono::milliseconds(20);
+
+    while (_running) {
+        auto startTime = std::chrono::steady_clock::now();
+
+        {
+            std::lock_guard<std::mutex> lock(_ecsMutex);
+            auto &ecs = _ptp.getECS();
+            sys.shoot_system_player(ecs);
+            sys.position_system(ecs);
+            sys.collision_system(ecs);
+            sys.kill_system(ecs);
+            send_entity(ecs);
+        }
+
+        // Calcul de la durée écoulée et ajustement du sommeil
+        auto elapsedTime = std::chrono::steady_clock::now() - startTime;
+        if (elapsedTime < frameDuration) {
+            std::this_thread::sleep_for(frameDuration - elapsedTime);
         }
     }
+}
+
 
     uint32_t Server::getId(component::attribute &att)
     {
@@ -106,7 +116,7 @@ namespace NmpServer
     {
         while (true) {
             get_data();
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            //std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
     }
 

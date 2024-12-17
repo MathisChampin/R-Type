@@ -35,8 +35,8 @@ namespace NmpServer {
             std::atomic<bool> _running;
             std::queue<Packet> _queue;
             std::mutex _queueMutex;
-            std::condition_variable _cv;
             std::mutex _ecsMutex;
+            std::condition_variable _cv;
             std::thread _systemThread;
             asio::io_context _io_context;
             asio::ip::udp::socket _socketRead;

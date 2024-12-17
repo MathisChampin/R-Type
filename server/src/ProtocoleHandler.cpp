@@ -79,26 +79,26 @@ namespace NmpServer
         sparse_array<component::position>::value_type &position = pos[player.get_id()];
         std::optional<NmpServer::DIRECTION> direction = _pck.getArg();
 
-            if (direction == DIRECTION::DOWN) {
-                std::cout << "DOWN" << std::endl;
-                auto control = component::controllable::Down;
-                updateMoveEcs(player, control, position);
-            } else if (direction == DIRECTION::UP) {
-                std::cout << "UP" << std::endl;
-                auto control = component::controllable::Up;
-                updateMoveEcs(player, control, position);
-            } else if (direction == DIRECTION::LEFT) {
-                std::cout << "LEFT" << std::endl;
-                auto control = component::controllable::Left;
-                updateMoveEcs(player, control, position);
-            } else if (direction == DIRECTION::RIGHT) {
-                auto control = component::controllable::Right;
-                updateMoveEcs(player, control, position);
-            } else if ((direction == DIRECTION::SHOOT)) {
-                auto control = component::controllable::Shoot;
-                updateMoveEcs(player, control, position);
-            } else 
-                std::cout << "NO DIRECTION" << std::endl;
+        if (direction == DIRECTION::DOWN) {
+            std::cout << "DOWN" << std::endl;
+            auto control = component::controllable::Down;
+            updateMoveEcs(player, control, position);
+        } else if (direction == DIRECTION::UP) {
+            std::cout << "UP" << std::endl;
+            auto control = component::controllable::Up;
+            updateMoveEcs(player, control, position);
+        } else if (direction == DIRECTION::LEFT) {
+            std::cout << "LEFT" << std::endl;
+            auto control = component::controllable::Left;
+            updateMoveEcs(player, control, position);
+        } else if (direction == DIRECTION::RIGHT) {
+            auto control = component::controllable::Right;
+            updateMoveEcs(player, control, position);
+        } else if ((direction == DIRECTION::SHOOT)) {
+            auto control = component::controllable::Shoot;
+            updateMoveEcs(player, control, position);
+        } else 
+            std::cout << "NO DIRECTION" << std::endl;
         std::cout << "x " << position.x << " y " << position.y << std::endl;
     }
 
