@@ -1,0 +1,49 @@
+name: C++ CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - feature/*
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-and-build:
+    name: Lint, Build, and Test C++ Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck build-essential
+
+      - name: Install Node.js and Commitlint
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Commitlint Dependencies
+        run: npm install --save-dev @commitlint/config-conventional @commitlint/cli
+
+      - name: Run Cppcheck on Client Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --include=client/include client/src/
+      
+      - name: Run Cppcheck on ECS Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --include=ECS/include ECS/src/
+      
+      - name: Run Cppcheck on Server Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --include=server/include server/src/
+      
+
+      - name: Lint Commit Messages
+        run: |
+          npx --no-install commitlint --from=$(git rev-parse main) --to=$(git rev-parse HEAD)

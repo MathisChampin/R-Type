@@ -16,7 +16,10 @@
 
 #include <functional>
 #include <iostream>
+#include <asio.hpp>
+#include <utility>
 #include <random>
+#include <chrono>
 #include <map>
 
 
@@ -29,25 +32,34 @@ namespace NmpServer {
 
             void executeOpCode();
             void fillPacket(Packet &packet);
+            registry &getECS();
+            std::vector<std::pair<Entity, asio::ip::udp::endpoint>> &get_vector() {
+                return _vecPlayer;
+            }
+
+        private:
             void evalMove();
-            void evalShoot();
             void evalQuit();
             void evalJoin();
 
-        private:
             void initPlayer();
             void initEnnemies();
             void initComponents();
+        
+            void updateMoveEcs(Entity &player, component::controllable::Key &control, sparse_array<component::position>::value_type &pos);
+            std::optional<asio::ip::udp::endpoint> foundEndpointByClient(Entity &player);
+            uint32_t getId(component::attribute &att);
 
             std::reference_wrapper<Server> _refServer;
             registry _ecs;
             Packet _pck;
             std::map<EVENT, std::function<void()>> _mapFctOpCode{
                 {{EVENT::MOVE}, [this]{return evalMove();}}, 
-                {{EVENT::SHOOT}, [this]{return evalShoot();}}, 
-                {{EVENT::QUIT}, [this]{return evalQuit();}}, 
+                {{EVENT::QUIT}, [this]{return evalQuit();}},
                 {{EVENT::JOIN}, [this]{return evalJoin();}}, 
             };
-            std::vector<Entity> _vecPlayer;
+            std::vector<std::pair<Entity, asio::ip::udp::endpoint>> _vecPlayer;
+            std::chrono::steady_clock::time_point _lastEnemyCreationTime;
+            std::chrono::steady_clock::time_point _lastShootCreationTime;
     };
 }

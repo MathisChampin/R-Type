@@ -1,29 +1,44 @@
+.PHONY: all clean ecs client server prepare
+
 BUILD_DIR = build
-SERVER_BUILD_DIR = $(BUILD_DIR)/server
-CLIENT_BUILD_DIR = $(BUILD_DIR)/client
-ECS_BUILD_DIR = $(BUILD_DIR)/ecs
+OS := $(shell uname -s)
 
-CMAKE_CMD = cmake
-MAKE_CMD = make
+ifeq ($(OS), Windows_NT)
+	RM = del /Q
+	MKDIR = mkdir
+	CPM_FETCH = powershell -Command "(New-Object System.Net.WebClient).DownloadFile('https://github.com/cpm-cmake/CPM.cmake/releases/latest/download/get_cpm.cmake', 'cmake/CPM.cmake')"
+else
+	RM = rm -rf
+	MKDIR = mkdir -p
+	CPM_FETCH = wget -O cmake/CPM.cmake https://github.com/cpm-cmake/CPM.cmake/releases/latest/download/get_cpm.cmake
+endif
 
-all: ecs srv client
+CMAKE_GENERATED_FILES = \
+	CMakeCache.txt \
+	CPackConfig.cmake \
+	CPackSourceConfig.cmake \
+	cmake_install.cmake \
+	cpm-package-lock.cmake
+
+CMAKE_GENERATED_DIRS = \
+	CMakeFiles \
+	CPM_modules \
+	_deps
+
+all: build
+
+build:
+	cmake -S . -B $(BUILD_DIR) -DCMAKE_BUILD_TYPE=Release
+	cmake --build $(BUILD_DIR)
 
 ecs:
-	@echo "Building ECS..."
-	@if [ ! -d "$(ECS_BUILD_DIR)" ]; then mkdir -p $(ECS_BUILD_DIR); fi
-	cd $(ECS_BUILD_DIR) && $(CMAKE_CMD) -DCMAKE_BUILD_TYPE=Release ../../ECS && $(MAKE_CMD)
+	cmake --build $(BUILD_DIR) --target ecs
 
-srv:
-	@echo "Building Server..."
-	@if [ ! -d "$(SERVER_BUILD_DIR)" ]; then mkdir -p $(SERVER_BUILD_DIR); fi
-	cd $(SERVER_BUILD_DIR) && $(CMAKE_CMD) -DCMAKE_BUILD_TYPE=Release ../../server && $(MAKE_CMD)
+client:
+	cmake --build $(BUILD_DIR) --target client
 
-game:
-	@echo "Building Client..."
-	@if [ ! -d "$(CLIENT_BUILD_DIR)" ]; then mkdir -p $(CLIENT_BUILD_DIR); fi
-	cd $(CLIENT_BUILD_DIR) && $(CMAKE_CMD) -DCMAKE_BUILD_TYPE=Release ../../client && $(MAKE_CMD)
+server:
+	cmake --build $(BUILD_DIR) --target server
 
 clean:
-	@echo "Cleaning up build files..."
-	rm -rf $(BUILD_DIR)
-	rm -rf CMakeUserPresets.json
+	$(RM) $(BUILD_DIR) $(CMAKE_GENERATED_FILES) $(CMAKE_GENERATED_DIRS)

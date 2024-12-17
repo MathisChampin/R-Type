@@ -16,15 +16,17 @@ namespace NmpClient
         LEFT = 1,
         RIGHT = 2,
         UP = 3,
-        DOWN = 4
+        DOWN = 4,
+        SHOOT = 5
     };
 
     struct SpriteInfo {
-        uint32_t id;
-        uint32_t x;
-        uint32_t y;
-        uint32_t sizeX;
-        uint32_t sizeY;
+        int idClient;
+        int id;
+        int x;
+        int y;
+        int sizeX;
+        int sizeY;
     };
 }
 

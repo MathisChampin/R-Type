@@ -1,71 +1,106 @@
 #include "ProtocolHandler.hpp"
 #include "Server.hpp"
+#include "idPlayer.hpp"
 
 namespace NmpServer
 {
     void ProtocoleHandler::executeOpCode()
     {
+        std::cout << "CALL PROTOCOLE" << std::endl;
         EVENT key = _pck.getOpCode();
         auto it = _mapFctOpCode.find(key);
         if (it != _mapFctOpCode.end()) {
             it->second();
         }
+        //createEnnemies(); //en fraire un thread 
+        //shootEnnemies();  //en fraire un thread
+        //sys.position_system(_ecs);
+        //std::cout << "position system" << std::endl;
+        //sys.collision_system(_ecs);
+        //sys.kill_system(_ecs);
     }
 
-    ProtocoleHandler::ProtocoleHandler(Server &server) : _refServer(server)
+    registry &ProtocoleHandler::getECS() {
+        return _ecs;
+    }
+
+    ProtocoleHandler::ProtocoleHandler(Server &server) : 
+        _refServer(server),
+        _lastEnemyCreationTime(std::chrono::steady_clock::now()),
+        _lastShootCreationTime(std::chrono::steady_clock::now())
     {
         std::cout << "protocole Handler create" << std::endl;
         this->initComponents();
+        this->initEnnemies();
     }
 
     void ProtocoleHandler::fillPacket(Packet &packet)
     {
-        std::cout << "test id: " << packet.getId() << std::endl;
         _pck = packet;
+    }
+
+    std::optional<asio::ip::udp::endpoint> ProtocoleHandler::foundEndpointByClient(Entity &player)
+    {
+        std::optional<asio::ip::udp::endpoint> optionEndpoint{std::nullopt};
+
+        for (const auto &pair : _vecPlayer) {
+            if (pair.first == player) {
+                return optionEndpoint = pair.second;
+            }
+        }
+        return optionEndpoint;
+    }
+
+    void ProtocoleHandler::updateMoveEcs(
+        Entity &player, 
+        component::controllable::Key &control, 
+        sparse_array<component::position>::value_type &pos)
+    {
+        System sys;
+        std::optional<asio::ip::udp::endpoint> foundEndpoint{this->foundEndpointByClient(player)}; 
+
+        if (foundEndpoint.has_value()) {
+            _ecs.emplace_component<component::controllable>(player, control);
+            sys.control_system(_ecs);
+            std::cout << "pos x: " << pos.x << " pos y: " << pos.y << std::endl;
+            //Packet packetPos(EVENT::MOVE, pos.x, pos.y);
+            //_refServer.get().send_data(packetPos, foundEndpoint.value());
+        } else {
+            std::cout << "no endpoint found for this client" << std::endl;
+        }
     }
 
     void ProtocoleHandler::evalMove()
     {
         std::cout << "evalMove" << std::endl;
         std::cout << "id client: " << _pck.getId() << std::endl;
-
         std::size_t idClient{ _pck.getId()};
-        auto &pos = _ecs.register_component<component::position>();
-        auto player = _ecs.get_entity(idClient);
-        auto &position = pos[player.get_id()];
-        System sys;
+        sparse_array<component::position> &pos = _ecs.get_components<component::position>();
+        Entity player = _ecs.get_entity(idClient);
+        sparse_array<component::position>::value_type &position = pos[player.get_id()];
+        std::optional<NmpServer::DIRECTION> direction = _pck.getArg();
 
-        auto direction = _pck.getArg();
-            if (direction.has_value())
-                std::cout << "Direction: ";
-            if (direction == DIRECTION::DOWN) {
-                std::cout << "DOWN" << std::endl;
-                _ecs.emplace_component<component::controllable>(player, component::controllable::Down);
-                sys.control_system(_ecs);
-                sys.position_system(_ecs);
-            } else if (direction == DIRECTION::UP) {
-                std::cout << "UP" << std::endl;
-                _ecs.emplace_component<component::controllable>(player, component::controllable::Up);
-                sys.control_system(_ecs);
-                sys.position_system(_ecs);
-            } else if (direction == DIRECTION::LEFT) {
-                std::cout << "LEFT" << std::endl;
-                _ecs.emplace_component<component::controllable>(player, component::controllable::Left);
-                sys.control_system(_ecs);
-                sys.position_system(_ecs);
-            } else if (direction == DIRECTION::RIGHT) {
-                std::cout << "RIGHT" << std::endl;
-                _ecs.emplace_component<component::controllable>(player, component::controllable::Right);
-                sys.control_system(_ecs);
-                sys.position_system(_ecs);
-            } else
-                std::cout << "NO DIRECTION" << std::endl;
+        if (direction == DIRECTION::DOWN) {
+            std::cout << "DOWN" << std::endl;
+            auto control = component::controllable::Down;
+            updateMoveEcs(player, control, position);
+        } else if (direction == DIRECTION::UP) {
+            std::cout << "UP" << std::endl;
+            auto control = component::controllable::Up;
+            updateMoveEcs(player, control, position);
+        } else if (direction == DIRECTION::LEFT) {
+            std::cout << "LEFT" << std::endl;
+            auto control = component::controllable::Left;
+            updateMoveEcs(player, control, position);
+        } else if (direction == DIRECTION::RIGHT) {
+            auto control = component::controllable::Right;
+            updateMoveEcs(player, control, position);
+        } else if ((direction == DIRECTION::SHOOT)) {
+            auto control = component::controllable::Shoot;
+            updateMoveEcs(player, control, position);
+        } else 
+            std::cout << "NO DIRECTION" << std::endl;
         std::cout << "x " << position.x << " y " << position.y << std::endl;
-    }
-
-    void ProtocoleHandler::evalShoot()
-    {
-        std::cout << "evalShoot" << std::endl;
     }
 
     void ProtocoleHandler::evalQuit()
@@ -77,11 +112,11 @@ namespace NmpServer
     {
         Entity player;
         this->initPlayer();
-        auto lastPlayer = _vecPlayer.back();
+        auto lastPlayer = _vecPlayer.back().first;
+        auto lastEndpoint = _vecPlayer.back().second;
 
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
-        auto lastendpoint = _refServer.get().getEndpoint();
-        _refServer.get().send_data(joinPacket, lastendpoint);
+        _refServer.get().send_data(joinPacket, lastEndpoint);
     }
 
     void ProtocoleHandler::initComponents()
@@ -100,8 +135,18 @@ namespace NmpServer
     void ProtocoleHandler::initPlayer()
     {
         Entity player = _ecs.spawn_entity();
+        auto lastEndpoint = _refServer.get().getLastEndpoint();
 
-        _ecs.add_component<component::attribute>(player, {component::attribute::Player});
+        for (size_t i = 0; i < 4; i++) {
+            if (_vecPlayer.size() == 0)
+                _ecs.add_component<component::attribute>(player, {component::attribute::Player1});
+            if (_vecPlayer.size() == 1)
+                _ecs.add_component<component::attribute>(player, {component::attribute::Player2});
+            if (_vecPlayer.size() == 2)
+                _ecs.add_component<component::attribute>(player, {component::attribute::Player3});
+            if (_vecPlayer.size() == 3)
+                _ecs.add_component<component::attribute>(player, {component::attribute::Player4});
+        }
         _ecs.add_component<component::controllable>(player, {component::controllable::NoKey});
         _ecs.add_component<component::level>(player, {component::level::Level0});
         _ecs.add_component<component::life>(player, {4});
@@ -110,7 +155,8 @@ namespace NmpServer
         _ecs.add_component<component::size>(player, {32, 14});
         _ecs.add_component<component::state>(player, {component::state::Alive});
         _ecs.add_component<component::velocity>(player, {0, 0});
-        _vecPlayer.push_back(player);  
+        _ecs.add_component<component::idPlayer>(player, {player.get_id()});
+        _vecPlayer.push_back(std::make_pair(player, lastEndpoint));  
     }
 
     void ProtocoleHandler::initEnnemies()
@@ -123,11 +169,13 @@ namespace NmpServer
 
         _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
         _ecs.add_component<component::level>(ennemies, {component::level::Level0});
+        _ecs.add_component<component::controllable>(ennemies, {component::controllable::Key::NoKey});
         _ecs.add_component<component::life>(ennemies, {1});
-        _ecs.add_component<component::position>(ennemies, {1920, y});
-        _ecs.add_component<component::size>(ennemies, {32, 14});
+        _ecs.add_component<component::position>(ennemies, {1800, y});
+        _ecs.add_component<component::size>(ennemies, {33, 36});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
-        _ecs.add_component<component::velocity>(ennemies, {20, 0});
+        _ecs.add_component<component::idPlayer>(ennemies, {ennemies.get_id()});
+        _ecs.add_component<component::velocity>(ennemies, {-1, 0});
     }
 
 }

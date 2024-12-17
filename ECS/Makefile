@@ -10,8 +10,9 @@ SRC =   $(SRC_SYSTEM)controllable_system.cpp \
 		$(SRC_SYSTEM)level_system.cpp		\
 		$(SRC_SYSTEM)collision_system.cpp		\
 		$(SRC_SYSTEM)shoot_system.cpp		\
+		$(SRC_SYSTEM)kill_system.cpp		\
 
-SRC_MAIN = $(SRC_DIR)main.cpp
+SRC_MAIN	=	$(SRC_DIR)main.cpp
 
 SRC_TEST =  tests/system/testsControllable.cpp \
             tests/system/testsPosition.cpp \
@@ -20,7 +21,8 @@ SRC_TEST =  tests/system/testsControllable.cpp \
             tests/testsSparseArray.cpp	\
 			tests/system/testsLevel.cpp	\
 			tests/system/testsCollision.cpp	\
-			tests/system/testsShoot.cpp
+			tests/system/testsShoot.cpp		\
+			tests/system/testsKill.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

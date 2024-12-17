@@ -11,7 +11,7 @@ namespace NmpClient {
             Client();
 
             void send_input(Packet &packet) override;
-            Packet get_data() override;
+            std::optional<Packet> get_data() override;
             std::size_t get_id() const;
 
             std::size_t _id;

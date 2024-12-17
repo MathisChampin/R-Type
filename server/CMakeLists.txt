@@ -1,6 +1,3 @@
-# server/CMakeLists.txt
-cmake_minimum_required(VERSION 3.16)
-
 project(r_type_server)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -21,7 +18,10 @@ set(SOURCES
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
-target_compile_options(${PROJECT_NAME} PRIVATE -DASIO_STANDALONE -Wall -Wextra -Werror)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE pthread r_type_ecs)
+if(MSVC)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include)
+    target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs ws2_32)
+elseif(UNIX)
+    target_include_directories(${PROJECT_NAME} PRIVATE ${Asio_SOURCE_DIR}/asio/include)
+    target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs pthread)
+endif()

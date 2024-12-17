@@ -87,11 +87,19 @@ public:
      * The entity is marked as available for reuse.
      * @param e The entity to kill.
     */
-    void kill_entity(Entity const& e) {
+    void kill_entity(Entity const& e)
+    {
         for (auto& func : _remove_functions) {
             func.second(*this, e);
         }
-        _available_entities.push_back(e);
+    
+        auto it = std::find_if(_entities.begin(), _entities.end(), [&e](const Entity& entity) {
+            return entity.get_id() == e.get_id();
+        });
+    
+        if (it != _entities.end()) {
+            it->set_active(false); // Marquer l'entité comme inactive
+        }
     }
 
     /**

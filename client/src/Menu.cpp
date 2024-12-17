@@ -42,10 +42,7 @@ void Menu::setupTitle()
     m_title.setCharacterSize(90);
     m_title.setFillColor(sf::Color::Blue);
 
-    sf::Vector2u windowSize = m_window.getSize();
-    float centerX = windowSize.x / 2.0f;
-
-    m_title.setPosition(centerX, 130); 
+    m_title.setPosition(950, 130); 
     m_title.setOrigin(m_title.getLocalBounds().width / 2, 0);
 }
 

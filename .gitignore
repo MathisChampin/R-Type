@@ -6,10 +6,12 @@ r-type_client
 r-type_server
 
 /build/
-
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 
 *.log
 *.tmp
+
+node_modules/
+npm-debug.log*

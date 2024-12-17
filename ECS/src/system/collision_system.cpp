@@ -35,21 +35,52 @@ bool is_player(const component::attribute& attribute)
     return false;
 }
 
-void handle_collision_with_player(size_t j, sparse_array<component::life>& lifes)
+void handle_collision_with_player(size_t i, size_t j, size_t shoot_id,
+    sparse_array<component::life> &lifes,
+    sparse_array<component::state> &states)
 {
     auto &life = lifes[j];
-    if (life.life > 0) {
-        life.life -= 1;
-    }
+    auto &state = states[j];
+    auto &state_shoot = states[i];
+    auto &state_ennemy = states[shoot_id];
+
+    if (state_ennemy._stateKey == component::state::stateKey::Alive) {
+        if (life.life > 0) {
+            life.life -= 1;
+        }
+        if (life.life <= 0) {
+            state._stateKey = component::state::stateKey::Dead;
+        }
+        state_ennemy._stateKey = component::state::stateKey::Dead;
+    } else
+        state_shoot._stateKey = component::state::stateKey::Dead;
 }
 
-void handle_collision_with_enemy(size_t shoot_id, sparse_array<component::score>& scores)
+void handle_collision_with_enemy(size_t i, size_t shoot_id, size_t idEnnemy,
+    sparse_array<component::score> &scores,
+    sparse_array<component::state> &states)
 {
+    std:: cout << "COLLISION WITH ENNEMY" << "\n\n";
     auto &score = scores[shoot_id];
-    score.score += 10;
+    auto &state = states[idEnnemy];
+    auto &state_shoot = states[i];
+    auto &state_player = states[shoot_id];
+    if (state_player._stateKey == component::state::stateKey::Alive) {
+        score.score += 10;
+        state._stateKey = component::state::stateKey::Dead;
+        state_shoot._stateKey = component::state::stateKey::Dead;
+        std::cout << "ennemy with id = " << idEnnemy << " is dead" << std::endl;
+        std::cout << "shoot with id = " << i << " is dead" << std::endl;
+
+    }
+    else
+        state_shoot._stateKey = component::state::stateKey::Dead;
+
 }
 
-bool should_check_collision(size_t j, const sparse_array<component::attribute>& attributes, const component::idPlayer& shoot_id)
+bool should_check_collision(size_t j,
+    const sparse_array<component::attribute> &attributes,
+    const component::idPlayer &shoot_id)
 {
     if ((attributes[j]._type == component::attribute::Player1 ||
         attributes[j]._type == component::attribute::Player2 ||
@@ -67,21 +98,24 @@ void System::collision_system(registry &reg)
     auto &lifes = reg.get_components<component::life>();
     auto &scores = reg.get_components<component::score>();
     auto &attributes = reg.get_components<component::attribute>();
+    auto &states = reg.get_components<component::state>();
     auto &idPlayers = reg.get_components<component::idPlayer>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
-        if (attributes[i]._type == component::attribute::Shoot) {
-            auto &shoot_id = idPlayers[i];
-            for (size_t j = 0; j < attributes.size(); j++) {
-                if (should_check_collision(j, attributes, shoot_id)) {
-                    if (check_collision(positions, sizes, i, j)) {
-                        if (is_player(attributes[j])) {
-                            handle_collision_with_player(j, lifes);
-                        } else if (attributes[j]._type == component::attribute::Ennemies) {
-                            handle_collision_with_enemy(shoot_id.id, scores);
-                        }
-                    }
-                }
+        if (attributes[i]._type != component::attribute::Shoot) continue;
+
+        auto &shoot_id = idPlayers[i];
+
+        for (size_t j = 0; j < attributes.size(); j++) {
+            if (!should_check_collision(j, attributes, shoot_id)) continue;
+
+            if (!check_collision(positions, sizes, i, j)) continue;
+
+            // Traiter les collisions selon le type de l'entité touchée
+            if (is_player(attributes[j])) {
+                handle_collision_with_player(i, j, shoot_id.id, lifes, states);
+            } else if (attributes[j]._type == component::attribute::Ennemies) {
+                handle_collision_with_enemy(i, shoot_id.id, j, scores, states);
             }
         }
     }

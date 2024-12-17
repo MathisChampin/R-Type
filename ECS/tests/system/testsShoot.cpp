@@ -37,8 +37,8 @@ Test(ShootSystemTest, CreateShoot_Player) {
     cr_assert_eq(positions[1].y, 100, "La position Y du tir devrait être 100.");
     cr_assert_eq(velocities[1].x, 10, "La vitesse X du tir devrait être 10.");
     cr_assert_eq(velocities[1].y, 0, "La vitesse Y du tir devrait être 0.");
-    cr_assert_eq(sizes[1].x, 10, "La taille X du tir devrait être 10.");
-    cr_assert_eq(sizes[1].y, 10, "La taille Y du tir devrait être 10.");
+    cr_assert_eq(sizes[1].x, (int)0.1, "La taille X du tir ennemi devrait être 0.1 = %d.", sizes[1].x);
+    cr_assert_eq(sizes[1].y, (int)0.1, "La taille Y du tir ennemi devrait être 0.1 = %d.", sizes[1].y);
     cr_assert_eq(idPlayers[1].id, player.get_id(), "L'ID du joueur dans le tir devrait correspondre à l'ID du joueur.");
 }
 
@@ -67,10 +67,10 @@ Test(ShootSystemTest, CreateShoot_Ennemy) {
     cr_assert_eq(attributes[1]._type, component::attribute::Shoot, "Le type d'attribut de l'entité 1 devrait être Shoot.");
     cr_assert_eq(positions[1].x, 200, "La position X du tir ennemi devrait être 200.");
     cr_assert_eq(positions[1].y, 200, "La position Y du tir ennemi devrait être 200.");
-    cr_assert_eq(velocities[1].x, 10, "La vitesse X du tir ennemi devrait être 10.");
+    cr_assert_eq(velocities[1].x, -10, "La vitesse X du tir ennemi devrait être -10.");
     cr_assert_eq(velocities[1].y, 0, "La vitesse Y du tir ennemi devrait être 0.");
-    cr_assert_eq(sizes[1].x, -10, "La taille X du tir ennemi devrait être -10.");
-    cr_assert_eq(sizes[1].y, 10, "La taille Y du tir ennemi devrait être 10.");
+    cr_assert_eq(sizes[1].x, int(0.1), "La taille X du tir ennemi devrait être 0.1 = %d.", sizes[1].x);
+    cr_assert_eq(sizes[1].y, int(0.1), "La taille Y du tir ennemi devrait être 0.1 = %d.", sizes[1].y);
     cr_assert_eq(idPlayers[1].id, enemy.get_id(), "L'ID de l'ennemi dans le tir devrait correspondre à l'ID de l'ennemi.");
 }
 

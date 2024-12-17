@@ -29,16 +29,25 @@ namespace NmpBinary
     {
         NmpServer::EVENT opcode = packet.getOpCode();
         std::size_t id = packet.getId();
+        int x = packet.getX();
+        int y = packet.getY();
         
+        if (opcode == NmpServer::EVENT::MOVE) {
+            buffer.push_back(static_cast<uint32_t>(opcode));
+            buffer.push_back(static_cast<uint32_t>(x));
+            buffer.push_back(static_cast<uint32_t>(y));
+        }
         if (opcode == NmpServer::EVENT::SPRITE) {
             buffer.push_back(static_cast<uint32_t>(opcode));
             NmpServer::SpriteInfo sprite = packet.getSpriteInfo();
-            buffer.push_back(sprite.id);
-            buffer.push_back(sprite.x);
-            buffer.push_back(sprite.y);
-            buffer.push_back(sprite.sizeX);
-            buffer.push_back(sprite.sizeY);
-        } else {
+            buffer.push_back(static_cast<uint32_t>(sprite.idClient));
+            buffer.push_back(static_cast<uint32_t>(sprite.id));
+            buffer.push_back(static_cast<uint32_t>(sprite.x));
+            buffer.push_back(static_cast<uint32_t>(sprite.y));
+            buffer.push_back(static_cast<uint32_t>(sprite.sizeX));
+            buffer.push_back(static_cast<uint32_t>(sprite.sizeY));
+        } else if (opcode == NmpServer::EVENT::JOIN) { 
+            std::cout << "send id: " << id << std::endl;
             buffer.push_back(static_cast<uint32_t>(opcode));
             buffer.push_back(static_cast<uint32_t>(id));
         }
@@ -47,13 +56,16 @@ namespace NmpBinary
     NmpServer::Packet Binary::deserialize(std::vector<uint32_t> &buffer)
     {
         std::size_t id = static_cast<std::size_t>(buffer[0]);
+        std::cout << "id server deserialize: " << id << std::endl;
         NmpServer::EVENT event = static_cast<NmpServer::EVENT>(buffer[1]);
 
         if (event == NmpServer::EVENT::MOVE) {
             std::optional<NmpServer::DIRECTION> direction = std::nullopt;
             direction = static_cast<NmpServer::DIRECTION>(buffer[2]);
+            this->clearBuffer(buffer);
             return NmpServer::Packet(id, event, direction);
         }
+        this->clearBuffer(buffer);
         return NmpServer::Packet(id, event);
     }
 
