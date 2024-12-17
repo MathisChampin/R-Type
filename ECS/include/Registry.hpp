@@ -87,7 +87,8 @@ public:
      * The entity is marked as available for reuse.
      * @param e The entity to kill.
     */
-    void kill_entity(Entity const& e) {
+    void kill_entity(Entity const& e)
+    {
         for (auto& func : _remove_functions) {
             func.second(*this, e);
         }
@@ -97,11 +98,9 @@ public:
         });
     
         if (it != _entities.end()) {
-            _entities.erase(it);
+            it->set_active(false); // Marquer l'entité comme inactive
         }
-        _available_entities.push_back(e);
     }
-
 
     /**
      * @brief Adds a component to an entity by copying the provided component.

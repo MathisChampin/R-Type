@@ -47,7 +47,7 @@ namespace NmpServer
     void Server::systemLoop() {
     System sys;
     const auto frameDuration = std::chrono::milliseconds(20);
-    const auto shootCooldown = std::chrono::seconds(5); // Délai de 5 secondes pour les tirs
+    const auto shootCooldown = std::chrono::seconds(5);
     auto lastShootTime = std::chrono::steady_clock::now();
 
     while (_running) {
@@ -61,9 +61,9 @@ namespace NmpServer
                 lastShootTime = std::chrono::steady_clock::now();
             }
             //sys.shoot_system_player(ecs);
-            sys.position_system(ecs);
             sys.collision_system(ecs);
-            //sys.kill_system(ecs);
+            sys.kill_system(ecs);
+            sys.position_system(ecs);
             send_entity(ecs);
         }
 

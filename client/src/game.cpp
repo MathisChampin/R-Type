@@ -33,32 +33,26 @@ void Game::get_player()
     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
         return;
     auto spriteInfo = data.getSpriteInfo();
-    bool playerExists = false;
     if (spriteInfo.id == 1) {
+        if (m_players.empty()) {
+            m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
+        }
         for (auto& player : m_players) {
             if (player.get_id() == spriteInfo.idClient) {
                 std::cout << "update player" << std::endl;
-                playerExists = true;
                 player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-                break;
+            }
+            else {
+                std::cout << "update id player = " << spriteInfo.idClient << std::endl;
+                player.updateId(spriteInfo.idClient);
+                player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+
             }
         }
-        if (!playerExists) {
-            if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
-                std::cout << "Nouveau Player avec id = " << spriteInfo.idClient << std::endl;
-                m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
-                std::cout << "je suis en train de remplir player x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
-            } else {
-                std::cerr << "Invalid player position received: x = " << spriteInfo.x << ", y = " << spriteInfo.y << std::endl;
-            }
-        }
-    } else
-        return; 
+    }
 }
 
 void Game::get_ennemies() {
-    bool enemyExists = false;
-
     auto packet = m_client.get_data();
     if (!packet.has_value())
         return;
@@ -68,30 +62,22 @@ void Game::get_ennemies() {
     auto spriteInfo = data.getSpriteInfo();
 
     if (spriteInfo.id == 2) {
+        if (m_enemies.empty()) {
+            m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+        }
         for (auto& enemy : m_enemies) {
             if (enemy.get_id() == spriteInfo.idClient) {
-                std::cout << "update ennemis: " << enemy.get_id() << std::endl;
-
                 enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-                enemyExists = true;
-                break;
             }
-        }
-        if (!enemyExists) {
-            if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
-                std::cout << "Nouveau Ennemie cree avec id: "<< spriteInfo.idClient << std::endl;
-                m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
-                std::cout << "je suis en train de remplir ennemi avec x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
-            } else {
-                std::cerr << "Invalid enemy position received: x = " << spriteInfo.x << ", y = " << spriteInfo.y << std::endl;
+            else {
+                enemy.updateId(spriteInfo.idClient);
+                enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
         }
     }
 }
 
 void Game::get_shoots() {
-    bool shootExists = false;
-
     auto packet = m_client.get_data();
     if (!packet.has_value())
         return;
@@ -101,23 +87,17 @@ void Game::get_shoots() {
     auto spriteInfo = data.getSpriteInfo();
 
     if (spriteInfo.id == 3) {
+        if (m_shoots.empty()) {
+            m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+        }
         for (auto& shoot : m_shoots) {
             if (shoot.get_id() == spriteInfo.idClient) {
                 std::cout << "update shoot: " << shoot.get_id() << std::endl;
                 shoot.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-                shootExists = true;
-                break;
             }
-        } 
-        if (!shootExists) {
-            if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
-                std::cout << "Nouveau Shoot avec id = " << spriteInfo.idClient << std::endl;
+            else
                 m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
-                std::cout << "je suis en train de remplir shoot avec x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
-            } else {
-                std::cerr << "Invalid shoot position received: x = " << spriteInfo.x << ", y = " << spriteInfo.y << std::endl;
-            }
-        }
+        } 
     }
 }
 

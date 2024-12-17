@@ -60,6 +60,7 @@ void handle_collision_with_enemy(size_t i, size_t shoot_id, size_t idEnnemy,
     sparse_array<component::score> &scores,
     sparse_array<component::state> &states)
 {
+    std:: cout << "COLLISION WITH ENNEMY" << "\n\n";
     auto &score = scores[shoot_id];
     auto &state = states[idEnnemy];
     auto &state_shoot = states[i];
@@ -69,7 +70,7 @@ void handle_collision_with_enemy(size_t i, size_t shoot_id, size_t idEnnemy,
         state._stateKey = component::state::stateKey::Dead;
         state_shoot._stateKey = component::state::stateKey::Dead;
         std::cout << "ennemy with id = " << idEnnemy << " is dead" << std::endl;
-        std::cout << "shoot with id = " << shoot_id << " is dead" << std::endl;
+        std::cout << "shoot with id = " << i << " is dead" << std::endl;
 
     }
     else

@@ -45,10 +45,13 @@ void create_shoot_ennemie(Entity entity, registry &reg)
 void System::shoot_system_player(registry &reg)
 {
     auto &controllable = reg.get_components<component::controllable>();
+    auto &state = reg.get_components<component::state>();
 
     for (size_t i = 0; i < controllable.size(); i++) {
         auto &ctrl = controllable[i];
-        if (ctrl.active_key == component::controllable::Shoot) {
+        auto &st = state[i];
+
+        if (ctrl.active_key == component::controllable::Shoot && st._stateKey == component::state::stateKey::Alive) {
             Entity player = reg.get_entity(i);
             create_shoot(player, reg);
         }
@@ -58,10 +61,12 @@ void System::shoot_system_player(registry &reg)
 void System::shoot_system_ennemies(registry &reg)
 {
     auto &attribute = reg.get_components<component::attribute>();
+    auto &state = reg.get_components<component::state>();
 
     for (size_t i = 0; i < attribute.size(); i++) {
         auto &att = attribute[i];
-        if (att._type == component::attribute::Ennemies) {
+        auto &st = state[i];
+        if (att._type == component::attribute::Ennemies && st._stateKey == component::state::stateKey::Alive) {
             Entity ennemies = reg.get_entity(i);
             create_shoot_ennemie(ennemies, reg);
         }
