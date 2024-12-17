@@ -1,6 +1,7 @@
 #include "controllable.hpp"
 #include "position.hpp"
 #include "system.hpp"
+#include "attribute.hpp"
 #include <iostream>
 #include <map>
 
@@ -33,13 +34,22 @@ void System::control_system(registry& reg)
         {component::controllable::Key::Left, {-10, 0}},
         {component::controllable::Key::Right, {10, 0}}
     };
-    auto& positions = reg.get_components<component::position>();
-    auto& controllables = reg.get_components<component::controllable>();
+    auto &positions = reg.get_components<component::position>();
+    auto &controllables = reg.get_components<component::controllable>();
+    auto &attributes = reg.get_components<component::attribute>();
 
-    for (size_t i = 0; i < controllables.size(); ++i) {
-        auto &ctl = controllables[i];
-        auto &pos = positions[i];
-        pos.x = check_position_x(pos.x, inputs[ctl.active_key].first);
-        pos.y = check_position_y(pos.y, inputs[ctl.active_key].second);
+    for (size_t i = 0; i < attributes.size(); ++i) {
+        if (attributes[i]._type == component::attribute::Player1 ||
+        attributes[i]._type == component::attribute::Player2 ||
+        attributes[i]._type == component::attribute::Player3 ||
+        attributes[i]._type == component::attribute::Player4) {
+            auto &ctl = controllables[i];
+            auto &pos = positions[i];
+            if (ctl.active_key == component::controllable::Key::Shoot) {
+                shoot_system_player(reg);
+            }
+            pos.x = check_position_x(pos.x, inputs[ctl.active_key].first);
+            pos.y = check_position_y(pos.y, inputs[ctl.active_key].second);
+            }
     }
 }

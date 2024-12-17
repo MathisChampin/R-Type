@@ -7,7 +7,8 @@ void position_ennemies(
     sparse_array<component::position> &positions,
     sparse_array<component::attribute> &attributes,
     sparse_array<component::velocity> &velocities,
-    int i
+    int i,
+    registry &reg
 )
 {
     auto &pos = positions[i];
@@ -16,6 +17,8 @@ void position_ennemies(
 
     if (att._type == component::attribute::Ennemies) {
         pos.x += vel.x;
+        if (pos.x <= 0)
+            reg.kill_entity(reg.get_entity(i));
     }
 }
 
@@ -23,7 +26,8 @@ void position_shoot(
     sparse_array<component::position> &positions,
     sparse_array<component::attribute> &attributes,
     sparse_array<component::velocity> &velocities,
-    int i
+    int i,
+    registry &reg
 )
 {
     auto &pos = positions[i];
@@ -32,6 +36,10 @@ void position_shoot(
 
     if (att._type == component::attribute::Shoot) {
         pos.x += vel.x;
+        if (pos.x <= -30)
+            reg.kill_entity(reg.get_entity(i));
+        if (pos.x >= 1930)
+            reg.kill_entity(reg.get_entity(i));
     }
 }
 
@@ -42,7 +50,7 @@ void System::position_system(registry &reg)
     auto &attributes = reg.get_components<component::attribute>();
 
     for (size_t i = 0; i < positions.size() && i < velocities.size() && i < attributes.size(); i++) {        
-        position_ennemies(positions, attributes, velocities, i);
-        position_shoot(positions, attributes, velocities, i);
+        position_ennemies(positions, attributes, velocities, i, reg);
+        position_shoot(positions, attributes, velocities, i, reg);
     }
 }
