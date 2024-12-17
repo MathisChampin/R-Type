@@ -3,7 +3,9 @@
 
 namespace NmpServer
 {
-    Server::Server() : _io_context(),
+    Server::Server() : 
+        _running(false),
+        _io_context(),
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
         _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081)),
         _ptp(*this)
@@ -11,8 +13,14 @@ namespace NmpServer
         _bufferAsio.fill(0);
     }
 
+    Server::~Server() {
+        stopSystemThread();
+    }
+
     void Server::run()
     {
+        _running = true;
+        startSystemThread();
         _io_context.run();
 
         std::thread inputThread(&Server::threadInput, this);
@@ -20,6 +28,78 @@ namespace NmpServer
 
         inputThread.join();
         ecsThread.join();
+    }
+
+    void Server::startSystemThread() {
+        _systemThread = std::thread(&Server::systemLoop, this);
+    }
+
+    void Server::stopSystemThread() {
+        _running = false;
+        if (_systemThread.joinable()) {
+            _systemThread.join();
+        }
+    }
+
+    void Server::systemLoop() {
+        System sys;
+        while (_running) {
+            const auto frameDuration = std::chrono::milliseconds(20);
+            auto startTime = std::chrono::steady_clock::now();
+            {
+                std::lock_guard<std::mutex> lock(_ecsMutex);
+                auto &ecs = _ptp.getECS();
+                sys.shoot_system_player(ecs);
+                sys.position_system(ecs);
+                sys.collision_system(ecs);
+                sys.kill_system(ecs);
+                send_entity(ecs);
+                std::cout << "je suis la" << std::endl;
+            }
+            std::this_thread::sleep_until(startTime + frameDuration);
+        }
+    }
+
+    uint32_t Server::getId(component::attribute &att)
+    {
+        uint32_t id = 0;
+
+        if (att._type == component::attribute::Player1 ||
+            att._type == component::attribute::Player2 ||
+            att._type == component::attribute::Player3 ||
+            att._type == component::attribute::Player4)
+            id = 1;
+        if (att._type == component::attribute::Ennemies)
+            id = 2;
+        if (att._type == component::attribute::Shoot)
+            id = 3;
+        return id;
+    }
+
+    void Server::send_entity(registry &_ecs)
+    {
+        sparse_array<component::position> &positions = _ecs.get_components<component::position>();
+        sparse_array<component::state> &states = _ecs.get_components<component::state>();
+        sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
+        sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
+        int id = 0;
+
+        for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
+            auto &st = states[i];
+            auto &att = attributes[i];
+            if (st._stateKey == component::state::stateKey::Alive) {
+                id = getId(att);
+                auto &pos = positions[i];
+                auto &s = sizes[i];
+                std::cout << "id client: "  << i << std::endl;
+                SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
+                Packet packet(EVENT::SPRITE, sprite);
+                auto &_vecPlayer = _ptp.get_vector();
+                for (const auto &[entity, endpoint] : _vecPlayer) {
+                    send_data(packet, endpoint);
+                }
+            }
+        }
     }
 
     void Server::threadInput()
@@ -36,6 +116,8 @@ namespace NmpServer
             Packet packet;
             {
                 std::unique_lock<std::mutex> lock(_queueMutex);
+                if (!_running)
+                    return;
                 _cv.wait(lock, [this] { return !_queue.empty(); });
                 packet = _queue.front();
                 _queue.pop();
