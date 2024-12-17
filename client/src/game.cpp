@@ -33,6 +33,8 @@ void Game::get_player()
     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
         return;
     auto spriteInfo = data.getSpriteInfo();
+    bool state = false;
+
     if (spriteInfo.id == 1) {
         if (m_players.empty()) {
             m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
@@ -41,13 +43,12 @@ void Game::get_player()
             if (player.get_id() == spriteInfo.idClient) {
                 std::cout << "update player" << std::endl;
                 player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                state = true;
+                break;
             }
-            else {
-                std::cout << "update id player = " << spriteInfo.idClient << std::endl;
-                player.updateId(spriteInfo.idClient);
-                player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-
-            }
+        }
+        if (!state) {
+            m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
         }
     }
 }
@@ -60,6 +61,7 @@ void Game::get_ennemies() {
     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
         return;
     auto spriteInfo = data.getSpriteInfo();
+    auto state = false;
 
     if (spriteInfo.id == 2) {
         if (m_enemies.empty()) {
@@ -68,11 +70,12 @@ void Game::get_ennemies() {
         for (auto& enemy : m_enemies) {
             if (enemy.get_id() == spriteInfo.idClient) {
                 enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                state = true;
+                break;
             }
-            else {
-                enemy.updateId(spriteInfo.idClient);
-                enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-            }
+        }
+        if (!state) {
+            m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
         }
     }
 }
@@ -85,6 +88,7 @@ void Game::get_shoots() {
     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
         return;
     auto spriteInfo = data.getSpriteInfo();
+    auto state = false;
 
     if (spriteInfo.id == 3) {
         if (m_shoots.empty()) {
@@ -94,10 +98,12 @@ void Game::get_shoots() {
             if (shoot.get_id() == spriteInfo.idClient) {
                 std::cout << "update shoot: " << shoot.get_id() << std::endl;
                 shoot.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                state = true;
+                break;
             }
-            else
-                m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
         } 
+        if (!state)
+            m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
     }
 }
 
