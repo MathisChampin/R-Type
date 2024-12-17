@@ -15,13 +15,11 @@ public:
     Player(Player&& other) noexcept
         : m_sprite(std::move(other.m_sprite)), 
           m_textures(std::move(other.m_textures)),
-          m_bullets(std::move(other.m_bullets)),
           m_speed(other.m_speed),
           m_currentFrame(other.m_currentFrame),
           m_animationTime(other.m_animationTime),
           m_elapsedTime(other.m_elapsedTime),
           m_client(other.m_client),
-          m_bulletTexture(std::move(other.m_bulletTexture)),
           m_position(std::move(other.m_position)),
           _id(std::move(other._id))
     {}
@@ -44,14 +42,12 @@ public:
 private:
     sf::Sprite m_sprite;
     std::vector<sf::Texture> m_textures;
-    std::vector<sf::Sprite> m_bullets;
     float m_speed;
     int m_currentFrame;
     float m_animationTime;
     float m_elapsedTime;
 
     NmpClient::Client &m_client;
-    sf::Texture m_bulletTexture;
     sf::Vector2f m_position;
     int _id;
     std::queue<NmpClient::Packet> m_movementQueue;

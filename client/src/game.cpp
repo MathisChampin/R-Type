@@ -37,6 +37,7 @@ void Game::get_player()
     if (spriteInfo.id == 1) {
         for (auto& player : m_players) {
             if (player.get_id() == spriteInfo.idClient) {
+                std::cout << "update player" << std::endl;
                 playerExists = true;
                 player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
                 break;
@@ -44,6 +45,7 @@ void Game::get_player()
         }
         if (!playerExists) {
             if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
+                std::cout << "Nouveau Player avec id = " << spriteInfo.idClient << std::endl;
                 m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
                 std::cout << "je suis en train de remplir player x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
             } else {
@@ -68,6 +70,8 @@ void Game::get_ennemies() {
     if (spriteInfo.id == 2) {
         for (auto& enemy : m_enemies) {
             if (enemy.get_id() == spriteInfo.idClient) {
+                std::cout << "update ennemis: " << enemy.get_id() << std::endl;
+
                 enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
                 enemyExists = true;
                 break;
@@ -75,10 +79,43 @@ void Game::get_ennemies() {
         }
         if (!enemyExists) {
             if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
+                std::cout << "Nouveau Ennemie cree avec id: "<< spriteInfo.idClient << std::endl;
                 m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
                 std::cout << "je suis en train de remplir ennemi avec x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
             } else {
                 std::cerr << "Invalid enemy position received: x = " << spriteInfo.x << ", y = " << spriteInfo.y << std::endl;
+            }
+        }
+    }
+}
+
+void Game::get_shoots() {
+    bool shootExists = false;
+
+    auto packet = m_client.get_data();
+    if (!packet.has_value())
+        return;
+    auto data = packet.value();
+    if (data.getOpCode() != NmpClient::EVENT::SPRITE)
+        return;
+    auto spriteInfo = data.getSpriteInfo();
+
+    if (spriteInfo.id == 3) {
+        for (auto& shoot : m_shoots) {
+            if (shoot.get_id() == spriteInfo.idClient) {
+                std::cout << "update shoot: " << shoot.get_id() << std::endl;
+                shoot.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                shootExists = true;
+                break;
+            }
+        } 
+        if (!shootExists) {
+            if (spriteInfo.x >= 0 && spriteInfo.y >= 0) {
+                std::cout << "Nouveau Shoot avec id = " << spriteInfo.idClient << std::endl;
+                m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+                std::cout << "je suis en train de remplir shoot avec x = " << spriteInfo.x << " & y = " << spriteInfo.y << std::endl;
+            } else {
+                std::cerr << "Invalid shoot position received: x = " << spriteInfo.x << ", y = " << spriteInfo.y << std::endl;
             }
         }
     }
@@ -151,6 +188,8 @@ void Game::run() {
         std::cout << "je sors de get ennemies" << std::endl;
         get_player();
         std::cout << "je sors de get player" << std::endl;
+        get_shoots();
+        std::cout << "je sors de get shoot" << std::endl;
         update(deltaTime);
         render();
         std::cout << "JE SORS DE RENDER" << std::endl;
@@ -243,6 +282,10 @@ void Game::render() {
         for (auto& enemy : m_enemies) {
             enemy.render(m_window);
         }
+
+        for (auto &shoot : m_shoots){
+            shoot.render(m_window);
+        };
     } else if (m_currentState == GameState::Options) {
         m_menuBackground.render(m_window);
         m_optionsMenu.render();

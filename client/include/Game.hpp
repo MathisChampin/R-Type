@@ -11,6 +11,7 @@
 #include "OptionsMenu.hpp"
 #include "client/Client.hpp"
 #include "Enemy.hpp"
+#include "Shoot.hpp"
 
 enum class GameState {
     Menu,
@@ -42,6 +43,7 @@ private:
     void render();
     void get_player();
     void get_ennemies();
+    void get_shoots();
     // Member variables
     sf::RenderWindow m_window;
     sf::Font m_font;
@@ -57,6 +59,7 @@ private:
     // Vectors to store players and enemies
     std::vector<Player> m_players;
     std::vector<Enemy> m_enemies;
+    std::vector<Shoot> m_shoots;
 
     // IP address input
     sf::String m_ipAddress;
