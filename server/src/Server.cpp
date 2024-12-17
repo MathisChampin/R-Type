@@ -98,31 +98,39 @@ namespace NmpServer
         return id;
     }
 
-    void Server::send_entity(registry &_ecs)
-    {
-        sparse_array<component::position> &positions = _ecs.get_components<component::position>();
-        sparse_array<component::state> &states = _ecs.get_components<component::state>();
-        sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
-        sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
-        int id = 0;
+        void Server::send_entity(registry &_ecs)
+        {
+            sparse_array<component::position> &positions = _ecs.get_components<component::position>();
+            sparse_array<component::state> &states = _ecs.get_components<component::state>();
+            sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
+            sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
+            int id = 0;
 
-        for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
-            auto &st = states[i];
-            auto &att = attributes[i];
-            if (st._stateKey == component::state::stateKey::Alive) {
-                id = getId(att);
-                auto &pos = positions[i];
-                auto &s = sizes[i];
-                std::cout << "id client: "  << i << std::endl;
-                SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
-                Packet packet(EVENT::SPRITE, sprite);
-                auto &_vecPlayer = _ptp.get_vector();
-                for (const auto &[entity, endpoint] : _vecPlayer) {
-                    send_data(packet, endpoint);
+            for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
+                auto &st = states[i];
+                auto &att = attributes[i];
+                if (st._stateKey == component::state::stateKey::Dead && 
+                    att._type == component::attribute::Ennemies) {
+                        std::cout << "Un ennemi est mort. Fermeture du programme proprement." << std::endl;
+                        _running = false;
+                        if (_systemThread.joinable() && std::this_thread::get_id() != _systemThread.get_id())
+                            _systemThread.join();
+                        std::exit(EXIT_SUCCESS);
+                }
+                if (st._stateKey == component::state::stateKey::Alive) {
+                    id = getId(att);
+                    auto &pos = positions[i];
+                    auto &s = sizes[i];
+                    std::cout << "id client: "  << i << std::endl;
+                    SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
+                    Packet packet(EVENT::SPRITE, sprite);
+                    auto &_vecPlayer = _ptp.get_vector();
+                    for (const auto &[entity, endpoint] : _vecPlayer) {
+                        send_data(packet, endpoint);
+                    }
                 }
             }
         }
-    }
 
     void Server::threadInput()
     {
