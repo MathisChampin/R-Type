@@ -47,6 +47,8 @@ namespace NmpServer
     void Server::systemLoop() {
     System sys;
     const auto frameDuration = std::chrono::milliseconds(20);
+    const auto shootCooldown = std::chrono::seconds(5); // Délai de 5 secondes pour les tirs
+    auto lastShootTime = std::chrono::steady_clock::now();
 
     while (_running) {
         auto startTime = std::chrono::steady_clock::now();
@@ -54,10 +56,14 @@ namespace NmpServer
         {
             std::lock_guard<std::mutex> lock(_ecsMutex);
             auto &ecs = _ptp.getECS();
-            sys.shoot_system_player(ecs);
+            if (std::chrono::steady_clock::now() - lastShootTime >= shootCooldown) {
+                sys.shoot_system_ennemies(ecs);
+                lastShootTime = std::chrono::steady_clock::now();
+            }
+            //sys.shoot_system_player(ecs);
             sys.position_system(ecs);
             sys.collision_system(ecs);
-            sys.kill_system(ecs);
+            //sys.kill_system(ecs);
             send_entity(ecs);
         }
 
@@ -77,12 +83,18 @@ namespace NmpServer
         if (att._type == component::attribute::Player1 ||
             att._type == component::attribute::Player2 ||
             att._type == component::attribute::Player3 ||
-            att._type == component::attribute::Player4)
+            att._type == component::attribute::Player4) {
             id = 1;
-        if (att._type == component::attribute::Ennemies)
+            std::cout << "je t'envoie un player" << std::endl;
+            }
+        if (att._type == component::attribute::Ennemies) {
             id = 2;
-        if (att._type == component::attribute::Shoot)
+            std::cout << "je t'envoie un ennemie" << std::endl;
+        }
+        if (att._type == component::attribute::Shoot) {
+            std::cout << "je t'envoie un shoot" << std::endl;
             id = 3;
+        }
         return id;
     }
 

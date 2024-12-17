@@ -1,5 +1,6 @@
 #include "ProtocolHandler.hpp"
 #include "Server.hpp"
+#include "idPlayer.hpp"
 
 namespace NmpServer
 {
@@ -154,6 +155,7 @@ namespace NmpServer
         _ecs.add_component<component::size>(player, {32, 14});
         _ecs.add_component<component::state>(player, {component::state::Alive});
         _ecs.add_component<component::velocity>(player, {0, 0});
+        _ecs.add_component<component::idPlayer>(player, {player.get_id()});
         _vecPlayer.push_back(std::make_pair(player, lastEndpoint));  
     }
 
@@ -172,6 +174,7 @@ namespace NmpServer
         _ecs.add_component<component::position>(ennemies, {1800, y});
         _ecs.add_component<component::size>(ennemies, {33, 36});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
+        _ecs.add_component<component::idPlayer>(ennemies, {ennemies.get_id()});
         _ecs.add_component<component::velocity>(ennemies, {-1, 0});
     }
 
