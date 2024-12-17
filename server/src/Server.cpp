@@ -105,10 +105,17 @@ namespace NmpServer
         sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
         sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
         int id = 0;
-
         for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
             auto &st = states[i];
             auto &att = attributes[i];
+            if (st._stateKey == component::state::stateKey::Dead && 
+                att._type == component::attribute::Ennemies) {
+                    std::cout << "Un ennemi est mort. Fermeture du programme proprement." << std::endl;
+                    _running = false;
+                    if (_systemThread.joinable() && std::this_thread::get_id() != _systemThread.get_id())
+                        _systemThread.join();
+                    std::exit(EXIT_SUCCESS);
+            }
             if (st._stateKey == component::state::stateKey::Alive) {
                 id = getId(att);
                 auto &pos = positions[i];
