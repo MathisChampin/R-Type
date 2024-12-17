@@ -1,142 +1,221 @@
-### Documentation : Partie Serveur
-
-#### **Objectif Général**
-Le serveur dans votre projet R-Type est la pierre angulaire de la communication réseau et de la synchronisation des états entre les **clients**, le **moteur ECS** et les entités du jeu. Il gère les interactions réseau via des threads séparés pour la réception, le traitement, et l'envoi des paquets, tout en s'assurant de maintenir une cohérence dans l'état global du jeu.
+# **Documentation du Serveur R-Type**
 
 ---
 
-### **1. Structure du Serveur**
-Le serveur est basé sur une architecture multi-threadée avec deux sockets distinctes :
-1. **Socket d'écoute (`socketRead`) :**
-   - Adresse : `localhost:8080`
-   - Utilisée pour recevoir les paquets des clients.
+## **Introduction**
 
-2. **Socket d'envoi (`socketSend`) :**
-   - Adresse : `localhost:8081`
-   - Utilisée pour envoyer les réponses et mises à jour aux clients.
+Cette documentation concerne exclusivement la partie serveur du projet **R-Type**. Le serveur est responsable de :
+
+- La gestion de la logique du jeu.
+- La synchronisation des états entre les clients.
+- La communication réseau via le protocole **UDP**, avec la bibliothèque `asio`.
 
 ---
 
-### **2. Synchronisation des Threads**
-Le serveur utilise une queue pour gérer les paquets entrants et sortants :
-1. **Thread d’entrée (`threadInput`) :**
-   - Lit les paquets des clients via `socketRead.receive_from()`.
-   - Pousse les paquets dans une **queue** partagée.
+## **1. Classes et Méthodes**
 
-2. **Thread de traitement (`threadEcs`) :**
-   - Récupère les paquets de la queue avec `queue.pop()`.
-   - Traite chaque paquet avec le gestionnaire de protocole (`ProtocoleHandler`) :
-     - Identifie l'action via l'OpCode.
-     - Met à jour l'état dans l'ECS.
+### **1.1 Classe `Server`**
 
-3. **Thread d’envoi (optionnel) :**
-   - Une fois les paquets traités, ils peuvent être placés dans une autre queue dédiée aux réponses.
-   - Ce thread extrait les paquets de réponse et les envoie via `socketSend`.
+La classe **`Server`** gère les connexions réseau et la logique du jeu côté serveur.
 
----
-
-### **3. Gestion des Paquets**
-La communication est basée sur des **opcodes** pour définir les actions possibles. Les paquets sont sérialisés et désérialisés via la classe **Binary** :
-- **Classes principales :**
-  - **`Packet` :** Représente un paquet échangé entre client et serveur.
-    - **`Packet1`** : Créé par le client (id + opcode + option).
-    - **`Packet2`** : Réponse du serveur (opcode + coordonnées x, y).
-    - **`Packet3`** : Informations visuelles pour l'affichage (sprites).
-  - **`Binary` :** Convertit les paquets en données binaires pour l’envoi réseau.
-
-- **Enums des OpCodes :**
-  - **`MOVE`** : Déplacement d’un joueur.
-  - **`SHOOT`** : Tirs d’un joueur.
-  - **`JOIN`** : Connexion d’un joueur.
-  - **`SPRITE`** : Mises à jour des entités visuelles.
-
----
-
-### **4. Fonctionnement de la Communication**
-#### **Réception (client vers serveur) :**
-1. Le client envoie ses entrées (`MOVE`, `SHOOT`, etc.) via `socketSend`.
-2. Le serveur reçoit ces données dans le thread `threadInput`, qui les place dans une queue.
-
-#### **Traitement (serveur) :**
-1. Le thread `threadEcs` extrait les paquets de la queue.
-2. Les paquets sont interprétés via **ProtocoleHandler** :
-   - Par exemple, un paquet `MOVE` met à jour la vélocité du joueur dans l’ECS.
-
-#### **Envoi (serveur vers client) :**
-1. Le serveur génère des réponses (e.g., nouvelles positions) après le traitement.
-2. Les réponses sont envoyées aux clients via `socketSend`.
-
----
-
-### **5. Points à Améliorer**
-1. **Fiabilité UDP :**
-   - Intégrer un système d’acquittement (ACK) pour garantir la réception des paquets critiques.
-   - Gérer la perte de paquets via une logique de retransmission.
-
-2. **Optimisation des threads :**
-   - Éviter l’utilisation de `async` inutile (deux sockets distinctes suffisent).
-   - Utiliser des queues dédiées pour les réponses pour un traitement plus fluide.
-
-3. **Amélioration du protocole :**
-   - Ajouter des champs spécifiques pour gérer des cas comme les collisions.
-   - Réduire la taille des paquets (optimisation de la sérialisation).
-
-4. **Commandes client :**
-   - Ajouter une queue de commandes côté client pour gérer localement les entrées avant envoi.
-
----
-
-### **6. Exemple de Workflow**
-#### **Connexion d’un client :**
-1. Le client envoie un paquet `JOIN` :  
-   ```cpp
-   Packet1(42, EVENT::JOIN);
-   ```
-2. Le serveur traite la demande et renvoie :  
-   ```cpp
-   Packet2(EVENT::JOIN, x, y);
-   ```
-
-#### **Déplacement d’un joueur :**
-1. Le client envoie un paquet `MOVE` avec une direction.  
-   Exemple : `Packet1(id, MOVE, DIRECTION::UP)`
-2. Le serveur met à jour la position dans l’ECS via `ProtocoleHandler`.
-
-#### **Mise à jour des sprites :**
-1. Le serveur envoie des informations visuelles (sprite positions).  
-   Exemple : `Packet3(EVENT::SPRITE, spriteInfo)`
-
----
-
-### **7. Gestion des Erreurs**
-
-Le serveur inclut des mécanismes pour gérer les erreurs de réception et d'envoi de paquets.
-
-#### **Réception des Paquets**
-
-Lors de la réception des paquets, le serveur utilise un bloc `try-catch` pour capturer les exceptions :
+#### **Constructeur**
 
 ```cpp
-try {
-    bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
-    if (bytes > 0) {
-        // Traitement des données reçues
-    }
-} catch (const std::system_error& e) {
-    std::cerr << "Erreur lors de la réception des données : " << e.what() << std::endl;
-}
+Server::Server()
 ```
 
-#### **Envoi des Paquets**
+**Fonctionnalité :**  
+Initialise les composants nécessaires au bon fonctionnement du serveur :  
+1. Le **contexte d'IO** pour les opérations d'entrée/sortie.  
+2. Les **sockets UDP** pour la communication réseau.  
+3. Le **gestionnaire de protocole** pour traiter les paquets.
 
-De même, lors de l'envoi des paquets, les erreurs sont capturées et journalisées :
+#### **Méthodes**
+
+1. **`run`**
 
 ```cpp
-try {
-    _socketSend.send_to(asio::buffer(_bufferSerialize), endpoint);
-} catch (const std::system_error& e) {
-    std::cerr << "Erreur lors de l'envoi des données : " << e.what() << std::endl;
-}
+void Server::run()
 ```
 
-Ces mécanismes permettent de garantir que le serveur continue de fonctionner même en cas d'erreurs de réseau.
+- **Description :** Lance le serveur et démarre les threads nécessaires (gestion des entrées et système ECS).  
+- **Fonctionnement :**  
+   - Démarre les threads pour la gestion des entrées, update l'ecs, envoie des frames. 
+
+   - Exécute la boucle principale du contexte d'IO.
+
+1. **`get_data`**
+
+```cpp
+void Server::get_data()
+```
+
+- **Description :** Réception des données envoyées par les clients.  
+- **Fonctionnement :**  
+   - Récupère les données via le socket UDP.  
+   - Désérialise les données en **paquets** (`Packet`).  
+   - Ajoute les paquets à une file d'attente pour traitement.
+
+3. **`send_data`**
+
+```cpp
+void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
+```
+
+- **Description :** Envoie des données à un client.  
+- **Fonctionnement :**  
+   - Sérialise le paquet.  
+   - Envoie le buffer via le socket UDP.  
+   - Vide le buffer après l'envoi.
+
+4. **`systemLoop`**
+
+```cpp
+void Server::systemLoop()
+```
+
+- **Description :** Boucle principale du système ECS.  
+- **Fonctionnement :**  
+   - Met à jour les systèmes ECS (position, collision, etc.).  
+   - Envoie les états des entités aux clients.
+
+### **1.2 Classe `ProtocoleHandler`**
+
+La classe **`ProtocoleHandler`** gère la logique du jeu et traite les paquets reçus.
+
+#### **Constructeur**
+
+```cpp
+ProtocoleHandler::ProtocoleHandler(Server &server)
+```
+
+**Fonctionnalité :** Initialise le gestionnaire de protocole :  
+1. Référence au serveur pour les échanges réseau.  
+2. Le registre ECS pour la gestion des entités et des composants.
+
+#### **Méthodes**
+
+1. **`executeOpCode`**
+
+```cpp
+void ProtocoleHandler::executeOpCode()
+```
+
+- **Description :** Exécute la logique associée au code d'opération d'un paquet.
+
+2. **`evalJoin`**
+
+```cpp
+void ProtocoleHandler::evalJoin()
+```
+
+- **Description :** Gère la logique de connexion d'un joueur.
+
+3. **`evalMove`**
+
+```cpp
+void ProtocoleHandler::evalMove()
+```
+
+- **Description :** Gère la logique de déplacement d'un joueur.
+
+4. **`evalQuit`**
+
+```cpp
+void ProtocoleHandler::evalQuit()
+```
+
+- **Description :** Gère la logique de déconnexion d'un joueur.
+
+### **1.3 Classe `Binary`**
+
+La classe **`Binary`** gère la sérialisation et la désérialisation des paquets.
+
+#### **Méthodes**
+
+1. **`serialize`**
+
+```cpp
+void Binary::serialize(Packet &packet, std::vector<uint32_t> &buffer)
+```
+
+- **Description :** Sérialise un paquet en un buffer de données.
+
+2. **`deserialize`**
+
+```cpp
+Packet Binary::deserialize(std::vector<uint32_t> &buffer)
+```
+
+- **Description :** Désérialise un buffer de données en un paquet.
+
+### **1.4 Classe `Packet`**
+
+Les objets **`Packet`** encapsulent les données échangées entre le client et le serveur.
+
+#### **Constructeurs**
+
+1. **Avec identifiant et événement :**
+
+```cpp
+Packet(std::size_t id, EVENT event, std::optional<Key> key = std::nullopt)
+```
+
+2. **Avec coordonnées :**
+
+```cpp
+Packet(EVENT event, int x, int y)
+```
+
+3. **Avec sprite :**
+
+```cpp
+Packet(EVENT event, SpriteInfo &sprites)
+```
+
+---
+
+## **2. Communication Réseau**
+
+Le serveur utilise **UDP** pour envoyer et recevoir des données.
+Il envoie de maniére régulière les entités présentes dans l'ecs
+
+### **2.1 Transmission des Frames**
+
+- **Fréquence :** Envoi régulier des états ECS à chaque client via le thread systemLoop.  
+- **Fonctionnement :** Les sprites sont représentés par une série de 6 infos **(SPRITE)**.  
+
+### **Événements principaux :**
+- **`idclient`** : Position dans l'ecs.  
+- **`id`** : Id de l'entité (joueur, ennemi, tir).  
+- **`x`** : Position x.  
+- **`y`** : Position y.
+- **`sizeX`** : Taille sprite x.
+- **`sizey`** : Taille sprite y.
+
+### **2.1 Transmission des Evénements Clients**
+
+- **Fréquence :** Envoie a chaque entrée clavier d'un client la touche au serveur.  
+- **Fonctionnement :** 
+- Les événements sont représentés par des codes d'opération **(EVENT)**.  
+
+### **Événements principaux :**
+- **`MOVE`** : Déplacement.  
+- **`SHOOT`** : Tir.  
+- **`QUIT`** : Déconnexion.  
+- **`JOIN`** : Connexion d'un joueur.
+
+4. **Key**
+
+Les touches sont représentés par des codes distinct **(KEY)**.  
+
+### **Touches :**
+- **`RIGHT`** : Fleche de droite.  
+- **`LEFT`** : Fleche de gauche.  
+- **`UP`** : Fleche du haut.  
+- **`DOWN`** : Fleche du bas.
+- **`SHOOT`** : Bar espace.
+
+
+
+---

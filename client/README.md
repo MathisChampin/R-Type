@@ -90,12 +90,7 @@ void Game::run()
 ```
 
 **Description :**  
-Cette méthode lance la boucle principale du jeu.  
-
-**Fonctionnement :**
-- Gère les événements.
-- Met à jour les composants du jeu.
-- Rend les composants du jeu.
+Cette méthode lance la boucle principale du jeu.
 
 ---
 
@@ -145,83 +140,60 @@ Cette méthode rend les composants du jeu à l'écran.
 
 ---
 
-## **Gestion des Erreurs**
+### **Communication entre le Client et le Serveur**
 
-Le client inclut des mécanismes pour gérer les erreurs de réception et d'envoi de paquets.
+La communication entre le client et le serveur se fait principalement dans la classe `Game`. Voici comment cela fonctionne :
 
-#### **Réception des Paquets**
+#### **Réception des données**
 
-Lors de la réception des paquets, le client utilise un bloc `try-catch` pour capturer les exceptions :
-
+***Player***
 ```cpp
-std::optional<Packet> Client::get_data()
-{
-    try {
-        std::size_t bytes = _socket.receive_from(asio::buffer(_bufferAsio), clientEndpoint, 0, ignored_error);
-        if (bytes > 0) {
-            // Traitement des données reçues
-        }
-    } catch (const std::system_error& e) {
-        std::cerr << "Erreur lors de la réception des données : " << e.what() << std::endl;
-        return std::nullopt;
-    }
-    return std::nullopt;
-}
+void Game::get_player()
 ```
 
-#### **Envoi des Paquets**
+**Description :**  
+Cette méthode reçoit les données des joueurs envoyées par le serveur.
 
-De même, lors de l'envoi des paquets, les erreurs sont capturées et journalisées :
+**Fonctionnement :**
+- Utilise la méthode `get_data` de la classe `Client` pour recevoir les paquets.
+- Met à jour les positions des joueurs en fonction des données reçues.
 
+***Ennemies***
 ```cpp
-void Client::send_input(Packet &packet)
-{
-    try {
-        _socket.send_to(asio::buffer(_bufferSerialize), _receiver_endpoint);
-    } catch (const std::system_error& e) {
-        std::cerr << "Erreur lors de l'envoi des données : " << e.what() << std::endl;
-    }
-}
+void Game::get_ennemies()
 ```
 
-Ces mécanismes permettent de garantir que le client continue de fonctionner même en cas d'erreurs de réseau.
+**Description :**  
+Cette méthode reçoit les données des ennemis envoyées par le serveur.
+
+**Fonctionnement :**
+- Utilise la méthode `get_data` de la classe `Client` pour recevoir les paquets.
+- Met à jour les positions des ennemis en fonction des données reçues.
+
+***Shoot***
+
+```cpp
+void Game::get_shoot()
+```
+
+**Description :**  
+Cette méthode reçoit les données des tirs envoyées par le serveur.
+
+**Fonctionnement :**
+- Utilise la méthode `get_data` de la classe `Client` pour recevoir les paquets.
+- Met à jour les positions des joueurs en fonction des données reçues.
+
+#### **Envoi des données**
+
+```cpp
+void Player::sendMovementPacket(NmpClient::DIRECTION direction)
+```
+
+**Description :**  
+Cette méthode envoie les données de mouvement des joueurs au serveur.
+
+**Fonctionnement :**
+- Crée un paquet (`Packet`) avec la direction du mouvement.
+- Utilise la méthode `send_input` de la classe `Client` pour envoyer le paquet au serveur.
 
 ---
-
-## **Exemples de Code**
-
-### **Initialisation du Client**
-
-```cpp
-NmpClient::Client client;
-```
-
----
-
-### **Envoi de Données**
-
-```cpp
-NmpClient::Packet packet(NmpClient::EVENT::MOVE, spriteInfo);
-client.send_input(packet);
-```
-
----
-
-### **Réception de Données**
-
-```cpp
-auto data = client.get_data();
-if (data.has_value()) {
-    // Traiter les données reçues
-}
-```
-
----
-
-## **Conclusion**
-
-La classe **`Client`** simplifie la communication réseau avec le serveur en utilisant la bibliothèque `asio`. Elle gère automatiquement :
-- La **sérialisation** et la **désérialisation** des données via les objets `Packet`.
-- L'envoi et la réception des données.  
-
-La classe **`Game`** gère la boucle principale du jeu, y compris l'initialisation, la gestion des événements, la mise à jour et le rendu. Cette interface permet une interaction fluide et efficace entre le client et le serveur dans le cadre du projet **R-Type**.
