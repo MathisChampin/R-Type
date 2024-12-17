@@ -1,42 +1,44 @@
-# R-Type Project
+# Projet R-Type
 
-This repository contains the structure for an R-Type project with a **client** and a **server**, each in its own directory. The project uses CMake to manage configuration and compilation.
+Ce repo contient la structure d’un projet **R-Type** avec un **client**,  **serveur** et un **ECS** chacun dans son propre répertoire. Le projet utilise **CMake** pour gérer la configuration et la compilation. Le projet est compilable sur Linux et Windows.
 
-## Project Structure
+## Structure du projet
 
 ### ECS (Entity-Component-System)
-The ECS architecture is used to manage game entities. It separates data (components) from logic (systems) to efficiently handle entities.
+L’architecture **ECS** est utilisée pour gérer les entités du jeu. Elle sépare les données (**composants**) de la logique (**systèmes**) afin de gérer efficacement les entités.
 
-### Server
-The server handles network communication and game state synchronization. It uses multiple threads to manage incoming and outgoing packets, ensuring consistent game state across clients.
+### Serveur
+Le serveur gère la communication réseau et la synchronisation de l’état du jeu. Il utilise plusieurs threads pour traiter les paquets entrants et sortants, garantissant ainsi un état de jeu cohérent entre les clients.
 
 ### Client
-The client is responsible for communicating with the server, sending player inputs, and rendering the game state received from the server.
+Le client est responsable de la communication avec le serveur, de l’envoi des actions des joueurs et du rendu de l’état du jeu reçu depuis le serveur.
 
-## Build and Run Instructions
+## Instructions de compilation et d’exécution
 
-### Step 1: Build the project
+### Étape 1 : Compiler le projet
 
-To build the project, simply run the following command at the root of the repository:
+Pour compiler le projet, exécutez simplement la commande suivante à la racine du dépôt :
 
 ```bash
 make
 ```
 
-### Step 2: Run the executables
+### Étape 2 : Exécuter les programmes
 
-After building the project, navigate to the `build` directory and then to the `client` and `server` directories to run the respective executables.
+Après la compilation, naviguez dans le répertoire `build`, puis dans les répertoires `client` et `server` pour exécuter les exécutables respectifs.
 
-#### Run the Server
+#### Démarrer le Serveur
 
 ```bash
 cd build/server
 ./r_type_server
 ```
 
-#### Run the Client
+#### Démarrer le Client
 
 ```bash
 cd build/client
 ./r_type_client
-```
+``` 
+
+--- 
