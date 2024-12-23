@@ -79,7 +79,7 @@ Itération sur les composants :
 Le registre (Registry) est le cœur du système ECS. Il gère la création des entités, leur destruction, ainsi que l’ajout et la gestion des composants.
 Fonctions principales du Registry
 
-    Créer une entité :
+Créer une entité :
 
 ```
 Entity entity = registry.spawn_entity();
