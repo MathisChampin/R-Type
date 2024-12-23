@@ -7,8 +7,8 @@ Game::Game()
     , m_currentState(GameState::Menu)
     , m_menu(m_window)
     , m_optionsMenu(m_window)
-    , m_menuBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.1f}})
-    , m_playingBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.2f}})
+    , m_menuBackground(m_window.getSize(), {{"config/menu_background.json", 0.1f}})
+    , m_playingBackground(m_window.getSize(), {{"config/playing_background.json", 0.2f}})
     , m_ipAddress()
     , m_ipText()
     , m_ipField()
@@ -35,18 +35,15 @@ void Game::get_player()
     auto spriteInfo = data.getSpriteInfo();
     if (spriteInfo.id == 1) {
         if (m_players.empty()) {
-            m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
+            m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client, "config/player.json"));
         }
         for (auto& player : m_players) {
             if (player.get_id() == spriteInfo.idClient) {
-                std::cout << "update player" << std::endl;
                 player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
             else {
-                std::cout << "update id player = " << spriteInfo.idClient << std::endl;
                 player.updateId(spriteInfo.idClient);
                 player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-
             }
         }
     }
@@ -63,14 +60,14 @@ void Game::get_ennemies() {
 
     if (spriteInfo.id == 2) {
         if (m_enemies.empty()) {
-            m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+            m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), "config/enemy.json"));
         }
         for (auto& enemy : m_enemies) {
             if (enemy.get_id() == spriteInfo.idClient) {
                 enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
             else {
-                enemy.updateId(spriteInfo.idClient);
+                // enemy.updateId(spriteInfo.idClient);
                 enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
         }
@@ -88,15 +85,14 @@ void Game::get_shoots() {
 
     if (spriteInfo.id == 3) {
         if (m_shoots.empty()) {
-            m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+            m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), "config/shoot.json"));
         }
         for (auto& shoot : m_shoots) {
             if (shoot.get_id() == spriteInfo.idClient) {
-                std::cout << "update shoot: " << shoot.get_id() << std::endl;
                 shoot.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
             else
-                m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+                m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), "config/shoot.json"));
         } 
     }
 }
@@ -116,10 +112,10 @@ void Game::initializeFont() {
 
 void Game::initializeMenuOptions() {
     std::vector<std::pair<std::string, float>> menuLayers = {
-        {"./assets/backgrounds/space_dust.png", 0.1f},
+        {"config/menu_background.json", 0.1f},
     };
     std::vector<std::pair<std::string, float>> playingLayers = {
-        {"./assets/backgrounds/space_dust.png", 0.2f},
+        {"config/playing_background.json", 0.2f},
     };
     m_menuBackground = ParallaxBackground(m_window.getSize(), menuLayers);
     m_playingBackground = ParallaxBackground(m_window.getSize(), playingLayers);
@@ -163,16 +159,11 @@ void Game::run() {
     while (m_window.isOpen()) {
         float deltaTime = m_clock.restart().asSeconds();
         handleEvents();
-        std::cout << "JE SORS DE HANDLEEVENTS" << std::endl;
         get_ennemies();
-        std::cout << "je sors de get ennemies" << std::endl;
         get_player();
-        std::cout << "je sors de get player" << std::endl;
         get_shoots();
-        std::cout << "je sors de get shoot" << std::endl;
         update(deltaTime);
         render();
-        std::cout << "JE SORS DE RENDER" << std::endl;
     }
 }
 
@@ -198,7 +189,6 @@ void Game::processInput(sf::Event& event) {
         }
     }
 
-    // IP address input handling
     if (event.type == sf::Event::TextEntered) {
         if (event.text.unicode == '\b' && m_ipAddress.getSize() > 0) {
             m_ipAddress.erase(m_ipAddress.getSize() - 1, 1);
@@ -208,7 +198,6 @@ void Game::processInput(sf::Event& event) {
         m_ipField.setString(m_ipAddress);
     }
 
-    // Delegate event handling to specific menus
     if (m_currentState == GameState::Menu) {
         m_menu.handleEvent(event);
     } else if (m_currentState == GameState::Options) {
@@ -217,19 +206,16 @@ void Game::processInput(sf::Event& event) {
 }
 
 void Game::update(float deltaTime) {
-    // Update game components based on current state
     if (m_currentState == GameState::Menu) {
         m_menuBackground.update(deltaTime);
         m_menu.update();
     } else if (m_currentState == GameState::Playing) {
-        // Update each player
         for (auto& player : m_players) {
             player.handleInput();
             player.update(deltaTime);
             player.sendQueuedMovements();
         }
 
-        // Update each enemy
         for (auto& enemy : m_enemies) {
             enemy.update(deltaTime);
         }
@@ -244,28 +230,24 @@ void Game::update(float deltaTime) {
 void Game::render() {
     m_window.clear();
 
-    // Render game components based on current state
     if (m_currentState == GameState::Menu) {
         m_menuBackground.render(m_window);
         m_menu.render();
         m_window.draw(m_ipText);
         m_window.draw(m_ipField);
-
     } else if (m_currentState == GameState::Playing) {
         m_playingBackground.render(m_window);
-        // Render each player
         for (auto& player : m_players) {
             player.render(m_window);
         }
 
-        // Render each enemy
         for (auto& enemy : m_enemies) {
             enemy.render(m_window);
         }
 
-        for (auto &shoot : m_shoots){
+        for (auto& shoot : m_shoots) {
             shoot.render(m_window);
-        };
+        }
     } else if (m_currentState == GameState::Options) {
         m_menuBackground.render(m_window);
         m_optionsMenu.render();

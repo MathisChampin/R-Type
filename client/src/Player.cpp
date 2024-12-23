@@ -5,23 +5,17 @@
 #include <iostream>
 #include <algorithm>
 
-Player::Player(int id, const sf::Vector2f& startPosition, NmpClient::Client& client)
-    : m_speed(200.0f), m_currentFrame(0), m_animationTime(0.1f), m_elapsedTime(0.0f), m_client(client), m_position(startPosition), _id(id)
+Player::Player(int id, const sf::Vector2f& startPosition, NmpClient::Client& client, const std::string& configPath)
+    : m_sprite(configPath), // Initialiser m_sprite en premier car il est déclaré en premier dans la classe
+      m_speed(200.0f), 
+      m_currentFrame(0), 
+      m_animationTime(0.1f), 
+      m_elapsedTime(0.0f), 
+      m_client(client), 
+      m_position(startPosition),
+      _id(id) // _id en dernier car il est déclaré en dernier dans la classe
 {
-    for (int i = 1; i <= 5; ++i) {
-        sf::Texture texture;
-        std::string textureFile = "./assets/player/sprite_" + std::to_string(i) + ".png";
-        if (!texture.loadFromFile(textureFile)) {
-            std::cerr << "Erreur : Impossible de charger la texture " << textureFile << std::endl;
-            exit(-1);
-        }
-        m_textures.push_back(texture);
-    }
-
-    m_sprite.setTexture(m_textures[m_currentFrame]);
     m_sprite.setPosition(m_position);
-    m_sprite.setOrigin(m_textures[0].getSize().x / 2.0f, m_textures[0].getSize().y / 2.0f);
-    m_sprite.setScale(2.0f, 2.0f);
 }
 
 void Player::handleInput()
@@ -42,27 +36,14 @@ void Player::handleInput()
         {sf::Keyboard::Space, NmpClient::DIRECTION::SHOOT}
     };
 
-    // Variable pour stocker la direction
     NmpClient::DIRECTION* currentDirection = nullptr;
 
-    // Priorité des directions (haut/bas prioritaire sur gauche/droite)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         static NmpClient::DIRECTION upDirection = NmpClient::DIRECTION::UP;
         currentDirection = &upDirection;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
         static NmpClient::DIRECTION downDirection = NmpClient::DIRECTION::DOWN;
         currentDirection = &downDirection;
-    }
-
-    // Si pas de direction verticale, on vérifie les directions horizontales
-    if (currentDirection == nullptr) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            static NmpClient::DIRECTION leftDirection = NmpClient::DIRECTION::LEFT;
-            currentDirection = &leftDirection;
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            static NmpClient::DIRECTION rightDirection = NmpClient::DIRECTION::RIGHT;
-            currentDirection = &rightDirection;
-        }
     }
 
     if (currentDirection == nullptr) {
@@ -84,7 +65,6 @@ void Player::handleInput()
         state = sf::Keyboard::isKeyPressed(key);
     }
 
-    // S'il y a une direction, on envoie un seul paquet
     if (currentDirection != nullptr) {
         NmpClient::Packet packet(m_client.get_id(), NmpClient::EVENT::MOVE, *currentDirection);
         {
@@ -99,26 +79,28 @@ void Player::handleInput()
 void Player::update(float deltaTime)
 {
     m_elapsedTime += deltaTime;
-
     if (m_elapsedTime >= m_animationTime) {
         m_elapsedTime = 0.0f;
-        m_currentFrame = (m_currentFrame + 1) % m_textures.size();
-        m_sprite.setTexture(m_textures[m_currentFrame]);
+        m_currentFrame = (m_currentFrame + 1) % 4; // Exemple: 4 frames
+        m_sprite.setTextureRect(sf::IntRect(m_currentFrame * 32, 0, 32, 32)); // Exemple: largeur de frame 32
     }
     sendQueuedMovements();
 }
 
 void Player::render(sf::RenderWindow& window)
 {
-    window.draw(m_sprite);
+    m_sprite.draw(window);
+}
+
+void Player::shoot()
+{
+    // Implémentez la logique de tir ici
+    std::cout << "Player " << _id << " is shooting!" << std::endl;
 }
 
 void Player::sendMovementPacket(NmpClient::DIRECTION direction)
 {
     NmpClient::Packet packet(m_client.get_id(), NmpClient::EVENT::MOVE, direction);
-    std::vector<uint32_t> buffer;
-    NmpBinary::Binary binary;
-    binary.serialize(packet, buffer);
     m_client.send_input(packet);
     std::cout << "Position " << static_cast<int>(direction) << " envoyée" << std::endl;
 }

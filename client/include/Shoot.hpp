@@ -8,7 +8,7 @@
 class Shoot
 {
 public:
-    Shoot(int id, const sf::Vector2f &startPosition);
+    Shoot(int id, const sf::Vector2f &startPosition, const std::string &configPath);
 
     void render(sf::RenderWindow &window);
 

@@ -12,6 +12,8 @@
 #include "client/Client.hpp"
 #include "Enemy.hpp"
 #include "Shoot.hpp"
+#include "client/TextureManager.hpp"
+#include "client/Sprite.hpp" 
 
 enum class GameState {
     Menu,
@@ -55,6 +57,7 @@ private:
     ParallaxBackground m_menuBackground;
     ParallaxBackground m_playingBackground;
     NmpClient::Client m_client;
+    TextureManager& textureManager = TextureManager::getInstance();
 
     // Vectors to store players and enemies
     std::vector<Player> m_players;

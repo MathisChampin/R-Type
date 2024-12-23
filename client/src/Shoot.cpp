@@ -1,20 +1,23 @@
 #include "../include/Shoot.hpp"
-#include <iostream>
-#include <filesystem>
+#include "../include/client/Sprite.hpp"
 
-// Constructeur
-Shoot::Shoot(int id, const sf::Vector2f &startPosition)
+Shoot::Shoot(int id, const sf::Vector2f& startPosition, const std::string& configPath)
     : _id(id), m_position(startPosition)
 {
-    m_shape.setSize(sf::Vector2f(9.0f, 9.0f));
-    m_shape.setFillColor(sf::Color::White);
-    m_shape.setPosition(m_position);
+    Sprite sprite(configPath);
+    sf::Texture texture;
 
-    std::cout << "[Shoot] Position initiale : x = " << m_position.x << ", y = " << m_position.y << std::endl;
+    // Charger la texture depuis le fichier
+    if (!texture.loadFromFile(configPath)) {
+        // Gérer l'erreur de chargement de la texture
+        // Vous pourriez lancer une exception ou utiliser une texture par défaut ici
+    }
+    m_shape.setTexture(&texture);
+    m_shape.setSize(sf::Vector2f(texture.getSize()));
+    m_shape.setPosition(m_position);
 }
 
-// Méthode d'affichage
-void Shoot::render(sf::RenderWindow &window)
+void Shoot::render(sf::RenderWindow& window)
 {
     window.draw(m_shape);
 }
