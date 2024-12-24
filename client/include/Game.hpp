@@ -60,9 +60,9 @@ private:
     TextureManager& textureManager = TextureManager::getInstance();
 
     // Vectors to store players and enemies
-    std::vector<Player> m_players;
-    std::vector<Enemy> m_enemies;
-    std::vector<Shoot> m_shoots;
+    std::vector<std::unique_ptr<Player>> m_players;
+    std::vector<std::unique_ptr<Enemy>> m_enemies;
+    std::vector<std::unique_ptr<Shoot>> m_shoots;
 
     // IP address input
     sf::String m_ipAddress;

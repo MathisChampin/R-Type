@@ -35,15 +35,15 @@ void Game::get_player()
     auto spriteInfo = data.getSpriteInfo();
     if (spriteInfo.id == 1) {
         if (m_players.empty()) {
-            m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client, "config/player.json"));
+            m_players.emplace_back(std::make_unique<Player>(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client, "config/player.json"));
         }
         for (auto& player : m_players) {
-            if (player.get_id() == spriteInfo.idClient) {
-                player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+            if (player->get_id() == spriteInfo.idClient) {
+                player->updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
             else {
-                player.updateId(spriteInfo.idClient);
-                player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                player->updateId(spriteInfo.idClient);
+                player->updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
         }
     }
@@ -60,15 +60,15 @@ void Game::get_ennemies() {
 
     if (spriteInfo.id == 2) {
         if (m_enemies.empty()) {
-            m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), "config/enemy.json"));
+            m_enemies.emplace_back(std::make_unique<Enemy>(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), "config/enemy.json"));
         }
         for (auto& enemy : m_enemies) {
-            if (enemy.get_id() == spriteInfo.idClient) {
-                enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+            if (enemy->get_id() == spriteInfo.idClient) {
+                enemy->updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
             else {
-                // enemy.updateId(spriteInfo.idClient);
-                enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                enemy->updateId(spriteInfo.idClient);
+                enemy->updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
         }
     }
@@ -85,14 +85,14 @@ void Game::get_shoots() {
 
     if (spriteInfo.id == 3) {
         if (m_shoots.empty()) {
-            m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), "config/shoot.json"));
+            m_shoots.emplace_back(std::make_unique<Shoot>(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), "config/shoot.json"));
         }
         for (auto& shoot : m_shoots) {
-            if (shoot.get_id() == spriteInfo.idClient) {
-                shoot.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+            if (shoot->get_id() == spriteInfo.idClient) {
+                shoot->updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
             }
             else
-                m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), "config/shoot.json"));
+                m_shoots.emplace_back(std::make_unique<Shoot>(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), "config/shoot.json"));
         } 
     }
 }
@@ -211,13 +211,13 @@ void Game::update(float deltaTime) {
         m_menu.update();
     } else if (m_currentState == GameState::Playing) {
         for (auto& player : m_players) {
-            player.handleInput();
-            player.update(deltaTime);
-            player.sendQueuedMovements();
+            player->handleInput();
+            player->update(deltaTime);
+            player->sendQueuedMovements();
         }
 
         for (auto& enemy : m_enemies) {
-            enemy.update(deltaTime);
+            enemy->update(deltaTime);
         }
 
         m_playingBackground.update(deltaTime);
@@ -238,15 +238,15 @@ void Game::render() {
     } else if (m_currentState == GameState::Playing) {
         m_playingBackground.render(m_window);
         for (auto& player : m_players) {
-            player.render(m_window);
+            player->render(m_window);
         }
 
         for (auto& enemy : m_enemies) {
-            enemy.render(m_window);
+            enemy->render(m_window);
         }
 
         for (auto& shoot : m_shoots) {
-            shoot.render(m_window);
+            shoot->render(m_window);
         }
     } else if (m_currentState == GameState::Options) {
         m_menuBackground.render(m_window);

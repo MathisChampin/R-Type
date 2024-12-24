@@ -19,7 +19,11 @@ public:
     void render(sf::RenderWindow& window);
     void shoot();
     int get_id() const { return _id; };
-    void updatePosition(const sf::Vector2f& position);
+    void updatePosition(const sf::Vector2f& position) {
+        m_position.x = position.x;
+        m_position.y = position.y;
+    };
+
     void updateId(int id) { _id = id; }
     void sendQueuedMovements();
     sf::Vector2f getPosition() const { return m_position; }

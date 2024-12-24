@@ -21,6 +21,7 @@ public:
     }
 
     sf::Vector2f getPosition() const { return m_position; };
+    void updateId(int id) { _id = id; }
 
     Enemy(const Enemy&) = delete;             // Supprimer le constructeur de copie
     Enemy& operator=(const Enemy&) = delete;  // Supprimer l'opérateur d'affectation de copie
