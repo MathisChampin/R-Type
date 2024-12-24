@@ -26,8 +26,6 @@ namespace NmpServer {
         private:
             void threadInput();
             void threadEcs();
-            void startSystemThread();
-            void stopSystemThread();
             void systemLoop();
             void send_entity(registry &);
             uint32_t getId(component::attribute &att);
@@ -37,7 +35,6 @@ namespace NmpServer {
             std::mutex _queueMutex;
             std::mutex _ecsMutex;
             std::condition_variable _cv;
-            std::thread _systemThread;
             asio::io_context _io_context;
             asio::ip::udp::socket _socketRead;
             asio::ip::udp::socket _socketSend;

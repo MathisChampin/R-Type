@@ -13,66 +13,53 @@ namespace NmpServer
         _bufferAsio.fill(0);
     }
 
-    Server::~Server() {
-        stopSystemThread();
+    Server::~Server()
+    {
+        
     }
 
     void Server::run()
     {
         _running = true;
-        startSystemThread();
         _io_context.run();
 
         std::thread inputThread(&Server::threadInput, this);
         std::thread ecsThread(&Server::threadEcs, this);
+        std::thread systemThread(&Server::systemLoop, this);
 
         inputThread.join();
         ecsThread.join();
-        _systemThread.join();
+        systemThread.join();
     }
 
-    void Server::startSystemThread()
+    void Server::systemLoop()
     {
-        _systemThread = std::thread(&Server::systemLoop, this);
+        System sys;
+        const auto frameDuration = std::chrono::milliseconds(20);
+        const auto shootCooldown = std::chrono::seconds(5);
+        auto lastShootTime = std::chrono::steady_clock::now();
 
-    }
+        while (_running) {
+            auto startTime = std::chrono::steady_clock::now();
 
-    void Server::stopSystemThread() {
-        _running = false;
-        if (_systemThread.joinable()) {
-            _systemThread.join();
-        }
-    }
-
-    void Server::systemLoop() {
-    System sys;
-    const auto frameDuration = std::chrono::milliseconds(20);
-    const auto shootCooldown = std::chrono::seconds(5);
-    auto lastShootTime = std::chrono::steady_clock::now();
-
-    while (_running) {
-        auto startTime = std::chrono::steady_clock::now();
-
-        {
-            std::lock_guard<std::mutex> lock(_ecsMutex);
-            auto &ecs = _ptp.getECS();
-            if (std::chrono::steady_clock::now() - lastShootTime >= shootCooldown) {
-                sys.shoot_system_ennemies(ecs);
-                lastShootTime = std::chrono::steady_clock::now();
+            {
+                std::lock_guard<std::mutex> lock(_ecsMutex);
+                auto &ecs = _ptp.getECS();
+                if (std::chrono::steady_clock::now() - lastShootTime >= shootCooldown) {
+                    sys.shoot_system_ennemies(ecs);
+                    lastShootTime = std::chrono::steady_clock::now();
+                }
+                sys.collision_system(ecs);
+                sys.kill_system(ecs);
+                sys.position_system(ecs);
+                send_entity(ecs);
             }
-            //sys.shoot_system_player(ecs);
-            sys.collision_system(ecs);
-            sys.kill_system(ecs);
-            sys.position_system(ecs);
-            send_entity(ecs);
-        }
 
-        // Calcul de la durée écoulée et ajustement du sommeil
-        auto elapsedTime = std::chrono::steady_clock::now() - startTime;
-        if (elapsedTime < frameDuration) {
-            std::this_thread::sleep_for(frameDuration - elapsedTime);
+            auto elapsedTime = std::chrono::steady_clock::now() - startTime;
+            if (elapsedTime < frameDuration) {
+                std::this_thread::sleep_for(frameDuration - elapsedTime);
+            }
         }
-    }
 }
 
 
@@ -112,8 +99,6 @@ namespace NmpServer
                 att._type == component::attribute::Ennemies) {
                     std::cout << "Un ennemi est mort. Fermeture du programme proprement." << std::endl;
                     _running = false;
-                    if (_systemThread.joinable() && std::this_thread::get_id() != _systemThread.get_id())
-                        _systemThread.join();
                     std::exit(EXIT_SUCCESS);
             }
             if (st._stateKey == component::state::stateKey::Alive) {
@@ -135,7 +120,6 @@ namespace NmpServer
     {
         while (true) {
             get_data();
-            //std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
     }
 
