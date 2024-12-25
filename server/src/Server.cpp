@@ -27,6 +27,7 @@ namespace NmpServer
         std::thread inputThread(&Server::threadInput, this);
         std::thread systemThread(&Server::threadSystem, this);
         std::thread handleInputThread(&Server::threaEvalInput, this);
+        std::thread shootEnnemiesThread(&Server::threadShootEnnemies, this);
 
 
         notifyShoot();
@@ -92,13 +93,20 @@ namespace NmpServer
     void Server::notifyShoot()
     {
         ClockManager clock;
+        _shootReady = false;
 
         clock.start();
         while (1) {
+            std::cout << "time elapsed: " << clock.elapsedSeconds() << std::endl;
             if (clock.elapsedSeconds() >= 5.0) {
                 std::cout << "Notify shoot" << std::endl;
-                clock.reset();
+                {
+                    _shootReady = true;
+                }
+                _cvShoot.notify_one();
+                clock.start();
             }
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
 
     }
@@ -134,29 +142,31 @@ namespace NmpServer
     {
         System sys;
         const auto frameDuration = std::chrono::milliseconds(20);
-        const auto shootCooldown = std::chrono::seconds(5);
-        auto lastShootTime = std::chrono::steady_clock::now();
 
         while (_running) {
-            auto startTime = std::chrono::steady_clock::now();
-
             {
                 std::lock_guard<std::mutex> lock(_ecsMutex);
                 auto &ecs = _ptp.getECS();
-                if (std::chrono::steady_clock::now() - lastShootTime >= shootCooldown) {
-                    sys.shoot_system_ennemies(ecs);
-                    lastShootTime = std::chrono::steady_clock::now();
-                }
                 sys.collision_system(ecs);
                 sys.kill_system(ecs);
                 sys.position_system(ecs);
                 send_entity(ecs);
             }
+            std::this_thread::sleep_for(frameDuration);
+        }
+    }
 
-            auto elapsedTime = std::chrono::steady_clock::now() - startTime;
-            if (elapsedTime < frameDuration) {
-                std::this_thread::sleep_for(frameDuration - elapsedTime);
-            }
+    void Server::threadShootEnnemies()
+    {
+        System sys;
+
+        while (true) {
+            std::unique_lock<std::mutex> lock(_ecsMutex);
+            _cvShoot.wait(lock, [this] { return _shootReady; });
+            auto &ecs = _ptp.getECS();
+            sys.shoot_system_ennemies(ecs);
+            _shootReady = false;
+            std::cout << "has shoot" << std::endl;
         }
     }
 
