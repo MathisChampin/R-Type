@@ -25,9 +25,11 @@ namespace NmpServer {
 
         private:
             void threadInput();
-            void threadEcs();
-            void systemLoop();
+            void threaEvalInput();
+            void threadSystem();
             void send_entity(registry &);
+            void notifyShoot();
+
             uint32_t getId(component::attribute &att);
 
             std::atomic<bool> _running;
