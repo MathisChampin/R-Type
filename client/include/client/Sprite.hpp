@@ -24,7 +24,7 @@ public:
 
         texture = TextureManager::getInstance().loadTexture(texturePath);
         sprite.setTexture(*texture);
-        sprite.setPosition(position); // Utilisation directe du vecteur
+        sprite.setPosition(position);
         sprite.setScale(size.x / texture->getSize().x, size.y / texture->getSize().y);
     }
 

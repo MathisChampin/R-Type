@@ -7,8 +7,8 @@ Game::Game()
     , m_currentState(GameState::Menu)
     , m_menu(m_window)
     , m_optionsMenu(m_window)
-    , m_menuBackground(m_window.getSize(), {{"config/menu_background.json", 0.1f}})
-    , m_playingBackground(m_window.getSize(), {{"config/playing_background.json", 0.2f}})
+    , m_menuBackground(m_window.getSize(), {{"assets/backgrounds/space_dust.png", 0.1f}})
+    , m_playingBackground(m_window.getSize(), {{"assets/backgrounds/space_dust.png", 0.2f}})
     , m_ipAddress()
     , m_ipText()
     , m_ipField()
@@ -112,10 +112,10 @@ void Game::initializeFont() {
 
 void Game::initializeMenuOptions() {
     std::vector<std::pair<std::string, float>> menuLayers = {
-        {"config/menu_background.json", 0.1f},
+        {"assets/backgrounds/space_dust.png", 0.1f},
     };
     std::vector<std::pair<std::string, float>> playingLayers = {
-        {"config/playing_background.json", 0.2f},
+        {"assets/backgrounds/space_dust.png", 0.2f},
     };
     m_menuBackground = ParallaxBackground(m_window.getSize(), menuLayers);
     m_playingBackground = ParallaxBackground(m_window.getSize(), playingLayers);

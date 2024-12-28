@@ -6,14 +6,14 @@
 #include <algorithm>
 
 Player::Player(int id, const sf::Vector2f& startPosition, NmpClient::Client& client, const std::string& configPath)
-    : m_sprite(configPath), // Initialiser m_sprite en premier car il est déclaré en premier dans la classe
+    : m_sprite(configPath), 
       m_speed(200.0f), 
       m_currentFrame(0), 
       m_animationTime(0.1f), 
       m_elapsedTime(0.0f), 
       m_client(client), 
       m_position(startPosition),
-      _id(id) // _id en dernier car il est déclaré en dernier dans la classe
+      _id(id)
 {
     m_sprite.setPosition(m_position);
 }

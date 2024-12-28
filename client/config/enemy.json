@@ -1,0 +1,6 @@
+{
+    "type": "enemy",
+    "texture": "assets/enemy/sprite_1.png",
+    "position": { "x": 100, "y": 200 },
+    "size": { "width": 50, "height": 50 }
+}
