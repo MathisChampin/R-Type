@@ -14,6 +14,7 @@ set(SOURCES
     ${SRC_DIR}/Binary.cpp
     ${SRC_DIR}/Packet.cpp
     ${SRC_DIR}/ProtocoleHandler.cpp
+    ${SRC_DIR}/Parser.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

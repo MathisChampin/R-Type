@@ -2,6 +2,7 @@
 #include "Registry.hpp"
 #include "ClockManager.hpp"
 
+
 namespace NmpServer
 {
     Server::Server() : 
@@ -100,9 +101,7 @@ namespace NmpServer
             std::cout << "time elapsed: " << clock.elapsedSeconds() << std::endl;
             if (clock.elapsedSeconds() >= 5.0) {
                 std::cout << "Notify shoot" << std::endl;
-                {
-                    _shootReady = true;
-                }
+                _shootReady = true;
                 _cvShoot.notify_one();
                 clock.start();
             }
