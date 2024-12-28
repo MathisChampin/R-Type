@@ -28,31 +28,24 @@ namespace NmpClient
         std::vector<uint32_t> test;
         std::error_code ignored_error;
     
-        // Mise en mode non-bloquant
         _socket.non_blocking(true);
     
         std::size_t bytes = 0;
         try {
-            // Tentative de réception des données, sans blocage
             bytes = _socket.receive_from(asio::buffer(_bufferAsio), clientEndpoint, 0, ignored_error);
     
-            // Si des données ont été reçues
             if (bytes > 0) {
-                // Extraire les octets reçus dans le vecteur test
                 for (std::size_t i = 0; i < bytes / sizeof(uint32_t); ++i) {
                     uint32_t val = reinterpret_cast<uint32_t *>(_bufferAsio.data())[i];
                     test.push_back(val);
                 }
     
-                // Désérialiser les données en un paquet
                 NmpClient::Packet packet = _binary.deserialize(test);
-                _bufferAsio.fill(0);  // Réinitialisation du buffer
+                _bufferAsio.fill(0); 
     
-                // Retourner le paquet encapsulé dans un std::optional
                 return packet;
             }
             else {
-                // Si aucune donnée n'a été reçue, retourner std::nullopt
                 return std::nullopt;
             }
         } catch (const std::system_error& e) {
