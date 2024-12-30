@@ -8,7 +8,7 @@
 class Shoot
 {
 public:
-    Shoot(int id, const sf::Vector2f &startPosition, const std::string &configPath);
+    Shoot(int id, const sf::Vector2f &startPosition);
 
     void render(sf::RenderWindow &window);
 
@@ -24,9 +24,9 @@ public:
     sf::Vector2f getPosition() const { return m_position; };
 
 private:
+    sf::CircleShape m_shape;
     int _id;                        
     sf::Vector2f m_position;        
-    sf::RectangleShape m_shape;     
 };
 
 #endif // SHOOT_HPP

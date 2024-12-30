@@ -81,8 +81,9 @@ void Player::update(float deltaTime)
     m_elapsedTime += deltaTime;
     if (m_elapsedTime >= m_animationTime) {
         m_elapsedTime = 0.0f;
-        m_currentFrame = (m_currentFrame + 1) % 4; // Exemple: 4 frames
-        m_sprite.setTextureRect(sf::IntRect(m_currentFrame * 32, 0, 32, 32)); // Exemple: largeur de frame 32
+        m_currentFrame = (m_currentFrame + 1) % 4;
+        // m_sprite.setTextureRect(sf::IntRect(m_currentFrame * 32, 0, 32, 32)); // Exemple: largeur de frame 32
+        //animation a faire ici
     }
     sendQueuedMovements();
 }
@@ -117,6 +118,6 @@ void Player::sendQueuedMovements()
             std::cout << "Sending packet with no direction" << std::endl;
         }
         m_client.send_input(packet);
-        m_movementQueue.pop();
+        m_movementQueue.pop(); 
     }
 }

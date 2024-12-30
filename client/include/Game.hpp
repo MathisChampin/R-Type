@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Menu.hpp"
 #include "ParallaxBackground.hpp"
@@ -13,7 +14,7 @@
 #include "Enemy.hpp"
 #include "Shoot.hpp"
 #include "client/TextureManager.hpp"
-#include "client/Sprite.hpp" 
+#include "client/Sprite.hpp"
 
 enum class GameState {
     Menu,
@@ -27,25 +28,28 @@ public:
     Game();
     ~Game();
 
-    void boucle();
     void run();
 
 private:
-    // Window and rendering
+    // Initialization methods
     void initializeWindow();
     void initializeFont();
     void initializeMenuOptions();
     void initializeIpAddressText();
-    void get_join_packet();
-    // Event handling
-    void handleEvents();
-    void processInput(sf::Event& event);
-    // Game loop methods
-    void update(float deltaTime);
-    void render();
+
+    // Network methods
     void get_player();
     void get_ennemies();
     void get_shoots();
+
+    // Event handling
+    void handleEvents();
+    void processInput(sf::Event& event);
+
+    // Game loop methods
+    void update(float deltaTime);
+    void render();
+
     // Member variables
     sf::RenderWindow m_window;
     sf::Font m_font;
@@ -57,19 +61,18 @@ private:
     ParallaxBackground m_menuBackground;
     ParallaxBackground m_playingBackground;
     NmpClient::Client m_client;
-    TextureManager& textureManager = TextureManager::getInstance();
 
-    // Vectors to store players and enemies
+    // Entity containers
     std::vector<std::unique_ptr<Player>> m_players;
     std::vector<std::unique_ptr<Enemy>> m_enemies;
     std::vector<std::unique_ptr<Shoot>> m_shoots;
 
-    // IP address input
+    // UI elements
     sf::String m_ipAddress;
     sf::Text m_ipText;
     sf::Text m_ipField;
 
-    // Clock for delta time calculation
+    // Timing
     sf::Clock m_clock;
 };
 
