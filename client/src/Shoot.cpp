@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <stdexcept>
 
-Shoot::Shoot(int id, const sf::Vector2f& startPosition)
+Shoot::Shoot(int id, const sf::Vector2f &startPosition)
     : _id(id), m_position(startPosition)
 {
     m_shape = sf::CircleShape(5);
@@ -14,7 +14,7 @@ Shoot::Shoot(int id, const sf::Vector2f& startPosition)
     m_shape.setPosition(m_position);
 }
 
-void Shoot::render(sf::RenderWindow& window)
+void Shoot::render(sf::RenderWindow &window)
 {
     window.draw(m_shape);
 }

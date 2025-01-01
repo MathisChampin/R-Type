@@ -2,10 +2,9 @@
 
 namespace NmpClient
 {
-    Packet::Packet(std::size_t id, EVENT event, std::optional<DIRECTION> direction) :
-        _opCode(event), _arg(direction), _id(id)
+    Packet::Packet(std::size_t id, EVENT event, std::optional<DIRECTION> direction) : _opCode(event), _arg(direction), _id(id)
     {
-        std::cout << "CLIENT packet input created for id: " << _id <<  std::endl;
+        std::cout << "CLIENT packet input created for id: " << _id << std::endl;
     }
 
     Packet::Packet(EVENT event, SpriteInfo &sprite) : _opCode(event), _sprite(sprite)
@@ -13,31 +12,35 @@ namespace NmpClient
         std::cout << "CLIENT packet sprite created" << std::endl;
     }
 
-    Packet::Packet(EVENT event, int x, int y) :
-        _opCode(event), _x(x), _y(y)
+    Packet::Packet(EVENT event, int x, int y) : _opCode(event), _x(x), _y(y)
     {
-        std::cout << "CLIENT packet pos created" <<  std::endl;
+        std::cout << "CLIENT packet pos created" << std::endl;
     }
 
     bool Packet::checkPacket()
     {
-        if (_opCode != EVENT::MOVE && _opCode != EVENT::SHOOT && _opCode != EVENT::QUIT) {
+        if (_opCode != EVENT::MOVE && _opCode != EVENT::SHOOT && _opCode != EVENT::QUIT)
+        {
             return false;
         }
 
-        if (_opCode == EVENT::MOVE) {
-            if (!_arg.has_value()) {
+        if (_opCode == EVENT::MOVE)
+        {
+            if (!_arg.has_value())
+            {
                 return false;
             }
 
             DIRECTION direction = _arg.value();
             if (direction != DIRECTION::LEFT && direction != DIRECTION::RIGHT &&
-                direction != DIRECTION::UP && direction != DIRECTION::DOWN) {
+                direction != DIRECTION::UP && direction != DIRECTION::DOWN)
+            {
                 return false;
             }
         }
 
-        if ((_opCode == EVENT::SHOOT || _opCode == EVENT::QUIT) && _arg.has_value()) {
+        if ((_opCode == EVENT::SHOOT || _opCode == EVENT::QUIT) && _arg.has_value())
+        {
             return false;
         }
 
@@ -73,9 +76,9 @@ namespace NmpClient
     {
         return _y;
     }
-std::optional<DIRECTION> Packet::getDirection() const
-{
-    return _arg;
-}
+    std::optional<DIRECTION> Packet::getDirection() const
+    {
+        return _arg;
+    }
 
 }
