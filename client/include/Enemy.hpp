@@ -6,20 +6,44 @@
 #include <string>
 #include "../include/client/Sprite.hpp"
 
-class Enemy {
+class Enemy
+{
 public:
-    Enemy(int id, const sf::Vector2f& startPosition, const std::string& configPath);
+    /**
+     * @brief Constructs an Enemy object with the given ID, starting position, and configuration path.
+     *
+     * @param id The unique identifier for the enemy.
+     * @param startPosition The initial position of the enemy in the game world.
+     * @param configPath The file path to the enemy's configuration file.
+     */
+    Enemy(int id, const sf::Vector2f &startPosition, const std::string &configPath);
 
-    void render(sf::RenderWindow& window);
+    /**
+     * @brief Draws the enemy sprite onto the given render window.
+     *
+     * @param window The render window where the enemy sprite will be drawn.
+     */
+    void render(sf::RenderWindow &window);
+
+    /**
+     * @brief Updates the enemy's animation based on the elapsed time.
+     *
+     * @param deltaTime The time elapsed since the last update.
+     */
     void update(float deltaTime);
 
-    int get_id() const { return _id; };
-
-    void updatePosition(const sf::Vector2f& position) {
+    /**
+     * @brief Updates the enemy's position.
+     *
+     * @param position The new position of the enemy.
+     */
+    void updatePosition(const sf::Vector2f &position)
+    {
         m_position = position;
         m_sprite.setPosition(m_position);
     }
 
+    int get_id() const { return _id; };
     sf::Vector2f getPosition() const { return m_position; };
     void updateId(int id) { _id = id; }
 

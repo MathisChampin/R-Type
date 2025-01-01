@@ -16,14 +16,16 @@
 #include "client/TextureManager.hpp"
 #include "client/Sprite.hpp"
 
-enum class GameState {
+enum class GameState
+{
     Menu,
     Playing,
     Options,
     PlayingInLobby
 };
 
-class Game {
+class Game
+{
 public:
     Game();
     ~Game();
@@ -31,7 +33,7 @@ public:
     void run();
 
 private:
-    // Initialization methods
+    // Initialization
     void initializeWindow();
     void initializeFont();
     void initializeMenuOptions();
@@ -44,7 +46,7 @@ private:
 
     // Event handling
     void handleEvents();
-    void processInput(sf::Event& event);
+    void processInput(sf::Event &event);
 
     // Game loop methods
     void update(float deltaTime);

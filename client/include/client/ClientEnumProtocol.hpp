@@ -4,7 +4,8 @@
 
 namespace NmpClient
 {
-    enum class EVENT : uint32_t {
+    enum class EVENT : uint32_t
+    {
         MOVE = 1,
         SHOOT = 2,
         QUIT = 3,
@@ -12,7 +13,8 @@ namespace NmpClient
         JOIN = 5
     };
 
-    enum class DIRECTION : uint32_t {
+    enum class DIRECTION : uint32_t
+    {
         LEFT = 1,
         RIGHT = 2,
         UP = 3,
@@ -20,7 +22,8 @@ namespace NmpClient
         SHOOT = 5
     };
 
-    struct SpriteInfo {
+    struct SpriteInfo
+    {
         int idClient;
         int id;
         int x;
@@ -29,4 +32,3 @@ namespace NmpClient
         int sizeY;
     };
 }
-
