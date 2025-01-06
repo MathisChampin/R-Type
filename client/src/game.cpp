@@ -3,7 +3,17 @@
 #include <algorithm>
 
 Game::Game()
-    : m_window(), m_font(), m_currentState(GameState::Menu), m_menu(m_window), m_optionsMenu(m_window), m_menuBackground(m_window.getSize(), {{"assets/backgrounds/space_dust.png", 0.1f}}), m_playingBackground(m_window.getSize(), {{"assets/backgrounds/space_dust.png", 0.2f}}), m_ipAddress(), m_ipText(), m_ipField(), m_clock()
+    : m_window()
+    , m_font()
+    , m_currentState(GameState::Menu)
+    , m_menu(m_window)
+    , m_optionsMenu(m_window)
+    , m_menuBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.1f}})
+    , m_playingBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.2f}})
+    , m_ipAddress()
+    // , m_ipText()
+    // , m_ipField()
+    // , m_clock()
 {
     initializeWindow();
     initializeFont();
@@ -275,18 +285,11 @@ void Game::update(float deltaTime)
     {
         m_menuBackground.update(deltaTime);
         m_menu.update();
-    }
-    else if (m_currentState == GameState::Playing)
-    {
-        for (auto &player : m_players)
-        {
-            if (player)
-            {
-                player->handleInput();
-                player->update(deltaTime);
-                player->sendQueuedMovements();
-            }
-        }
+    } else if (m_currentState == GameState::Playing) {
+        // Update each player
+        m_players.handleInput();
+        m_players.update();
+        m_players.sendQueuedMovements();
 
         for (auto &enemy : m_enemies)
         {
@@ -327,33 +330,8 @@ void Game::render()
     else if (m_currentState == GameState::Playing)
     {
         m_playingBackground.render(m_window);
-
-        for (const auto &player : m_players)
-        {
-            if (player)
-            {
-                player->render(m_window);
-            }
-        }
-
-        for (const auto &enemy : m_enemies)
-        {
-            if (enemy)
-            {
-                enemy->render(m_window);
-            }
-        }
-
-        for (const auto &shoot : m_shoots)
-        {
-            if (shoot)
-            {
-                shoot->render(m_window);
-            }
-        }
-    }
-    else if (m_currentState == GameState::Options)
-    {
+        _spriteMng.drawAll(m_window);
+    } else if (m_currentState == GameState::Options) {
         m_menuBackground.render(m_window);
         m_optionsMenu.render();
     }

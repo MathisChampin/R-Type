@@ -7,14 +7,21 @@ namespace NmpClient
         std::cout << "CLIENT packet input created for id: " << _id << std::endl;
     }
 
-    Packet::Packet(EVENT event, SpriteInfo &sprite) : _opCode(event), _sprite(sprite)
+    Packet::Packet(EVENT event, SpriteInfo &sprite) :
+        _opCode(event), _sprite(sprite)
     {
-        std::cout << "CLIENT packet sprite created" << std::endl;
+        //std::cout << "CLIENT packet sprite created" << std::endl;
     }
 
     Packet::Packet(EVENT event, int x, int y) : _opCode(event), _x(x), _y(y)
     {
-        std::cout << "CLIENT packet pos created" << std::endl;
+        //std::cout << "CLIENT packet pos created" <<  std::endl;
+    }
+
+    Packet::Packet(EVENT event) :
+        _opCode(event)
+    {
+        //std::cout << "CLIENT packet end of frame created" << std::endl;
     }
 
     bool Packet::checkPacket()

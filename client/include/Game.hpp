@@ -13,6 +13,7 @@
 #include "client/Client.hpp"
 #include "Enemy.hpp"
 #include "Shoot.hpp"
+#include "SpriteManager.hpp"
 #include "client/TextureManager.hpp"
 #include "client/Sprite.hpp"
 
@@ -51,6 +52,9 @@ private:
     // Game loop methods
     void update(float deltaTime);
     void render();
+    void get_player(NmpClient::Packet &packet);
+    void get_ennemies(NmpClient::Packet &packet);
+    void get_shoots(NmpClient::Packet &packet);
 
     // Member variables
     sf::RenderWindow m_window;
@@ -64,10 +68,10 @@ private:
     ParallaxBackground m_playingBackground;
     NmpClient::Client m_client;
 
-    // Entity containers
-    std::vector<std::unique_ptr<Player>> m_players;
-    std::vector<std::unique_ptr<Enemy>> m_enemies;
-    std::vector<std::unique_ptr<Shoot>> m_shoots;
+    // Vectors to store players and enemies
+    Player m_players;
+    std::vector<Enemy> m_enemies;
+    std::vector<Shoot> m_shoots;
 
     // UI elements
     sf::String m_ipAddress;
@@ -76,6 +80,8 @@ private:
 
     // Timing
     sf::Clock m_clock;
+
+    SpriteManager _spriteMng;
 };
 
 #endif // GAME_HPP

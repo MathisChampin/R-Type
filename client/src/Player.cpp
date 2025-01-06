@@ -5,17 +5,23 @@
 #include <iostream>
 #include <algorithm>
 
-Player::Player(int id, const sf::Vector2f &startPosition, NmpClient::Client &client, const std::string &configPath)
-    : m_sprite(configPath),
-      m_speed(200.0f),
-      m_currentFrame(0),
-      m_animationTime(0.1f),
-      m_elapsedTime(0.0f),
-      m_client(client),
-      m_position(startPosition),
-      _id(id)
+Player::Player( NmpClient::Client& client)
+    : m_client(client)
 {
-    m_sprite.setPosition(m_position);
+    // for (int i = 1; i <= 5; ++i) {
+    //     sf::Texture texture;
+    //     std::string textureFile = "./assets/player/sprite_" + std::to_string(i) + ".png";
+    //     if (!texture.loadFromFile(textureFile)) {
+    //         std::cerr << "Erreur : Impossible de charger la texture " << textureFile << std::endl;
+    //         exit(-1);
+    //     }
+    //     m_textures.push_back(texture);
+    // }
+
+    // m_sprite.setTexture(m_textures[m_currentFrame]);
+    // m_sprite.setPosition(m_position);
+    // m_sprite.setOrigin(m_textures[0].getSize().x / 2.0f, m_textures[0].getSize().y / 2.0f);
+    // m_sprite.setScale(2.0f, 2.0f);
 }
 
 void Player::handleInput()
@@ -79,28 +85,28 @@ void Player::handleInput()
             std::lock_guard<std::mutex> lock(m_queueMutex);
             m_movementQueue.push(packet);
         }
+        //m_client.send_input(packet);
         std::cout << "Key pressed: " << static_cast<int>(*currentDirection) << std::endl;
         sendQueuedMovements();
     }
 }
 
-void Player::update(float deltaTime)
+void Player::update()
 {
-    m_elapsedTime += deltaTime;
-    if (m_elapsedTime >= m_animationTime)
-    {
-        m_elapsedTime = 0.0f;
-        m_currentFrame = (m_currentFrame + 1) % 4;
-        // m_sprite.setTextureRect(sf::IntRect(m_currentFrame * 32, 0, 32, 32)); // Exemple: largeur de frame 32
-        // animation a faire ici
-    }
+    // m_elapsedTime += deltaTime;
+
+    // if (m_elapsedTime >= m_animationTime) {
+    //     m_elapsedTime = 0.0f;
+    //     m_currentFrame = (m_currentFrame + 1) % m_textures.size();
+    //     m_sprite.setTexture(m_textures[m_currentFrame]);
+    // }
     sendQueuedMovements();
 }
 
-void Player::render(sf::RenderWindow &window)
-{
-    m_sprite.draw(window);
-}
+// void Player::render(sf::RenderWindow& window)
+// {
+//     // window.draw(m_sprite);
+// }
 
 void Player::sendMovementPacket(NmpClient::DIRECTION direction)
 {

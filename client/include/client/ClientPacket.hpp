@@ -6,17 +6,20 @@
 
 namespace NmpClient
 {
-    class Packet : public IPacket
-    {
-    public:
-        /**
+    class Packet : public IPacket {
+        public:
+           /**
          * @brief Constructs a Packet object.
          *
          * @param id The unique identifier for the packet.
          * @param event The event associated with the packet.
          * @param direction Optional direction associated with the packet. Defaults to std::nullopt.
          */
-        Packet(std::size_t id, EVENT event, std::optional<DIRECTION> direction = std::nullopt);
+            Packet(std::size_t id, EVENT event, std::optional<DIRECTION> direction = std::nullopt);
+            Packet(EVENT event, int x, int y);
+            Packet(EVENT event, SpriteInfo &sprites);
+            Packet(EVENT event);
+            std::optional<DIRECTION> getDirection() const;
 
         /**
          * @brief Constructs a Packet object.

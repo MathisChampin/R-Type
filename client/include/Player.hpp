@@ -64,7 +64,6 @@ private:
     float m_elapsedTime;
 
     NmpClient::Client &m_client;
-    sf::Vector2f m_position;
     int _id;
     std::queue<NmpClient::Packet> m_movementQueue;
     std::mutex m_queueMutex;
