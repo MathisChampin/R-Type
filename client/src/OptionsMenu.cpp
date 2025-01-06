@@ -10,9 +10,9 @@ OptionsMenu::OptionsMenu(sf::RenderWindow& window)
     // if (!m_music.openFromFile("./assets/music/back2.mp3")) {
     //     std::cerr << "Erreur : Impossible de charger la musique !" << std::endl;
     // }
-    m_music.setLoop(true);
-    m_music.play();
-    m_music.setVolume(m_volume);
+    //m_music.setLoop(true);
+    //m_music.play();
+    //m_music.setVolume(m_volume);
 
     setupTitleText();
     setupVolumeText();

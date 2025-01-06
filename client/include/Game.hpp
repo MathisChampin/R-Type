@@ -12,6 +12,7 @@
 #include "client/Client.hpp"
 #include "Enemy.hpp"
 #include "Shoot.hpp"
+#include "SpriteManager.hpp"
 
 enum class GameState {
     Menu,
@@ -41,9 +42,9 @@ private:
     // Game loop methods
     void update(float deltaTime);
     void render();
-    void get_player();
-    void get_ennemies();
-    void get_shoots();
+    void get_player(NmpClient::Packet &packet);
+    void get_ennemies(NmpClient::Packet &packet);
+    void get_shoots(NmpClient::Packet &packet);
     // Member variables
     sf::RenderWindow m_window;
     sf::Font m_font;
@@ -57,7 +58,7 @@ private:
     NmpClient::Client m_client;
 
     // Vectors to store players and enemies
-    std::vector<Player> m_players;
+    Player m_players;
     std::vector<Enemy> m_enemies;
     std::vector<Shoot> m_shoots;
 
@@ -68,6 +69,8 @@ private:
 
     // Clock for delta time calculation
     sf::Clock m_clock;
+
+    SpriteManager _spriteMng;
 };
 
 #endif // GAME_HPP

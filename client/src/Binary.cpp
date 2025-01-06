@@ -64,7 +64,8 @@ namespace NmpBinary
             std::size_t id = static_cast<std::size_t>(buffer[1]);
             std::cout << "id deserialize: " << id << std::endl;
             return NmpClient::Packet(id, event);
-        }
+        } else if (event == NmpClient::EVENT::EOI)
+            return NmpClient::Packet(NmpClient::EVENT::EOI);
         return NmpClient::Packet(event, 0, 0);
     }
 

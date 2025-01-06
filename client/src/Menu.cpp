@@ -8,11 +8,11 @@ Menu::Menu(sf::RenderWindow& window)
         std::cerr << "Erreur : Impossible de charger la police !" << std::endl;
     }
 
-    if (!loadMusic()) {
-        std::cerr << "Erreur : Impossible de charger la musique !" << std::endl;
-    } else {
-        setupMusic();
-    }
+    //if (!loadMusic()) {
+    //    std::cerr << "Erreur : Impossible de charger la musique !" << std::endl;
+    //} else {
+    //    setupMusic();
+    //}
 
     setupTitle();
     setupFooter();

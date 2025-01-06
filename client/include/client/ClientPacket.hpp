@@ -11,6 +11,7 @@ namespace NmpClient
             Packet(std::size_t id, EVENT event, std::optional<DIRECTION> direction = std::nullopt);
             Packet(EVENT event, int x, int y);
             Packet(EVENT event, SpriteInfo &sprites);
+            Packet(EVENT event);
             std::optional<DIRECTION> getDirection() const;
 
             bool checkPacket() override;

@@ -10,9 +10,9 @@ Game::Game()
     , m_menuBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.1f}})
     , m_playingBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.2f}})
     , m_ipAddress()
-    , m_ipText()
-    , m_ipField()
-    , m_clock()
+    // , m_ipText()
+    // , m_ipField()
+    // , m_clock()
 {
     initializeWindow();
     initializeFont();
@@ -24,88 +24,79 @@ Game::~Game() {
     // Any cleanup if needed
 }
 
-void Game::get_player()
-{
-    auto packet = m_client.get_data();
-    if (!packet.has_value())
-        return;
-    auto data = packet.value();
-    if (data.getOpCode() != NmpClient::EVENT::SPRITE)
-        return;
-    auto spriteInfo = data.getSpriteInfo();
-    bool state = false;
+// void Game::get_player(NmpClient::Packet &data)
+// {
+//     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
+//         return;
+//     auto spriteInfo = data.getSpriteInfo();
+//     bool state = false;
 
-    if (spriteInfo.id == 1) {
-        if (m_players.empty()) {
-            m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
-        }
-        for (auto& player : m_players) {
-            if (player.get_id() == spriteInfo.idClient) {
-                std::cout << "update player" << std::endl;
-                player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-                state = true;
-                break;
-            }
-        }
-        if (!state) {
-            m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
-        }
-    }
-}
+//     if (spriteInfo.id == 1) {
+//         std::cout << "handle player" << std::endl;
+//         if (m_players.empty()) {
+//             m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
+//         }
+//         for (auto& player : m_players) {
+//             if (player.get_id() == spriteInfo.idClient) {
+//                 std::cout << "update player" << std::endl;
+//                 player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+//                 state = true;
+//                 break;
+//             }
+//         }
+//         if (!state) {
+//             m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
+//         }
+//     }
+// }
 
-void Game::get_ennemies() {
-    auto packet = m_client.get_data();
-    if (!packet.has_value())
-        return;
-    auto data = packet.value();
-    if (data.getOpCode() != NmpClient::EVENT::SPRITE)
-        return;
-    auto spriteInfo = data.getSpriteInfo();
-    auto state = false;
+// void Game::get_ennemies(NmpClient::Packet &data) {
+//     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
+//         return;
+//     auto spriteInfo = data.getSpriteInfo();
+//     auto state = false;
 
-    if (spriteInfo.id == 2) {
-        if (m_enemies.empty()) {
-            m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
-        }
-        for (auto& enemy : m_enemies) {
-            if (enemy.get_id() == spriteInfo.idClient) {
-                enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-                state = true;
-                break;
-            }
-        }
-        if (!state) {
-            m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
-        }
-    }
-}
+//     if (spriteInfo.id == 2) {
+//         std::cout << "handle ennemies" << std::endl;
+//         if (m_enemies.empty()) {
+//             m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+//         }
+//         for (auto& enemy : m_enemies) {
+//             if (enemy.get_id() == spriteInfo.idClient) {
+//                 enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+//                 state = true;
+//                 break;
+//             }
+//         }
+//         if (!state) {
+//             m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+//         }
+//     }
+// }
 
-void Game::get_shoots() {
-    auto packet = m_client.get_data();
-    if (!packet.has_value())
-        return;
-    auto data = packet.value();
-    if (data.getOpCode() != NmpClient::EVENT::SPRITE)
-        return;
-    auto spriteInfo = data.getSpriteInfo();
-    auto state = false;
+// void Game::get_shoots(NmpClient::Packet &data) {
+//     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
+//         return;
+//     auto spriteInfo = data.getSpriteInfo();
+//     auto state = false;
 
-    if (spriteInfo.id == 3) {
-        if (m_shoots.empty()) {
-            m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
-        }
-        for (auto& shoot : m_shoots) {
-            if (shoot.get_id() == spriteInfo.idClient) {
-                std::cout << "update shoot: " << shoot.get_id() << std::endl;
-                shoot.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-                state = true;
-                break;
-            }
-        } 
-        if (!state)
-            m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
-    }
-}
+//     if (spriteInfo.id == 3) {
+//         std::cout << "handle shoot" << std::endl;
+//         if (m_shoots.empty()) {
+//             m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+//         }
+//         for (auto& shoot : m_shoots) {
+//             if (shoot.get_id() == spriteInfo.idClient) {
+//                 std::cout << "update shoot: " << shoot.get_id() << std::endl;
+//                 shoot.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+//                 state = true;
+//                 break;
+//             }
+//         } 
+//         if (!state)
+//             m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+//     }
+// }
 
 void Game::initializeWindow() {
     sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
@@ -165,22 +156,29 @@ void Game::initializeIpAddressText() {
     m_ipField.setPosition(850, 310);
 }
 
-void Game::run() {
-    while (m_window.isOpen()) {
-        float deltaTime = m_clock.restart().asSeconds();
-        handleEvents();
-        std::cout << "JE SORS DE HANDLEEVENTS" << std::endl;
-        get_ennemies();
-        std::cout << "je sors de get ennemies" << std::endl;
-        get_player();
-        std::cout << "je sors de get player" << std::endl;
-        get_shoots();
-        std::cout << "je sors de get shoot" << std::endl;
-        update(deltaTime);
-        render();
-        std::cout << "JE SORS DE RENDER" << std::endl;
-    }
-}
+// void Game::run() {
+//     while (m_window.isOpen()) {
+//         float deltaTime = m_clock.restart().asSeconds();
+//         std::cout << "BEGIN LOOP\n";
+//         handleEvents();
+//         //std::cout << "JE SORS DE RENDER" << std::endl;
+//         //std::cout << "JE SORS DE HANDLEEVENTS" << std::endl;
+//         auto packet = m_client.get_data();
+//         if (!packet.has_value()) {
+//             continue;
+//         }
+//         auto p = packet.value();
+//         get_ennemies(p);
+//         //std::cout << "je sors de get ennemies" << std::endl;
+//         get_player(p);
+//         //std::cout << "je sors de get player" << std::endl;
+//         get_shoots(p);
+//         //std::cout << "je sors de get shoot" << std::endl;
+//         update(deltaTime);
+//         render();
+//         std::cout << "END LOOP" <<std::endl;
+//     }
+// }
 
 void Game::handleEvents() {
     sf::Event event;
@@ -229,11 +227,9 @@ void Game::update(float deltaTime) {
         m_menu.update();
     } else if (m_currentState == GameState::Playing) {
         // Update each player
-        for (auto& player : m_players) {
-            player.handleInput();
-            player.update(deltaTime);
-            player.sendQueuedMovements();
-        }
+        m_players.handleInput();
+        m_players.update();
+        m_players.sendQueuedMovements();
 
         // Update each enemy
         for (auto& enemy : m_enemies) {
@@ -259,19 +255,7 @@ void Game::render() {
 
     } else if (m_currentState == GameState::Playing) {
         m_playingBackground.render(m_window);
-        // Render each player
-        for (auto& player : m_players) {
-            player.render(m_window);
-        }
-
-        // Render each enemy
-        for (auto& enemy : m_enemies) {
-            enemy.render(m_window);
-        }
-
-        for (auto &shoot : m_shoots){
-            shoot.render(m_window);
-        };
+        _spriteMng.drawAll(m_window);
     } else if (m_currentState == GameState::Options) {
         m_menuBackground.render(m_window);
         m_optionsMenu.render();
