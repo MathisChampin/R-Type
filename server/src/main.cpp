@@ -7,8 +7,6 @@
 #include "LobbyServerTCP.hpp"
 #include <asio.hpp>
 
-#include "LobbyServerTCP.hpp"
-#include <asio.hpp>
 
 int main() {
     try {
