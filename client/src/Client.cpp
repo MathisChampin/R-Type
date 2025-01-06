@@ -14,7 +14,8 @@ namespace NmpClient
         Packet packetJoin(42, EVENT::JOIN);
         this->send_input(packetJoin);
         std::optional<Packet> resJoin;
-        while (!resJoin.has_value()) {
+        while (!resJoin.has_value())
+        {
             std::cout << "waiting for join response" << std::endl;
             resJoin = this->get_data();
         }
@@ -27,9 +28,8 @@ namespace NmpClient
         asio::ip::udp::endpoint clientEndpoint;
         std::vector<uint32_t> test;
         std::error_code ignored_error;
-    
         _socket.non_blocking(true);
-    
+
         std::size_t bytes = 0;
         try {
             bytes = _socket.receive_from(asio::buffer(_bufferAsio), clientEndpoint, 0, ignored_error);
@@ -48,7 +48,9 @@ namespace NmpClient
             else {
                 return std::nullopt;
             }
-        } catch (const std::system_error& e) {
+        }
+        catch (const std::system_error &e)
+        {
             std::cout << "Error while receiving data: " << e.what() << std::endl;
             return std::nullopt;
         }

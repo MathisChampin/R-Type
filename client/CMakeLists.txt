@@ -67,6 +67,14 @@ add_custom_command(
     COMMENT "Copie des assets dans le répertoire binaire"
 )
 
+add_custom_command(
+    TARGET r_type_client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/client/config
+        $<TARGET_FILE_DIR:r_type_client>/config
+    COMMENT "Copie des config dans le répertoire binaire"
+)
+
 target_compile_definitions(r_type_client PRIVATE ASIO_STANDALONE)
 
 foreach(header ${CLIENT_HEADERS})
