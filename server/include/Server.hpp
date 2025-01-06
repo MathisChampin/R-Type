@@ -21,6 +21,7 @@ namespace NmpServer {
             void get_data() override;
             void send_data(Packet &packet, asio::ip::udp::endpoint enpoint) override;
             void extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec) override;
+            void broadcast(Packet &packet) override;
             asio::ip::udp::endpoint getLastEndpoint() const;
 
         private:

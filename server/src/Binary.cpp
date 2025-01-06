@@ -50,6 +50,8 @@ namespace NmpBinary
             std::cout << "send id: " << id << std::endl;
             buffer.push_back(static_cast<uint32_t>(opcode));
             buffer.push_back(static_cast<uint32_t>(id));
+        } else if (opcode == NmpServer::EVENT::EOI) {
+            buffer.push_back(static_cast<uint32_t>(opcode));
         }
     }
 

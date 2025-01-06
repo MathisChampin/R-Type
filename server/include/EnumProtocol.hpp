@@ -9,7 +9,8 @@ namespace NmpServer
         SHOOT = 2,
         QUIT = 3,
         SPRITE = 4,
-        JOIN = 5
+        JOIN = 5,
+        EOI = 6
     };
 
     enum class DIRECTION : uint32_t {
