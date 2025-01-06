@@ -29,6 +29,7 @@ CPMAddPackage(
 add_subdirectory(ECS)
 add_subdirectory(server)
 add_subdirectory(client)
+add_subdirectory(client_2)
 
 if(WIN32)
     find_package(Threads REQUIRED)  
