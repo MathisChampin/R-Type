@@ -1,6 +1,0 @@
-.
-├── cpp_ci.yml
-├── l.txt
-└── r-type.yml
-
-1 directory, 3 files

@@ -8,7 +8,8 @@ namespace NmpServer
         std::cout << "SERVER packet input created for id: " << _id <<  std::endl;
     }
 
-    Packet::Packet(EVENT event, SpriteInfo &sprite) : _opCode(event), _sprite(sprite)
+    Packet::Packet(EVENT event, SpriteInfo &sprite) : 
+        _opCode(event), _sprite(sprite)
     {
         std::cout << "SERVER packet sprite created" << std::endl;
     }
@@ -17,6 +18,12 @@ namespace NmpServer
         _opCode(event), _x(x), _y(y)
     {
         std::cout << "SERVER packet pos created for id: " << _id <<  std::endl;
+    }
+
+    Packet::Packet(EVENT event) :
+        _opCode(event)
+    {
+        std::cout << "SERVER packet end of frame created" << std::endl;
     }
 
     bool Packet::checkPacket()

@@ -62,18 +62,18 @@ namespace NmpServer
         if (foundEndpoint.has_value()) {
             _ecs.emplace_component<component::controllable>(player, control);
             sys.control_system(_ecs);
-            std::cout << "pos x: " << pos.x << " pos y: " << pos.y << std::endl;
             //Packet packetPos(EVENT::MOVE, pos.x, pos.y);
             //_refServer.get().send_data(packetPos, foundEndpoint.value());
         } else {
             std::cout << "no endpoint found for this client" << std::endl;
+            std::cout << "pos x: " << pos.x << " pos y: " << pos.y << std::endl;
         }
     }
 
     void ProtocoleHandler::evalMove()
     {
-        std::cout << "evalMove" << std::endl;
-        std::cout << "id client: " << _pck.getId() << std::endl;
+        //std::cout << "evalMove" << std::endl;
+        //std::cout << "id client: " << _pck.getId() << std::endl;
         std::size_t idClient{ _pck.getId()};
         sparse_array<component::position> &pos = _ecs.get_components<component::position>();
         Entity player = _ecs.get_entity(idClient);
@@ -93,14 +93,15 @@ namespace NmpServer
             auto control = component::controllable::Left;
             updateMoveEcs(player, control, position);
         } else if (direction == DIRECTION::RIGHT) {
+            std::cout << "RIGHT" << std::endl;
             auto control = component::controllable::Right;
             updateMoveEcs(player, control, position);
         } else if ((direction == DIRECTION::SHOOT)) {
             auto control = component::controllable::Shoot;
             updateMoveEcs(player, control, position);
         } else 
-            std::cout << "NO DIRECTION" << std::endl;
-        std::cout << "x " << position.x << " y " << position.y << std::endl;
+            std::cout << "x " << position.x << " y " << position.y << std::endl;
+            //std::cout << "NO KEY" << std::endl;
     }
 
     void ProtocoleHandler::evalQuit()

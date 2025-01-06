@@ -90,34 +90,22 @@ void Game::get_player()
     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
         return;
     auto spriteInfo = data.getSpriteInfo();
+    bool state = false;
 
-    if (spriteInfo.id == 1)
-    {
-        auto it = std::find_if(m_players.begin(), m_players.end(),
-                               [&](const auto &player)
-                               { return player->get_id() == spriteInfo.idClient; });
-
-        if (it == m_players.end())
-        {
-            try
-            {
-                m_players.emplace_back(std::make_unique<Player>(
-                    spriteInfo.idClient,
-                    sf::Vector2f(spriteInfo.x, spriteInfo.y),
-                    m_client,
-                    "config/player.json"));
-            }
-            catch (const std::exception &e)
-            {
-                std::cerr << "Error creating player: " << e.what() << std::endl;
+    if (spriteInfo.id == 1) {
+        if (m_players.empty()) {
+            m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
+        }
+        for (auto& player : m_players) {
+            if (player.get_id() == spriteInfo.idClient) {
+                std::cout << "update player" << std::endl;
+                player.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                state = true;
+                break;
             }
         }
-        else
-        {
-            if (*it)
-            {
-                (*it)->updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-            }
+        if (!state) {
+            m_players.push_back(Player(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y), m_client));
         }
     }
 }
@@ -131,33 +119,21 @@ void Game::get_ennemies()
     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
         return;
     auto spriteInfo = data.getSpriteInfo();
+    auto state = false;
 
-    if (spriteInfo.id == 2)
-    {
-        auto it = std::find_if(m_enemies.begin(), m_enemies.end(),
-                               [&](const auto &enemy)
-                               { return enemy->get_id() == spriteInfo.idClient; });
-
-        if (it == m_enemies.end())
-        {
-            try
-            {
-                m_enemies.emplace_back(std::make_unique<Enemy>(
-                    spriteInfo.idClient,
-                    sf::Vector2f(spriteInfo.x, spriteInfo.y),
-                    "config/enemy.json"));
-            }
-            catch (const std::exception &e)
-            {
-                std::cerr << "Error creating enemy: " << e.what() << std::endl;
+    if (spriteInfo.id == 2) {
+        if (m_enemies.empty()) {
+            m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+        }
+        for (auto& enemy : m_enemies) {
+            if (enemy.get_id() == spriteInfo.idClient) {
+                enemy.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                state = true;
+                break;
             }
         }
-        else
-        {
-            if (*it)
-            {
-                (*it)->updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
-            }
+        if (!state) {
+            m_enemies.push_back(Enemy(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
         }
     }
 }
@@ -171,6 +147,7 @@ void Game::get_shoots()
     if (data.getOpCode() != NmpClient::EVENT::SPRITE)
         return;
     auto spriteInfo = data.getSpriteInfo();
+    auto state = false;
 
     if (spriteInfo.id == 3)
     {
@@ -191,13 +168,29 @@ void Game::get_shoots()
                 std::cerr << "Error creating shoot: " << e.what() << std::endl;
             }
         }
-        else
-        {
-            if (*it)
-            {
-                (*it)->updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+        for (auto& shoot : m_shoots) {
+            if (shoot.get_id() == spriteInfo.idClient) {
+                std::cout << "update shoot: " << shoot.get_id() << std::endl;
+                shoot.updatePosition(sf::Vector2f(spriteInfo.x, spriteInfo.y));
+                state = true;
+                break;
             }
-        }
+        } 
+        if (!state)
+            m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
+    }
+}
+
+void Game::initializeWindow() {
+    sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
+    m_window.create(videoMode, "Menu SFML", sf::Style::Fullscreen);
+    m_window.setFramerateLimit(60);
+}
+
+void Game::initializeFont() {
+    if (!m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf")) {
+        std::cerr << "Impossible de charger la police!" << std::endl;
+        throw std::runtime_error("Failed to load font");
     }
 }
 

@@ -3,11 +3,11 @@ name: C++ CI Pipeline
 on:
   push:
     branches:
-      - Client_socket
+      - main
       - feature/*
   pull_request:
     branches:
-      - Client_socket
+      - main
 
 jobs:
   lint-and-build:
@@ -46,4 +46,4 @@ jobs:
 
       - name: Lint Commit Messages
         run: |
-          npx --no-install commitlint --from=$(git rev-parse Client_socket)
+          npx --no-install commitlint --from=$(git rev-parse main) --to=$(git rev-parse HEAD)

@@ -1,5 +1,7 @@
 #include "Server.hpp"
 #include "Registry.hpp"
+#include "ClockManager.hpp"
+
 
 namespace NmpServer
 {
@@ -13,68 +15,29 @@ namespace NmpServer
         _bufferAsio.fill(0);
     }
 
-    Server::~Server() {
-        stopSystemThread();
+    Server::~Server()
+    {
+
     }
 
     void Server::run()
     {
         _running = true;
-        startSystemThread();
         _io_context.run();
 
         std::thread inputThread(&Server::threadInput, this);
-        std::thread ecsThread(&Server::threadEcs, this);
+        std::thread systemThread(&Server::threadSystem, this);
+        std::thread handleInputThread(&Server::threaEvalInput, this);
+        std::thread shootEnnemiesThread(&Server::threadShootEnnemies, this);
+
+
+        notifyShoot();
 
         inputThread.join();
-        ecsThread.join();
-        _systemThread.join();
+        systemThread.join();
+        handleInputThread.join();
+        shootEnnemiesThread.join();
     }
-
-    void Server::startSystemThread()
-    {
-        _systemThread = std::thread(&Server::systemLoop, this);
-
-    }
-
-    void Server::stopSystemThread() {
-        _running = false;
-        if (_systemThread.joinable()) {
-            _systemThread.join();
-        }
-    }
-
-    void Server::systemLoop() {
-    System sys;
-    const auto frameDuration = std::chrono::milliseconds(20);
-    const auto shootCooldown = std::chrono::seconds(5);
-    auto lastShootTime = std::chrono::steady_clock::now();
-
-    while (_running) {
-        auto startTime = std::chrono::steady_clock::now();
-
-        {
-            std::lock_guard<std::mutex> lock(_ecsMutex);
-            auto &ecs = _ptp.getECS();
-            if (std::chrono::steady_clock::now() - lastShootTime >= shootCooldown) {
-                sys.shoot_system_ennemies(ecs);
-                lastShootTime = std::chrono::steady_clock::now();
-            }
-            //sys.shoot_system_player(ecs);
-            sys.collision_system(ecs);
-            sys.kill_system(ecs);
-            sys.position_system(ecs);
-            send_entity(ecs);
-        }
-
-        // Calcul de la durée écoulée et ajustement du sommeil
-        auto elapsedTime = std::chrono::steady_clock::now() - startTime;
-        if (elapsedTime < frameDuration) {
-            std::this_thread::sleep_for(frameDuration - elapsedTime);
-        }
-    }
-}
-
 
     uint32_t Server::getId(component::attribute &att)
     {
@@ -105,34 +68,58 @@ namespace NmpServer
         sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
         sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
         int id = 0;
-
+        std::cout << "BEGIN SEND ENTITY" << std::endl;
         for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
             auto &st = states[i];
             auto &att = attributes[i];
+            if (st._stateKey == component::state::stateKey::Dead && 
+                att._type == component::attribute::Ennemies) {
+                    std::cout << "Un ennemi est mort. Fermeture du programme proprement." << std::endl;
+                    _running = false;
+                    std::exit(EXIT_SUCCESS);
+            }
             if (st._stateKey == component::state::stateKey::Alive) {
                 id = getId(att);
                 auto &pos = positions[i];
                 auto &s = sizes[i];
-                std::cout << "id client: "  << i << std::endl;
+                std::cout << "id entity: "  << i << std::endl;
                 SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
-                auto &_vecPlayer = _ptp.get_vector();
-                for (const auto &[entity, endpoint] : _vecPlayer) {
-                    send_data(packet, endpoint);
-                }
+                broadcast(packet);
             }
         }
+        Packet packet(EVENT::EOI);
+        broadcast(packet);
+        std::cout << "END SEND ENTITY" << std::endl;
+    }
+
+    void Server::notifyShoot()
+    {
+        ClockManager clock;
+        _shootReady = false;
+
+        clock.start();
+        while (1) {
+            std::cout << "time elapsed: " << clock.elapsedSeconds() << std::endl;
+            if (clock.elapsedSeconds() >= 5.0) {
+                std::cout << "Notify shoot" << std::endl;
+                _shootReady = true;
+                _cvShoot.notify_one();
+                clock.start();
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        }
+
     }
 
     void Server::threadInput()
     {
         while (true) {
-            get_data();
-            //std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            this->get_data();
         }
     }
 
-    void Server::threadEcs()
+    void Server::threaEvalInput()
     {
         while (true) {
             Packet packet;
@@ -152,6 +139,38 @@ namespace NmpServer
         }
     }
 
+    void Server::threadSystem()
+    {
+        System sys;
+        const auto frameDuration = std::chrono::milliseconds(20);
+
+        while (_running) {
+            {
+                std::lock_guard<std::mutex> lock(_ecsMutex);
+                auto &ecs = _ptp.getECS();
+                sys.collision_system(ecs);
+                //sys.kill_system(ecs);
+                sys.position_system(ecs);
+                send_entity(ecs);
+            }
+            std::this_thread::sleep_for(frameDuration);
+        }
+    }
+
+    void Server::threadShootEnnemies()
+    {
+        System sys;
+
+        while (true) {
+            std::unique_lock<std::mutex> lock(_ecsMutex);
+            _cvShoot.wait(lock, [this] { return _shootReady; });
+            auto &ecs = _ptp.getECS();
+            sys.shoot_system_ennemies(ecs);
+            _shootReady = false;
+            std::cout << "has shoot" << std::endl;
+        }
+    }
+
     void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
     {
         std::cout << "send packet" << std::endl;
@@ -161,9 +180,9 @@ namespace NmpServer
                   << endpoint.port() << std::endl;
 
         _binary.serialize(packet, _bufferSerialize);
-        for (auto elem: _bufferSerialize) {
-            std::cout << "elem: " << elem << std::endl;
-        }
+        // for (auto elem: _bufferSerialize) {
+        //     std::cout << "elem: " << elem << std::endl;
+        // }
         _socketSend.send_to(asio::buffer(_bufferSerialize), endpoint);
         _bufferSerialize.clear();
     }
@@ -214,5 +233,13 @@ namespace NmpServer
     asio::ip::udp::endpoint Server::getLastEndpoint() const
     {
         return _copy_endpoint;
+    }
+
+    void Server::broadcast(Packet &packet)
+    {
+        auto &_vecPlayer = _ptp.get_vector();
+        for (const auto &[entity, endpoint] : _vecPlayer) {
+            send_data(packet, endpoint);
+        }
     }
 }

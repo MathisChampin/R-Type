@@ -21,23 +21,26 @@ namespace NmpServer {
             void get_data() override;
             void send_data(Packet &packet, asio::ip::udp::endpoint enpoint) override;
             void extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec) override;
+            void broadcast(Packet &packet) override;
             asio::ip::udp::endpoint getLastEndpoint() const;
 
         private:
             void threadInput();
-            void threadEcs();
-            void startSystemThread();
-            void stopSystemThread();
-            void systemLoop();
+            void threaEvalInput();
+            void threadSystem();
+            void threadShootEnnemies();
             void send_entity(registry &);
+            void notifyShoot();
+
             uint32_t getId(component::attribute &att);
 
             std::atomic<bool> _running;
+            bool _shootReady;
             std::queue<Packet> _queue;
             std::mutex _queueMutex;
             std::mutex _ecsMutex;
             std::condition_variable _cv;
-            std::thread _systemThread;
+            std::condition_variable _cvShoot;
             asio::io_context _io_context;
             asio::ip::udp::socket _socketRead;
             asio::ip::udp::socket _socketSend;
