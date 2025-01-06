@@ -10,6 +10,7 @@ Game::Game()
     , m_optionsMenu(m_window)
     , m_menuBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.1f}})
     , m_playingBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.2f}})
+    , m_players(m_client)
 {
     initializeWindow();
     initializeFont();
@@ -19,7 +20,6 @@ Game::Game()
 
 Game::~Game()
 {
-    m_players.clear();
     m_enemies.clear();
     m_shoots.clear();
 }
@@ -186,19 +186,6 @@ void Game::initializeIpAddressText()
 //             m_shoots.push_back(Shoot(spriteInfo.idClient, sf::Vector2f(spriteInfo.x, spriteInfo.y)));
 //     }
 // }
-
-void Game::initializeWindow() {
-    sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
-    m_window.create(videoMode, "Menu SFML", sf::Style::Fullscreen);
-    m_window.setFramerateLimit(60);
-}
-
-void Game::initializeFont() {
-    if (!m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf")) {
-        std::cerr << "Impossible de charger la police!" << std::endl;
-        throw std::runtime_error("Failed to load font");
-    }
-}
 
 // void Game::run()
 // {

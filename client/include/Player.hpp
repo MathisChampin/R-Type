@@ -12,7 +12,6 @@
 class Player
 {
 public:
-    Player() = default;
     /**
      * @brief Constructs a new Player object.
      *
