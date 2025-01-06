@@ -5,14 +5,14 @@ project(r_type_client_2)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-file(GLOB_RECURSE CLIENT_SOURCES "${CMAKE_SOURCE_DIR}/client_2/src/*.cpp")
-file(GLOB_RECURSE CLIENT_HEADERS "${CMAKE_SOURCE_DIR}/client_2/include/*.hpp")
+file(GLOB_RECURSE CLIENT_SOURCES_2 "${CMAKE_SOURCE_DIR}/client_2/src/*.cpp")
+file(GLOB_RECURSE CLIENT_HEADERS_2 "${CMAKE_SOURCE_DIR}/client_2/include/*.hpp")
 
-if(NOT CLIENT_SOURCES)
+if(NOT CLIENT_SOURCES_2)
     message(FATAL_ERROR "No source files found in ${CMAKE_SOURCE_DIR}/client_2/src/")
 endif()
 
-add_executable(r_type_client_2 ${CLIENT_SOURCES} ${CLIENT_HEADERS})
+add_executable(r_type_client_2 ${CLIENT_SOURCES_2} ${CLIENT_HEADERS_2})
 
 target_include_directories(r_type_client_2 PRIVATE
     ${CMAKE_SOURCE_DIR}/include
