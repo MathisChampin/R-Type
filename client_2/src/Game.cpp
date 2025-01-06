@@ -6,9 +6,13 @@ Game::Game() : window(sf::VideoMode(1920, 1080), "Game2", sf::Style::Default), b
 }
 
 void Game::run() {
+    sf::Clock clock; // Horloge pour calculer le deltaTime
+
     while (window.isOpen()) {
+        float deltaTime = clock.restart().asSeconds(); // Temps écoulé depuis la dernière frame
+
         handleInput();
-        update();
+        update(deltaTime);
         render();
     }
 }
@@ -25,9 +29,9 @@ void Game::handleInput() {
     }
 }
 
-void Game::update() {
+void Game::update(float deltaTime) {
     background.moveParallax();
-    player.update();
+    player.update(deltaTime);
     for (auto& enemy : enemies) {
         enemy.update();
     }

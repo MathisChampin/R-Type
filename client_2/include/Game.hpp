@@ -13,8 +13,8 @@ class Game {
         Player player;
         Background background;
         std::vector<Enemy> enemies;
-    
+
         void handleInput();
-        void update();
+        void update(float);
         void render();
 };
