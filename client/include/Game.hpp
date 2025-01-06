@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "Menu.hpp"
 #include "ParallaxBackground.hpp"
@@ -13,38 +14,48 @@
 #include "Enemy.hpp"
 #include "Shoot.hpp"
 #include "SpriteManager.hpp"
+#include "client/TextureManager.hpp"
+#include "client/Sprite.hpp"
 
-enum class GameState {
+enum class GameState
+{
     Menu,
     Playing,
     Options,
     PlayingInLobby
 };
 
-class Game {
+class Game
+{
 public:
     Game();
     ~Game();
 
-    void boucle();
     void run();
 
 private:
-    // Window and rendering
+    // Initialization
     void initializeWindow();
     void initializeFont();
     void initializeMenuOptions();
     void initializeIpAddressText();
-    void get_join_packet();
+
+    // Network methods
+    void get_player();
+    void get_ennemies();
+    void get_shoots();
+
     // Event handling
     void handleEvents();
-    void processInput(sf::Event& event);
+    void processInput(sf::Event &event);
+
     // Game loop methods
     void update(float deltaTime);
     void render();
     void get_player(NmpClient::Packet &packet);
     void get_ennemies(NmpClient::Packet &packet);
     void get_shoots(NmpClient::Packet &packet);
+
     // Member variables
     sf::RenderWindow m_window;
     sf::Font m_font;
@@ -62,12 +73,12 @@ private:
     std::vector<Enemy> m_enemies;
     std::vector<Shoot> m_shoots;
 
-    // IP address input
+    // UI elements
     sf::String m_ipAddress;
     sf::Text m_ipText;
     sf::Text m_ipField;
 
-    // Clock for delta time calculation
+    // Timing
     sf::Clock m_clock;
 
     SpriteManager _spriteMng;

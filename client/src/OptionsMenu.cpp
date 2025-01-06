@@ -1,18 +1,16 @@
 #include "../include/OptionsMenu.hpp"
 #include <iostream>
 
-OptionsMenu::OptionsMenu(sf::RenderWindow& window)
+OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     : m_window(window), m_volume(50.0f)
+{
+    if (!m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf"))
     {
-    if (!m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf")) {
         std::cerr << "Erreur : Impossible de charger la police !" << std::endl;
     }
-    // if (!m_music.openFromFile("./assets/music/back2.mp3")) {
-    //     std::cerr << "Erreur : Impossible de charger la musique !" << std::endl;
-    // }
-    //m_music.setLoop(true);
-    //m_music.play();
-    //m_music.setVolume(m_volume);
+    m_music.setLoop(true);
+    m_music.play();
+    m_music.setVolume(m_volume);
 
     setupTitleText();
     setupVolumeText();
@@ -61,22 +59,30 @@ void OptionsMenu::updateMusicVolume()
     m_music.setVolume(m_volume);
 }
 
-void OptionsMenu::handleEvent(const sf::Event& event)
+void OptionsMenu::handleEvent(const sf::Event &event)
 {
-    if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Up) {
+    if (event.type == sf::Event::KeyPressed)
+    {
+        if (event.key.code == sf::Keyboard::Up)
+        {
             m_volume = std::min(100.0f, m_volume + 5.0f);
-        } else if (event.key.code == sf::Keyboard::Down) {
+        }
+        else if (event.key.code == sf::Keyboard::Down)
+        {
             m_volume = std::max(0.0f, m_volume - 5.0f);
         }
         m_volumeText.setString("Volume: " + std::to_string(static_cast<int>(m_volume)));
         updateVolumeBar();
         updateMusicVolume();
-    } else if (event.type == sf::Event::MouseButtonPressed) {
-        if (event.mouseButton.button == sf::Mouse::Left) {
+    }
+    else if (event.type == sf::Event::MouseButtonPressed)
+    {
+        if (event.mouseButton.button == sf::Mouse::Left)
+        {
             sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
             sf::FloatRect volumeBarBounds = m_volumeBarBackground.getGlobalBounds();
-            if (volumeBarBounds.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+            if (volumeBarBounds.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)))
+            {
                 float newVolume = (mousePos.x - volumeBarBounds.left) / volumeBarBounds.width * 100.0f;
                 m_volume = std::clamp(newVolume, 0.0f, 100.0f);
                 m_volumeText.setString("Volume: " + std::to_string(static_cast<int>(m_volume)));
@@ -84,11 +90,15 @@ void OptionsMenu::handleEvent(const sf::Event& event)
                 updateMusicVolume();
             }
         }
-    } else if (event.type == sf::Event::MouseMoved) {
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    }
+    else if (event.type == sf::Event::MouseMoved)
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
             sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
             sf::FloatRect volumeBarBounds = m_volumeBarBackground.getGlobalBounds();
-            if (volumeBarBounds.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+            if (volumeBarBounds.contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)))
+            {
                 float newVolume = (mousePos.x - volumeBarBounds.left) / volumeBarBounds.width * 100.0f;
                 m_volume = std::clamp(newVolume, 0.0f, 100.0f);
                 m_volumeText.setString("Volume: " + std::to_string(static_cast<int>(m_volume)));
@@ -101,7 +111,6 @@ void OptionsMenu::handleEvent(const sf::Event& event)
 
 void OptionsMenu::update()
 {
-
 }
 
 void OptionsMenu::render()

@@ -31,61 +31,55 @@ void Player::handleInput()
         {sf::Keyboard::Down, false},
         {sf::Keyboard::Left, false},
         {sf::Keyboard::Right, false},
-        {sf::Keyboard::Space, false}
-    };
+        {sf::Keyboard::Space, false}};
 
     const std::vector<std::pair<sf::Keyboard::Key, NmpClient::DIRECTION>> directions = {
         {sf::Keyboard::Up, NmpClient::DIRECTION::UP},
         {sf::Keyboard::Down, NmpClient::DIRECTION::DOWN},
         {sf::Keyboard::Left, NmpClient::DIRECTION::LEFT},
         {sf::Keyboard::Right, NmpClient::DIRECTION::RIGHT},
-        {sf::Keyboard::Space, NmpClient::DIRECTION::SHOOT}
-    };
+        {sf::Keyboard::Space, NmpClient::DIRECTION::SHOOT}};
 
-    // Variable pour stocker la direction
-    NmpClient::DIRECTION* currentDirection = nullptr;
+    NmpClient::DIRECTION *currentDirection = nullptr;
 
-    // Priorité des directions (haut/bas prioritaire sur gauche/droite)
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+    {
         static NmpClient::DIRECTION upDirection = NmpClient::DIRECTION::UP;
         currentDirection = &upDirection;
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    {
         static NmpClient::DIRECTION downDirection = NmpClient::DIRECTION::DOWN;
         currentDirection = &downDirection;
     }
 
-    // Si pas de direction verticale, on vérifie les directions horizontales
-    if (currentDirection == nullptr) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    if (currentDirection == nullptr)
+    {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        {
             static NmpClient::DIRECTION leftDirection = NmpClient::DIRECTION::LEFT;
             currentDirection = &leftDirection;
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            static NmpClient::DIRECTION rightDirection = NmpClient::DIRECTION::RIGHT;
-            currentDirection = &rightDirection;
         }
-    }
-
-    if (currentDirection == nullptr) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            static NmpClient::DIRECTION leftDirection = NmpClient::DIRECTION::LEFT;
-            currentDirection = &leftDirection;
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        {
             static NmpClient::DIRECTION rightDirection = NmpClient::DIRECTION::RIGHT;
             currentDirection = &rightDirection;
         }
     }
 
     bool isSpacePressed = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-    if (isSpacePressed && !keyStates[sf::Keyboard::Space]) {
+    if (isSpacePressed && !keyStates[sf::Keyboard::Space])
+    {
         static NmpClient::DIRECTION spaceDirection = NmpClient::DIRECTION::SHOOT;
         currentDirection = &spaceDirection;
     }
-    for (auto& [key, state] : keyStates) {
+    for (auto &[key, state] : keyStates)
+    {
         state = sf::Keyboard::isKeyPressed(key);
     }
 
-    // S'il y a une direction, on envoie un seul paquet
-    if (currentDirection != nullptr) {
+    if (currentDirection != nullptr)
+    {
         NmpClient::Packet packet(m_client.get_id(), NmpClient::EVENT::MOVE, *currentDirection);
         {
             std::lock_guard<std::mutex> lock(m_queueMutex);
@@ -117,9 +111,6 @@ void Player::update()
 void Player::sendMovementPacket(NmpClient::DIRECTION direction)
 {
     NmpClient::Packet packet(m_client.get_id(), NmpClient::EVENT::MOVE, direction);
-    std::vector<uint32_t> buffer;
-    NmpBinary::Binary binary;
-    binary.serialize(packet, buffer);
     m_client.send_input(packet);
     std::cout << "Position " << static_cast<int>(direction) << " envoyée" << std::endl;
 }
@@ -127,12 +118,16 @@ void Player::sendMovementPacket(NmpClient::DIRECTION direction)
 void Player::sendQueuedMovements()
 {
     std::lock_guard<std::mutex> lock(m_queueMutex);
-    while (!m_movementQueue.empty()) {
+    while (!m_movementQueue.empty())
+    {
         NmpClient::Packet packet = m_movementQueue.front();
 
-        if (packet.getDirection().has_value()) {
+        if (packet.getDirection().has_value())
+        {
             std::cout << "Sending packet with direction: " << static_cast<int>(packet.getDirection().value()) << std::endl;
-        } else {
+        }
+        else
+        {
             std::cout << "Sending packet with no direction" << std::endl;
         }
         m_client.send_input(packet);
