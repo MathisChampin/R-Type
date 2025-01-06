@@ -13,9 +13,9 @@
 int main() {
     try {
         asio::io_context ioContext;
-        LobbyServerTCP server(ioContext, 8080); // Démarrer le serveur sur le port 8080
+        LobbyServerTCP server(ioContext, 8080); 
         server.startAccepting();
-        ioContext.run(); // Lancer l'exécution du contexte
+        ioContext.run();
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
