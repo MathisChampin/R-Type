@@ -16,8 +16,6 @@ namespace NmpClient
          * @param direction Optional direction associated with the packet. Defaults to std::nullopt.
          */
             Packet(std::size_t id, EVENT event, std::optional<DIRECTION> direction = std::nullopt);
-            Packet(EVENT event, int x, int y);
-            Packet(EVENT event, SpriteInfo &sprites);
             Packet(EVENT event);
             std::optional<DIRECTION> getDirection() const;
 
@@ -38,7 +36,6 @@ namespace NmpClient
          * @param sprites The sprite information associated with the packet.
          */
         Packet(EVENT event, SpriteInfo &sprites);
-        std::optional<DIRECTION> getDirection() const;
 
         bool checkPacket() override;
         EVENT getOpCode() override;

@@ -14,8 +14,8 @@
 #include "Enemy.hpp"
 #include "Shoot.hpp"
 #include "SpriteManager.hpp"
-#include "client/TextureManager.hpp"
-#include "client/Sprite.hpp"
+// #include "client/TextureManager.hpp"
+// #include "client/Sprite.hpp"
 
 enum class GameState
 {

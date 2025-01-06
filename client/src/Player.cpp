@@ -91,18 +91,6 @@ void Player::handleInput()
     }
 }
 
-void Player::update()
-{
-    // m_elapsedTime += deltaTime;
-
-    // if (m_elapsedTime >= m_animationTime) {
-    //     m_elapsedTime = 0.0f;
-    //     m_currentFrame = (m_currentFrame + 1) % m_textures.size();
-    //     m_sprite.setTexture(m_textures[m_currentFrame]);
-    // }
-    sendQueuedMovements();
-}
-
 // void Player::render(sf::RenderWindow& window)
 // {
 //     // window.draw(m_sprite);
