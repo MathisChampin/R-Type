@@ -8,88 +8,82 @@
 //si id trouvé -> update
 //si pas mentionné erase -> probablement autre fonction
 
-void Game::get_player(NmpClient::Packet &data)
+void Game::launch_getter(std::size_t id, NmpClient::SpriteInfo &sp) 
 {
-    auto spriteInfo = data.getSpriteInfo();
+    // Vérifier si l'id existe dans la map
+    auto it = _mapHandlerPacket.find(id);
+    if (it != _mapHandlerPacket.end()) {
+        std::cout << "lallalala" << std::endl;
+        // Appeler la fonction associée
+        it->second(sp); // Appel de la fonction avec l'objet sp
+    } else {
+        // Gérer le cas où l'id n'existe pas
+        std::cerr << "Erreur : Aucun handler pour l'id " << id << std::endl;
+    }
+}
 
-    if (spriteInfo.id == 1) {
+void Game::handler_packets()
+{
+    auto data = m_client.get_data();
+    if (!data.has_value()) {
+        return;
+    }
+    auto p = data.value();
+    if (p.getOpCode() != NmpClient::EVENT::SPRITE) {
+        std::cout << "END OF FRAME" << std::endl;
+        return;
+    }
+    auto spriteInf = p.getSpriteInfo();
+    std::cout << "id sprite: " << spriteInf.id << std::endl;
+    launch_getter(spriteInf.id, spriteInf);
+}
+
+void Game::get_player(NmpClient::SpriteInfo &sp)
+{
         std::cout << "handle players" << std::endl;
         sf::Vector2f vecPos;
-        vecPos.x = spriteInfo.x;
-        vecPos.y = spriteInfo.y;
-        auto sprite = _spriteMng.getSprite(spriteInfo.idClient);
+        vecPos.x = sp.x;
+        vecPos.y = sp.y;
+        auto sprite = _spriteMng.getSprite(sp.idClient);
         if (sprite != nullptr) {
-            std::cout << "\tupdate" << std::endl;
+            //std::cout << "\tupdate" << std::endl;
             sprite.get()->setPosition(vecPos);
-            std::cout << "test: " << sprite.get()->getPosition().x << std::endl; 
+            //std::cout << "test: " << sprite.get()->getPosition().x << std::endl; 
         } else {
-            std::cout << "\tcreate" << std::endl;
+            //std::cout << "\tcreate" << std::endl;
             auto sprite = std::make_shared<Sprite>("../../client/config/player.json");
             sprite.get()->setPosition(vecPos);
-            _spriteMng.addSprite(sprite, spriteInfo.idClient);
-            std::cout << "test: " << sprite.get()->getPosition().x << std::endl; 
+            _spriteMng.addSprite(sprite, sp.idClient);
+            //std::cout << "test: " << sprite.get()->getPosition().x << std::endl; 
         }
-    }
+    handler_packets();
 }
 
-void Game::get_ennemies(NmpClient::Packet &data)
+void Game::get_ennemies(NmpClient::SpriteInfo &sp)
 {
-    auto spriteInfo = data.getSpriteInfo();
-
-    if (spriteInfo.id == 2) {
-        std::cout << "handle ennemies" << std::endl;
-        if (_spriteMng.getSprite(spriteInfo.idClient) != nullptr) {
-            std::cout << "\tupdate" << std::endl;
-        } else {
-            std::cout << "\tcreate" << std::endl;
-        }
-
-    }
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    handler_packets();
 }
 
-void Game::get_shoots(NmpClient::Packet &data)
+void Game::get_shoots(NmpClient::SpriteInfo &sp)
 {
-    auto spriteInfo = data.getSpriteInfo();
-
-    if (spriteInfo.id == 3) {
-        std::cout << "handle shoots" << std::endl;
-        if (_spriteMng.getSprite(spriteInfo.idClient) != nullptr) {
-            std::cout << "\tupdate" << std::endl;
-        } else {
-            std::cout << "\tcreate" << std::endl;
-        }
-    }
+    std::cout << "handle shoots: " << sp.idClient << std::endl;
+    handler_packets();
 }
 
 void Game::run()
 {
-    std::queue<NmpClient::Packet> queuePacket;
+    //std::queue<NmpClient::Packet> queuePacket;
 
     while (m_window.isOpen()) {
         float deltaTime = m_clock.restart().asSeconds();
-        //std::cout << "BEGIN LOOP\n";
+        ////std::cout << "BEGIN LOOP\n";
         handleEvents();
         //std::cout << "JE SORS DE RENDER" << std::endl;
         //std::cout << "JE SORS DE HANDLEEVENTS" << std::endl;
-        auto packet = m_client.get_data();
-        if (!packet.has_value()) {
-            std::cout << "TEST" << std::endl;
-            continue;
-        }
-        auto p = packet.value();
-
-        if (p.getOpCode() != NmpClient::EVENT::SPRITE) {
-            std::cout << "END OF FRAME" << std::endl;
-            continue;
-        }
-        queuePacket.push(p);
-        get_ennemies(p);
-        //std::cout << "je sors de get ennemies" << std::endl;
-        get_player(p);
-        //std::cout << "je sors de get player" << std::endl;
-        get_shoots(p);
-        //std::cout << "je sors de get shoot" << std::endl;
-        _spriteMng.drawAll(m_window);
+        
+        handler_packets();
+        
         update(deltaTime);
         render();
         //std::cout << "END LOOP" <<std::endl;

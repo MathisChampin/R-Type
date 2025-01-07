@@ -24,7 +24,7 @@ class SpriteManager {
         void drawAll(sf::RenderWindow &window)
         {
             for (const auto& [id, sprite] : _mapSprite) {
-                std::cout << "draw" << std::endl;
+                //std::cout << "draw" << std::endl;
                 sprite->draw(window);
             }
         }
