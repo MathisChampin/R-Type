@@ -3,6 +3,7 @@
 #include "./Player.hpp"
 #include "./Enemy.hpp"
 #include "./Background.hpp"
+#include "./Ecs.hpp"
 
 class Game {
     public:
@@ -11,6 +12,7 @@ class Game {
     private:
         sf::RenderWindow window;
         Player player;
+        GameECS ecs;
         Background background;
         std::vector<Enemy> enemies;
 

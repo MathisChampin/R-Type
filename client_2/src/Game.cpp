@@ -3,13 +3,14 @@
 
 Game::Game() : window(sf::VideoMode(1920, 1080), "Game2", sf::Style::Default), background() {
     window.setFramerateLimit(60);
+    ecs.createPlayer(player.getPosX(), player.getPosY(), player.getVelX(), player.getVely());
 }
 
 void Game::run() {
-    sf::Clock clock; // Horloge pour calculer le deltaTime
+    sf::Clock clock;
 
     while (window.isOpen()) {
-        float deltaTime = clock.restart().asSeconds(); // Temps écoulé depuis la dernière frame
+        float deltaTime = clock.restart().asSeconds();
 
         handleInput();
         update(deltaTime);

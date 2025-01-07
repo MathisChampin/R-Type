@@ -6,12 +6,32 @@ class Player : public sf::Sprite {
         Player();
         void handleInput(const sf::Event& event);
         void update(float deltaTimem);
+        
+        int getPosX() {
+            return posX;
+        }
+
+        int getPosY() {
+            return posY;
+        }
+
+        int getVelX() {
+            return velocityX;
+        }
+
+        int getVely() {
+            return velocityY;
+        }
+
     private:
         sf::Texture texture;
         sf::IntRect frameRect;
 
-        float velocityX;
-        float velocityY;
+        int velocityX;
+        int velocityY;
+        int posX;
+        int posY;
+    
         bool isJumping;
         const float gravity = 0.5f;
         const float jumpHeight = -12.0f;

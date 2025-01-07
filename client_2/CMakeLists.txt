@@ -16,9 +16,13 @@ add_executable(r_type_client_2 ${CLIENT_SOURCES_2} ${CLIENT_HEADERS_2})
 
 target_include_directories(r_type_client_2 PRIVATE
     ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_BINARY_DIR}/include
     ${CMAKE_SOURCE_DIR}/_deps/sfml-src/include
+    ${CMAKE_SOURCE_DIR}/../ECS/include/
+    ${CMAKE_SOURCE_DIR}/../ECS/include/component/
+    ${CMAKE_SOURCE_DIR}/../ECS/include/system/
 )
+
+add_subdirectory(../ECS ${CMAKE_BINARY_DIR}/ecs_build_2)
 
 if(UNIX)
     target_link_libraries(r_type_client_2
