@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <map>
 
 #include "Menu.hpp"
 #include "ParallaxBackground.hpp"
@@ -52,10 +53,13 @@ private:
     // Game loop methods
     void update(float deltaTime);
     void render();
-    void get_player(NmpClient::Packet &packet);
-    void get_ennemies(NmpClient::Packet &packet);
-    void get_shoots(NmpClient::Packet &packet);
 
+
+    void get_player(NmpClient::SpriteInfo &sp);
+    void get_ennemies(NmpClient::SpriteInfo &sp);
+    void get_shoots(NmpClient::SpriteInfo &sp);
+    void handler_packets();
+    void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
     // Member variables
     sf::RenderWindow m_window;
     sf::Font m_font;
@@ -82,6 +86,12 @@ private:
     sf::Clock m_clock;
 
     SpriteManager _spriteMng;
+    std::map<std::size_t, std::function<void(NmpClient::SpriteInfo &sp)>> _mapHandlerPacket{
+        {1, [this](NmpClient::SpriteInfo &sp) { get_player(sp); }},
+        {2, [this](NmpClient::SpriteInfo &sp) { get_ennemies(sp); }},
+        {3, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+    };
+
 };
 
 #endif // GAME_HPP

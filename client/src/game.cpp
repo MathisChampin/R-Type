@@ -239,18 +239,18 @@ void Game::processInput(sf::Event &event)
         }
     }
 
-    if (event.type == sf::Event::TextEntered)
-    {
-        if (event.text.unicode == '\b' && m_ipAddress.getSize() > 0)
-        {
-            m_ipAddress.erase(m_ipAddress.getSize() - 1, 1);
-        }
-        else if (event.text.unicode < 128 && event.text.unicode != '\b')
-        {
-            m_ipAddress += event.text.unicode;
-        }
-        m_ipField.setString(m_ipAddress);
-    }
+    // if (event.type == sf::Event::TextEntered) //a supprimer
+    // {
+    //     if (event.text.unicode == '\b' && m_ipAddress.getSize() > 0)
+    //     {
+    //         m_ipAddress.erase(m_ipAddress.getSize() - 1, 1);
+    //     }
+    //     else if (event.text.unicode < 128 && event.text.unicode != '\b')
+    //     {
+    //         m_ipAddress += event.text.unicode;
+    //     }
+    //     m_ipField.setString(m_ipAddress);
+    // }
 
     if (m_currentState == GameState::Menu)
     {
