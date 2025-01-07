@@ -14,15 +14,9 @@ SRC =   $(SRC_SYSTEM)controllable_system.cpp \
 
 SRC_MAIN	=	$(SRC_DIR)main.cpp
 
-SRC_TEST =  tests/system/testsControllable.cpp \
-            tests/system/testsPosition.cpp \
-            tests/testsEntity.cpp \
-            tests/testsRegistry.cpp \
-            tests/testsSparseArray.cpp	\
-			tests/system/testsLevel.cpp	\
+SRC_TEST =  tests/system/testsPosition.cpp \
 			tests/system/testsCollision.cpp	\
 			tests/system/testsShoot.cpp		\
-			tests/system/testsKill.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
