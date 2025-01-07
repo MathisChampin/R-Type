@@ -17,6 +17,7 @@ SRC_MAIN	=	$(SRC_DIR)main.cpp
 SRC_TEST =  tests/system/testsPosition.cpp \
 			tests/system/testsCollision.cpp	\
 			tests/system/testsShoot.cpp		\
+			tests/system/testsLevel.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

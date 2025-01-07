@@ -109,3 +109,66 @@ Test(level_system, test_level_5)
 
     cr_assert_eq(level._levelKey, 5, "Expected level to be 5, but got %d", level._levelKey);
 }
+
+Test(level_system, test_level_6)
+{
+    cr_redirect_stdout();
+
+    registry reg;
+    System sys;
+
+    reg.register_component<component::score>();
+    auto &levels = reg.register_component<component::level>();
+
+    Entity player = reg.spawn_entity();
+
+    reg.add_component<component::score>(player, {700});
+    reg.add_component<component::level>(player, {component::level::Level0});
+    auto &level = levels[player.get_id()];
+
+    sys.level_system(reg);
+
+    cr_assert_eq(level._levelKey, 6, "Expected level to be 6, but got %d", level._levelKey);
+}
+
+Test(level_system, test_level_7)
+{
+    cr_redirect_stdout();
+
+    registry reg;
+    System sys;
+
+    reg.register_component<component::score>();
+    auto &levels = reg.register_component<component::level>();
+
+    Entity player = reg.spawn_entity();
+
+    reg.add_component<component::score>(player, {900});
+    reg.add_component<component::level>(player, {component::level::Level0});
+    auto &level = levels[player.get_id()];
+
+    sys.level_system(reg);
+
+    cr_assert_eq(level._levelKey, 7, "Expected level to be 7, but got %d", level._levelKey);
+}
+
+Test(level_system, test_level_8)
+{
+    cr_redirect_stdout();
+
+    registry reg;
+    System sys;
+
+    reg.register_component<component::score>();
+    auto &levels = reg.register_component<component::level>();
+
+    Entity player = reg.spawn_entity();
+
+    reg.add_component<component::score>(player, {1200});
+    reg.add_component<component::level>(player, {component::level::Level0});
+    auto &level = levels[player.get_id()];
+
+    sys.level_system(reg);
+
+    cr_assert_eq(level._levelKey, 8, "Expected level to be 8, but got %d", level._levelKey);
+}
