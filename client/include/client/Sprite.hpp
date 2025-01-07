@@ -38,8 +38,22 @@ public:
         size.x = config["size"]["width"];
         size.y = config["size"]["height"];
 
-        texture = TextureManager::getInstance().loadTexture(texturePath);
-        sprite.setTexture(*texture);
+        if (config["type"] == "player")
+        {
+            for (int i = 1; i <= 5; ++i)
+            {
+                sf::Texture texture;
+                texture.loadFromFile(texturePath);
+                m_textures.push_back(texture);
+                sprite.setTexture(m_textures[i]);
+            }
+        }
+        else
+        {
+            texture = TextureManager::getInstance().loadTexture(texturePath);
+            sprite.setTexture(*texture);
+        }
+        // sprite.setTexture(*texture);
         sprite.setPosition(position);
         sprite.setScale(size.x / texture->getSize().x, size.y / texture->getSize().y);
     }
@@ -88,6 +102,7 @@ public:
 private:
     sf::Sprite sprite;
     std::shared_ptr<sf::Texture> texture;
+    std::vector<sf::Texture> m_textures;
     sf::Vector2f position;
     sf::Vector2f size;
 };
