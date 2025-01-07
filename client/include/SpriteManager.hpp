@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <memory>
-#include "Sprite.hpp"
+#include "../include/client/Sprite.hpp"
 #include <algorithm>
 #include <map>
 

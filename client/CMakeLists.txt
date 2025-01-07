@@ -17,7 +17,6 @@ add_executable(r_type_client ${CLIENT_SOURCES} ${CLIENT_HEADERS})
 target_include_directories(r_type_client PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/client/include
-    ${CMAKE_BINARY_DIR}/include
     ${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include
     ${CMAKE_SOURCE_DIR}/_deps/sfml-src/include
 )

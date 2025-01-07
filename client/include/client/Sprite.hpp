@@ -5,34 +5,19 @@
 #include <nlohmann/json.hpp>
 #include "TextureManager.hpp"
 
-class Sprite
-{
+class Sprite {
 public:
-    /**
-     * @brief Constructs a Sprite object from a configuration file.
-     *
-     * @param configPath The path to the configuration file.
-     */
     Sprite(const std::string &configPath)
     {
         loadFromConfig(configPath);
     }
 
-    /**
-     * @brief Loads sprite configuration from a JSON file.
-     *
-     * This function reads the sprite configuration from the specified JSON file
-     * and sets the texture, position, and size of the sprite accordingly.
-     *
-     * @param configPath The path to the JSON configuration file.
-     */
     void loadFromConfig(const std::string &configPath)
     {
         std::ifstream file(configPath);
         nlohmann::json config;
         file >> config;
 
-        std::string texturePath = config["texture"];
         position.x = config["position"]["x"];
         position.y = config["position"]["y"];
         size.x = config["size"]["width"];
@@ -42,67 +27,93 @@ public:
         {
             for (int i = 1; i <= 5; ++i)
             {
-                sf::Texture texture;
-                texture.loadFromFile(texturePath);
-                m_textures.push_back(texture);
-                sprite.setTexture(m_textures[i]);
+                std::string textureKey = "texture" + std::to_string(i);
+                if (config.contains(textureKey))
+                {
+                    auto tex = TextureManager::getInstance().loadTexture(config[textureKey]);
+                    m_textures.push_back(tex);
+                }
+            }
+
+            if (!m_textures.empty())
+            {
+                currentTextureIndex = 0;
+                sprite.setTexture(*m_textures[currentTextureIndex]);
+                animationSpeed = 10.0f; 
             }
         }
         else
         {
-            texture = TextureManager::getInstance().loadTexture(texturePath);
-            sprite.setTexture(*texture);
+            auto tex = TextureManager::getInstance().loadTexture(config["texture"]);
+            m_textures.push_back(tex);
+            sprite.setTexture(*m_textures[0]);
         }
-        // sprite.setTexture(*texture);
+
         sprite.setPosition(position);
-        sprite.setScale(size.x / texture->getSize().x, size.y / texture->getSize().y);
+        updateSpriteScale();
     }
 
-    /**
-     * @brief Draws the sprite onto the given render window.
-     *
-     * @param window The render window where the sprite will be drawn.
-     */
+    void update(sf::Time deltaTime)
+    {
+        if (m_textures.size() > 1)  
+        {
+            animationTimer += deltaTime;
+            
+            if (animationTimer.asSeconds() >= 1.0f / animationSpeed)
+            {
+                currentTextureIndex = (currentTextureIndex + 1) % m_textures.size();
+                sprite.setTexture(*m_textures[currentTextureIndex]);
+                updateSpriteScale();
+                animationTimer = sf::Time::Zero;
+            }
+        }
+    }
+
     void draw(sf::RenderWindow &window)
     {
         window.draw(sprite);
     }
 
-    /**
-     * @brief Sets the position of the sprite.
-     *
-     * @param pos The new position of the sprite.
-     */
     void setPosition(const sf::Vector2f &pos)
     {
         position = pos;
         sprite.setPosition(position);
     }
 
-    /**
-     * @brief Gets the position of the sprite.
-     *
-     * @return sf::Vector2f The position of the sprite.
-     */
     sf::Vector2f getPosition() const
     {
         return position;
     }
 
-    /**
-     * @brief Sets the size of the sprite.
-     *
-     * @param s The new size of the sprite.
-     */
     void setTextureRect(const sf::IntRect &rect)
     {
         sprite.setTextureRect(rect);
     }
 
+    void setAnimationSpeed(float framesPerSecond)
+    {
+        animationSpeed = framesPerSecond;
+    }
+
 private:
+    void updateSpriteScale()
+    {
+        if (!m_textures.empty())
+        {
+            auto currentTexture = m_textures[currentTextureIndex];
+            sprite.setScale(
+                size.x / currentTexture->getSize().x,
+                size.y / currentTexture->getSize().y
+            );
+        }
+    }
+
     sf::Sprite sprite;
-    std::shared_ptr<sf::Texture> texture;
-    std::vector<sf::Texture> m_textures;
+    std::vector<std::shared_ptr<sf::Texture>> m_textures;
     sf::Vector2f position;
     sf::Vector2f size;
+
+    size_t currentTextureIndex = 0;
+    float animationSpeed = 0.0f;  
+    sf::Time animationTimer;
 };
