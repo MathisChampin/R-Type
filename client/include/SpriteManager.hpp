@@ -48,28 +48,27 @@ public:
         return _mapSprite.size();
     }
 
-        std::size_t getSpriteCount() const
+    void eraseOldSprite(const std::queue<NmpClient::Packet> &packetQueue)
+    {
+        std::unordered_set<std::size_t> idSet;
+        auto tempQueue = packetQueue;
+        while (!tempQueue.empty())
         {
-            return _mapSprite.size();
+            idSet.insert(tempQueue.front().getSpriteInfo().idClient);
         }
-
-        void eraseOldSprite(const std::queue<NmpClient::Packet> &packetQueue)
+        for (auto it = _mapSprite.begin(); it != _mapSprite.end();)
         {
-            std::unordered_set<std::size_t> idSet;
-            auto tempQueue = packetQueue;
-            while (!tempQueue.empty()) {
-                idSet.insert(tempQueue.front().getSpriteInfo().idClient);
+            if (idSet.find(it->first) == idSet.end())
+            {
+                it = _mapSprite.erase(it);
             }
-            for (auto it = _mapSprite.begin(); it != _mapSprite.end(); ) {
-                if (idSet.find(it->first) == idSet.end()) {
-                    it = _mapSprite.erase(it);
-                } else {
-                    ++it;
-                }
+            else
+            {
+                ++it;
             }
         }
+    }
 
-
-    private:
-        std::map<std::size_t, std::shared_ptr<Sprite>> _mapSprite;
+private:
+    std::map<std::size_t, std::shared_ptr<Sprite>> _mapSprite;
 };
