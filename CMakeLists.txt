@@ -15,6 +15,13 @@ endif()
 include(cmake/CPM.cmake)
 
 CPMAddPackage(
+    NAME nlohmann_json
+    GITHUB_REPOSITORY nlohmann/json
+    GIT_TAG v3.11.2
+)
+
+
+CPMAddPackage(
     NAME sfml
     GITHUB_REPOSITORY SFML/SFML
     GIT_TAG 2.6.1
@@ -29,6 +36,7 @@ CPMAddPackage(
 add_subdirectory(ECS)
 add_subdirectory(server)
 add_subdirectory(client)
+add_subdirectory(client_2)
 
 if(WIN32)
     find_package(Threads REQUIRED)  

@@ -22,6 +22,12 @@ void check_level(
         level._levelKey = component::level::Level4;
     if (score.score >= 500)
         level._levelKey = component::level::Level5;
+    if (score.score >= 700)
+        level._levelKey = component::level::Level6;
+    if (score.score >= 900)
+        level._levelKey = component::level::Level7;
+    if (score.score >= 1200)
+        level._levelKey = component::level::Level8;
 }
 
 void System::level_system(registry &reg)

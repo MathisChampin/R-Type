@@ -12,6 +12,8 @@ class System {
         void shoot_system_player(registry &reg);
         void shoot_system_ennemies(registry &reg);
         void kill_system(registry &reg);
+        void win_system(registry &reg);
+        void lose_system(registry &reg);
 };
 
 #endif /* SYSTEM_HPP_ */
