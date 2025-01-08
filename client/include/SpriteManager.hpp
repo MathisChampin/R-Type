@@ -44,20 +44,19 @@ class SpriteManager {
             return _mapSprite.size();
         }
 
-        void eraseOldSprite(const std::queue<NmpClient::Packet> &packetQueue)
+        void eraseOldSprite(std::unordered_set<std::size_t> &container)
         {
-            std::unordered_set<std::size_t> idSet;
-            auto tempQueue = packetQueue;
-            while (!tempQueue.empty()) {
-                idSet.insert(tempQueue.front().getSpriteInfo().idClient);
-            }
+            for (auto elem : container)
+                std::cout << "id container: " << elem << std::endl;
             for (auto it = _mapSprite.begin(); it != _mapSprite.end(); ) {
-                if (idSet.find(it->first) == idSet.end()) {
+                std::cout << "test: " << it->first << std::endl;
+                if (container.find(it->first) == container.end()) {
                     it = _mapSprite.erase(it);
                 } else {
                     ++it;
                 }
             }
+            container.clear();
         }
 
 
