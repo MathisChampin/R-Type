@@ -85,7 +85,7 @@ void Game::run()
         handler_packets();
         
         update(deltaTime);
-        render();
+        render(deltaTime);
         //std::cout << "END LOOP" <<std::endl;
     }
 }

@@ -22,14 +22,7 @@ public:
      */
     Player(NmpClient::Client &client);
     ~Player() = default;
-
-    /**
-     * @brief Updates the player's animation based on the elapsed time.
-     *
-     * @param deltaTime The time elapsed since the last update.
-     */
-    void update(float deltaTime);
-
+    
     void updateId(int id) { _id = id; }
     void sendQueuedMovements();
     void handleInput();

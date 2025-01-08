@@ -52,7 +52,7 @@ private:
 
     // Game loop methods
     void update(float deltaTime);
-    void render();
+    void render(float deltaTime);
 
 
     void get_player(NmpClient::SpriteInfo &sp);
