@@ -4,6 +4,8 @@
 #include "./Ecs.hpp"
 #include "./Player.hpp"
 #include "./Text.hpp"
+#include "./Enemy.hpp"
+#include <memory>
 
 class Game {
     public:
@@ -15,6 +17,8 @@ class Game {
         Background background;
         Player player;
         TextManager text;
+        std::vector<std::shared_ptr<Enemy>> enemies;
+        float enemySpawnTimer = 0.0f;
         void handleInput();
         void update(float);
         void render();

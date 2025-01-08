@@ -11,6 +11,7 @@
     #include "level.hpp"
     #include "controllable.hpp"
     #include "system.hpp"
+    #include <vector>
 
 class GameECS {
     public:
@@ -31,12 +32,37 @@ class GameECS {
     
             m_ecs.add_component(player, component::position{100, 750});
             m_ecs.add_component(player, component::velocity{5, 15});
-            m_ecs.add_component(player, component::size{50, 50});
+            m_ecs.add_component(player, component::size{240, 160});
             m_ecs.add_component(player, component::attribute{component::attribute::Player1});
             m_ecs.add_component(player, component::life{3});
             m_ecs.add_component(player, component::score{0});
             m_ecs.add_component(player, component::level{component::level::Level0});
             m_ecs.add_component(player, component::controllable{component::controllable::NoKey});
+        }
+
+        void createEnemy() {
+            Entity enemy = m_ecs.spawn_entity();
+    
+            m_ecs.add_component(enemy, component::position{1850, 780});
+            m_ecs.add_component(enemy, component::velocity{5, 15});
+            m_ecs.add_component(enemy, component::size{90, 93});
+            m_ecs.add_component(enemy, component::attribute{component::attribute::Ennemies});
+            m_ecs.add_component(enemy, component::life{1});
+            m_ecs.add_component(enemy, component::score{0});
+            m_ecs.add_component(enemy, component::level{component::level::Level0});
+            m_ecs.add_component(enemy, component::controllable{component::controllable::NoKey});
+            enemies.push_back(enemy);
+        }
+
+        void spawnEnemiesAtInterval(float deltaTime)
+        {
+            enemySpawnTimer += deltaTime;
+
+            if (enemySpawnTimer >= 5.0f) {
+                createEnemy();
+                enemySpawnTimer = 0.0f;
+                std::cout << "nouvel ennemie dans ecs" << std::endl;
+            }
         }
 
         Entity getPlayer()
@@ -113,5 +139,7 @@ class GameECS {
     private:
         registry m_ecs;
         System sys;
+        std::vector<Entity> enemies;
+        float enemySpawnTimer = 0.0f; //
 };
 
