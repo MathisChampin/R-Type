@@ -1,7 +1,6 @@
 #pragma once
 
     #include "Registry.hpp"
-    #include "System.hpp"
     #include "position.hpp"
     #include "attribute.hpp"
     #include "score.hpp"
