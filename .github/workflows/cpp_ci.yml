@@ -10,8 +10,8 @@ on:
       - main
 
 jobs:
-  lint-and-build:
-    name: Lint, Build, and Test C++ Code
+  lint-and-build-ubuntu:
+    name: Lint, Build, and Test C++ Code on Ubuntu
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +43,56 @@ jobs:
         run: |
           cppcheck --enable=all --std=c++17 --language=c++ --include=server/include server/src/
       
-
       - name: Lint Commit Messages
         run: |
           npx --no-install commitlint --from=$(git rev-parse main) --to=$(git rev-parse HEAD)
+
+  lint-and-build-fedora:
+    name: Lint, Build, and Test C++ Code on Fedora 28
+    runs-on: fedora-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo dnf update -y
+          sudo dnf install -y cppcheck gcc gcc-c++ make
+
+      - name: Run Cppcheck on Client Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --include=client/include client/src/
+      
+      - name: Run Cppcheck on ECS Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --include=ECS/include ECS/src/
+      
+      - name: Run Cppcheck on Server Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --include=server/include server/src/
+
+  lint-and-build-windows:
+    name: Lint, Build, and Test C++ Code on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          choco install -y cppcheck
+          choco install -y visualstudio2022buildtools --package-parameters "/InstallPath C:\\BuildTools /Silent" 
+
+      - name: Run Cppcheck on Client Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --include=client/include client/src/
+      
+      - name: Run Cppcheck on ECS Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --include=ECS/include ECS/src/
+      
+      - name: Run Cppcheck on Server Sources
+        run: |
+          cppcheck --enable=all --std=c++17 --language=c++ --include=server/include server/src/
