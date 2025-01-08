@@ -43,7 +43,7 @@ namespace NmpServer {
             void evalJoin();
 
             void initPlayer();
-            void initEnnemies(int type, int posx, int posy);
+            void initEnnemies();
             void initComponents();
         
             void updateMoveEcs(Entity &player, component::controllable::Key &control, sparse_array<component::position>::value_type &pos);
