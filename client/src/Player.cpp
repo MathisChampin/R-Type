@@ -8,20 +8,6 @@
 Player::Player( NmpClient::Client& client)
     : m_client(client)
 {
-    // for (int i = 1; i <= 5; ++i) {
-    //     sf::Texture texture;
-    //     std::string textureFile = "./assets/player/sprite_" + std::to_string(i) + ".png";
-    //     if (!texture.loadFromFile(textureFile)) {
-    //         std::cerr << "Erreur : Impossible de charger la texture " << textureFile << std::endl;
-    //         exit(-1);
-    //     }
-    //     m_textures.push_back(texture);
-    // }
-
-    // m_sprite.setTexture(m_textures[m_currentFrame]);
-    // m_sprite.setPosition(m_position);
-    // m_sprite.setOrigin(m_textures[0].getSize().x / 2.0f, m_textures[0].getSize().y / 2.0f);
-    // m_sprite.setScale(2.0f, 2.0f);
 }
 
 void Player::handleInput()
@@ -39,7 +25,12 @@ void Player::handleInput()
         {sf::Keyboard::Left, NmpClient::DIRECTION::LEFT},
         {sf::Keyboard::Right, NmpClient::DIRECTION::RIGHT},
         {sf::Keyboard::Space, NmpClient::DIRECTION::SHOOT}};
-
+    /**
+     * @brief Updates the player's animation based on the elapsed time.
+     *
+     * @param deltaTime The time elapsed since the last update.
+     */
+    void update(float deltaTime);
     NmpClient::DIRECTION *currentDirection = nullptr;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -117,11 +108,6 @@ void Player::handleInput()
         sendQueuedMovements();
     }
 }
-
-// void Player::render(sf::RenderWindow& window)
-// {
-//     // window.draw(m_sprite);
-// }
 
 void Player::sendMovementPacket(NmpClient::DIRECTION direction)
 {
