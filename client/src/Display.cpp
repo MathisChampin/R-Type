@@ -31,21 +31,20 @@ void Game::handler_packets()
     if (p.getOpCode() != NmpClient::EVENT::SPRITE)
     {
         std::cout << "END OF FRAME" << std::endl;
-        std::cout << "count berfore: " << _spriteMng.getSpriteCount() << std::endl;
-        // _spriteMng.eraseOldSprite(_queuePacket);
+        std::cout << "count before: " << _spriteMng.getSpriteCount() << std::endl;
+        _spriteMng.eraseOldSprite(_containerEndFrameId);
         std::cout << "count after: " << _spriteMng.getSpriteCount() << std::endl;
-
         return;
     }
-    _queuePacket.push(p);
     auto spriteInf = p.getSpriteInfo();
-    std::cout << "id sprite: " << spriteInf.id << std::endl;
+   _containerEndFrameId.insert(spriteInf.idClient);
+    //std::cout << "id sprite: " << spriteInf.id << std::endl;
     launch_getter(spriteInf.id, spriteInf);
 }
 
 void Game::get_player(NmpClient::SpriteInfo &sp)
 {
-    std::cout << "handle players" << std::endl;
+    std::cout << "\thandle players: " << sp.idClient << std::endl;
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
@@ -65,7 +64,7 @@ void Game::get_player(NmpClient::SpriteInfo &sp)
 
 void Game::get_ennemies(NmpClient::SpriteInfo &sp)
 {
-    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    std::cout << "\thandle ennemies: " << sp.idClient << std::endl;
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
@@ -85,7 +84,7 @@ void Game::get_ennemies(NmpClient::SpriteInfo &sp)
 
 void Game::get_shoots(NmpClient::SpriteInfo &sp)
 {
-    std::cout << "handle shoots: " << sp.idClient << std::endl;
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
@@ -110,7 +109,7 @@ void Game::run()
     while (m_window.isOpen())
     {
         float deltaTime = m_clock.restart().asSeconds();
-        ////std::cout << "BEGIN LOOP\n";
+        std::cout << "BEGIN LOOP\n";
         handleEvents();
         // std::cout << "JE SORS DE RENDER" << std::endl;
         // std::cout << "JE SORS DE HANDLEEVENTS" << std::endl;
@@ -119,6 +118,6 @@ void Game::run()
 
         update(deltaTime);
         render(deltaTime);
-        // std::cout << "END LOOP" <<std::endl;
+        std::cout << "END LOOP" <<std::endl;
     }
 }

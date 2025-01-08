@@ -88,6 +88,7 @@ private:
     sf::Clock m_clock;
 
     SpriteManager _spriteMng;
+    std::unordered_set<std::size_t> _containerEndFrameId;
     std::queue<NmpClient::Packet> _queuePacket;
     std::map<std::size_t, std::function<void(NmpClient::SpriteInfo &sp)>> _mapHandlerPacket{
         {1, [this](NmpClient::SpriteInfo &sp) { get_player(sp); }},
