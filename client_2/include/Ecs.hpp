@@ -11,9 +11,12 @@
     #include "level.hpp"
     #include "controllable.hpp"
     #include "system.hpp"
+    #include "Enemy.hpp"
     #include <vector>
+    #include <memory>
 
 class GameECS {
+
     public:
         GameECS(registry ecs): m_ecs{ecs} {
             m_ecs.register_component<component::attribute>();
@@ -42,27 +45,57 @@ class GameECS {
 
         void createEnemy() {
             Entity enemy = m_ecs.spawn_entity();
-    
             m_ecs.add_component(enemy, component::position{1850, 780});
-            m_ecs.add_component(enemy, component::velocity{5, 15});
+            m_ecs.add_component(enemy, component::velocity{-5, 15});
             m_ecs.add_component(enemy, component::size{90, 93});
             m_ecs.add_component(enemy, component::attribute{component::attribute::Ennemies});
             m_ecs.add_component(enemy, component::life{1});
             m_ecs.add_component(enemy, component::score{0});
             m_ecs.add_component(enemy, component::level{component::level::Level0});
             m_ecs.add_component(enemy, component::controllable{component::controllable::NoKey});
-            enemies.push_back(enemy);
+
+            std::shared_ptr<Enemy> enemySprite = std::make_shared<Enemy>(enemy.get_id(), "./assets/enemy.png", 1850, 780, 90, 93, 8, 0.1f);
+            enemySprites.push_back(enemySprite);
         }
 
-        void spawnEnemiesAtInterval(float deltaTime)
-        {
-            enemySpawnTimer += deltaTime;
+        void drawEnemies(sf::RenderWindow& window) {
+            for (auto& enemySprite : enemySprites) {
+                enemySprite->drawSprite(window);
+            }
+        }
 
+        void updatePositionEnemys()
+        {
+            auto &attributes = m_ecs.get_components<component::attribute>();
+            auto &positions = m_ecs.get_components<component::position>();
+
+            for (size_t i = 0; i < attributes.size(); i++) {
+                auto &att = attributes[i];
+                if (att._type == component::attribute::Ennemies) {
+                    auto &pos = positions[i];
+                    for (auto& enemySprite : enemySprites) {
+                        if (enemySprite->get_id() == i) {
+                            enemySprite->setPosition(sf::Vector2f(pos.x, pos.y));
+                        }
+                    }
+                }
+            }
+        }
+
+        void spawnEnemiesAtInterval(float deltaTime) {
+            enemySpawnTimer += deltaTime;
             if (enemySpawnTimer >= 5.0f) {
                 createEnemy();
                 enemySpawnTimer = 0.0f;
-                std::cout << "nouvel ennemie dans ecs" << std::endl;
             }
+            for (auto &enemySprite : enemySprites)
+                enemySprite->update(deltaTime);
+        }
+
+        void update(float deltaTime) {
+            spawnEnemiesAtInterval(deltaTime);
+            sys.position_system(m_ecs);
+            updatePositionEnemys();
         }
 
         Entity getPlayer()
@@ -139,7 +172,7 @@ class GameECS {
     private:
         registry m_ecs;
         System sys;
-        std::vector<Entity> enemies;
-        float enemySpawnTimer = 0.0f; //
+        std::vector<std::shared_ptr<Enemy>> enemySprites;
+        float enemySpawnTimer = 0.0f;
+        sf::Texture enemyTexture;
 };
-

@@ -6,7 +6,7 @@ Game::Game(registry ecs):
     player("./assets/player.png", 100, 750, 240, 160, 8, 0.1f), text("./assets/Roboto-Black.ttf") {
     window.setFramerateLimit(60);
 
-    _ecs.createPlayer();
+    _ecs.createPlayer();  // Créer le joueur
 }
 
 void Game::run() {
@@ -38,26 +38,18 @@ void Game::handleInput() {
 
 void Game::update(float deltaTime) {
     player.update(deltaTime);
-    for (auto& enemy : enemies) {
-        enemy->update(deltaTime);
-    }
+    _ecs.update(deltaTime);  // Mise à jour des ennemis et de leur position
     background.moveParallax();
-
-    enemySpawnTimer += deltaTime;
-    if (enemySpawnTimer >= 5.0f) {
-        enemies.push_back(std::make_shared<Enemy>("./assets/enemy.png", 1850, 780, 90, 93, 8, 0.1f));
-        enemySpawnTimer = 0.0f;
-        std::cout << "Nouvel ennemi créé" << std::endl;
-    }
 }
 
 void Game::render() {
     window.clear();
     background.drawParallax(window);
     player.drawSprite(window);
-    for (auto& enemy : enemies) {
-        enemy->drawSprite(window);
-    }
+
+    // Dessiner tous les ennemis
+    _ecs.drawEnemies(window);
+
     text.displayText(window, "Score:", 100, 0);
     text.displayText(window, std::to_string(_ecs.getScorePlayer()), 210, 2);
     text.displayText(window, "Life:", 1700, 0);

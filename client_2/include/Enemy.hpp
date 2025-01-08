@@ -7,8 +7,8 @@ class Enemy {
 public:
     Enemy() = default;
 
-    Enemy(std::string filename, float x, float y, int frameWidth, int frameHeight, int frameCount, float animationSpeed)
-        : _frameWidth(frameWidth), _frameHeight(frameHeight), _frameCount(frameCount), _animationSpeed(animationSpeed) {
+    Enemy(size_t id, std::string filename, float x, float y, int frameWidth, int frameHeight, int frameCount, float animationSpeed)
+        : _id{id}, _frameWidth(frameWidth), _frameHeight(frameHeight), _frameCount(frameCount), _animationSpeed(animationSpeed) {
         if (!_texture.loadFromFile(filename)) {
             std::cerr << "Error loading texture from file: " << filename << std::endl;
         }
@@ -42,9 +42,13 @@ public:
         window.draw(_sprite);
     }
 
+    size_t get_id() {
+        return _id;
+    }
 private:
     sf::Texture _texture;
     sf::Sprite _sprite;
+    size_t _id;
     int _frameWidth;
     int _frameHeight;
     int _frameCount;
