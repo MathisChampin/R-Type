@@ -3,10 +3,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 namespace NmpServer
 {
-
     typedef struct infoEnnemies_s {
         unsigned int type;
         unsigned int posX;
@@ -16,21 +16,16 @@ namespace NmpServer
 
     class Parser {
         public:
-            Parser(std::string fileLevel) : _fd(fileLevel) {
-                if (_fd.is_open())
-                    std::cout << "config file open\n";
-                else
-                    std::cout << "error while openning file\n";
-            };
-            ~Parser() {_fd.close();};
+            Parser(std::string fileLevel) : _fileName(fileLevel) {};
+            ~Parser() = default;
 
             void parseConfig();
-            
-        private:
-            void parseEnnemies(std::string &buffer);
+
             void displayVec();
 
-            std::ifstream _fd;
+        private:
+
+            std::string _fileName;
             std::vector<infoEnnemies_t> _vecEnnemies;
     };
 }
