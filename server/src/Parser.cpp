@@ -1,38 +1,47 @@
 #include "Parser.hpp"
-#include <sstream>
 
 namespace NmpServer
 {
     void Parser::parseConfig()
     {
-        std::string buffer;
-        std::stringstream sstream;
-
-        std::cout << "parse config\n";
-        while (std::getline(_fd, buffer))
-            this->parseEnnemies(buffer);
+        _vecEnnemies.clear();
+    
+        std::ifstream file(_fileName);
+        if (!file.is_open()) {
+            std::cerr << "Error: Unable to open file " << _fileName << std::endl;
+            return;
+        }
+    
+        nlohmann::json jsonConfig;
+        file >> jsonConfig;
+        file.close();
+    
+        try {
+            for (const auto &enemy : jsonConfig) {
+                infoEnnemies_t structEnnemies;
+    
+                structEnnemies.type = enemy.at("type").get<unsigned int>();
+                structEnnemies.posX = enemy.at("posX").get<unsigned int>();
+                structEnnemies.posY = enemy.at("posY").get<unsigned int>();
+                structEnnemies.delaySpawn = enemy.at("delaySpawn").get<unsigned int>();
+    
+                _vecEnnemies.push_back(structEnnemies);
+            }
+        } catch (const nlohmann::json::exception &e) {
+            std::cerr << "Error parsing JSON: " << e.what() << std::endl;
+        }
+    
         this->displayVec();
     }
 
-    void Parser::parseEnnemies(std::string &buffer)
-    {
-        std::stringstream sstream(buffer);
-        infoEnnemies_t structEnnemies;
-
-        sstream >> 
-        structEnnemies.type >>
-        structEnnemies.posX >>
-        structEnnemies.posY >>
-        structEnnemies.delaySpawn;
-
-        _vecEnnemies.push_back(structEnnemies);
-    }
 
     void Parser::displayVec()
     {
-        for (auto ennemies : _vecEnnemies) {
-            std::cout << "type: " << ennemies.type << " posX: " << ennemies.posX <<
-            " posY: " << ennemies.posY << " delay: " << ennemies.delaySpawn << std::endl;
+        for (const auto &ennemy : _vecEnnemies) {
+            std::cout << "type: " << ennemy.type
+                      << " posX: " << ennemy.posX
+                      << " posY: " << ennemy.posY
+                      << " delaySpawn: " << ennemy.delaySpawn << std::endl;
         }
     }
 }
