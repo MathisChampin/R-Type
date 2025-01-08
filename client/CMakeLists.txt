@@ -21,6 +21,7 @@ target_include_directories(r_type_client PRIVATE
     ${CMAKE_SOURCE_DIR}/_deps/sfml-src/include
 )
 
+# Lier les bibliothèques selon la plateforme
 if(UNIX)
     target_link_libraries(r_type_client
         PRIVATE sfml-system sfml-window sfml-graphics sfml-audio pthread
@@ -84,3 +85,5 @@ add_custom_command(
     TARGET r_type_client PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/include/client
 )
+
+target_link_libraries(r_type_client PRIVATE nlohmann_json)
