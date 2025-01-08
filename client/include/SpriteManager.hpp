@@ -1,9 +1,10 @@
 #pragma once
 
+#include "../include/client/Sprite.hpp"
+#include <unordered_set>
+#include <algorithm>
 #include <vector>
 #include <memory>
-#include "../include/client/Sprite.hpp"
-#include <algorithm>
 #include <map>
 
 class SpriteManager
@@ -47,10 +48,28 @@ public:
         return _mapSprite.size();
     }
 
-    void eraseOldSprite()
-    {
-    }
+        std::size_t getSpriteCount() const
+        {
+            return _mapSprite.size();
+        }
 
-private:
-    std::map<std::size_t, std::shared_ptr<Sprite>> _mapSprite;
+        void eraseOldSprite(const std::queue<NmpClient::Packet> &packetQueue)
+        {
+            std::unordered_set<std::size_t> idSet;
+            auto tempQueue = packetQueue;
+            while (!tempQueue.empty()) {
+                idSet.insert(tempQueue.front().getSpriteInfo().idClient);
+            }
+            for (auto it = _mapSprite.begin(); it != _mapSprite.end(); ) {
+                if (idSet.find(it->first) == idSet.end()) {
+                    it = _mapSprite.erase(it);
+                } else {
+                    ++it;
+                }
+            }
+        }
+
+
+    private:
+        std::map<std::size_t, std::shared_ptr<Sprite>> _mapSprite;
 };

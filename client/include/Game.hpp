@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <queue>
 #include <map>
 
 #include "Menu.hpp"
@@ -60,6 +61,7 @@ private:
     void get_shoots(NmpClient::SpriteInfo &sp);
     void handler_packets();
     void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
+    void destroy_uselles_sprites();
     // Member variables
     sf::RenderWindow m_window;
     sf::Font m_font;
@@ -86,6 +88,7 @@ private:
     sf::Clock m_clock;
 
     SpriteManager _spriteMng;
+    std::queue<NmpClient::Packet> _queuePacket;
     std::map<std::size_t, std::function<void(NmpClient::SpriteInfo &sp)>> _mapHandlerPacket{
         {1, [this](NmpClient::SpriteInfo &sp) { get_player(sp); }},
         {2, [this](NmpClient::SpriteInfo &sp) { get_ennemies(sp); }},

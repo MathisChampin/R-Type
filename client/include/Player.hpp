@@ -37,6 +37,7 @@ private:
     std::queue<NmpClient::Packet> m_movementQueue;
     std::mutex m_queueMutex;
 
+    void handleJoystickInput();
 };
 
 #endif // PLAYER_HPP

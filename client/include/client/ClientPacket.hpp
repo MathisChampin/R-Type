@@ -8,6 +8,7 @@ namespace NmpClient
 {
     class Packet : public IPacket {
         public:
+        Packet() = default;
            /**
          * @brief Constructs a Packet object.
          *

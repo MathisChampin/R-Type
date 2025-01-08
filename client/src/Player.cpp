@@ -69,6 +69,33 @@ void Player::handleInput()
         state = sf::Keyboard::isKeyPressed(key);
     }
 
+    // Ajout : Gestion de la manette
+    if (sf::Joystick::isConnected(0)) {
+        sf::Joystick::update();
+        float xAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::X); // Axe horizontal
+        float yAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::Y); // Axe vertical
+
+        if (yAxis < -50) {
+            static NmpClient::DIRECTION upDirection = NmpClient::DIRECTION::UP;
+            currentDirection = &upDirection;
+        } else if (yAxis > 50) {
+            static NmpClient::DIRECTION downDirection = NmpClient::DIRECTION::DOWN;
+            currentDirection = &downDirection;
+        } else if (xAxis < -50) {
+            static NmpClient::DIRECTION leftDirection = NmpClient::DIRECTION::LEFT;
+            currentDirection = &leftDirection;
+        } else if (xAxis > 50) {
+            static NmpClient::DIRECTION rightDirection = NmpClient::DIRECTION::RIGHT;
+            currentDirection = &rightDirection;
+        }
+
+        // Bouton pour tirer
+        if (sf::Joystick::isButtonPressed(0, 0)) { // Bouton 0 pour tirer
+            static NmpClient::DIRECTION shootDirection = NmpClient::DIRECTION::SHOOT;
+            currentDirection = &shootDirection;
+        }
+    }
+
     if (currentDirection != nullptr)
     {
         NmpClient::Packet packet(m_client.get_id(), NmpClient::EVENT::MOVE, *currentDirection);
