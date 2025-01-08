@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <functional>
 #include <nlohmann/json.hpp>
 
 namespace NmpServer
@@ -21,9 +22,10 @@ namespace NmpServer
 
             void parseConfig();
 
-            void displayVec();
+            void forEachEnnemy(const std::function<void(int, int, int)> &createEnnemies);
 
         private:
+            void displayVec();
 
             std::string _fileName;
             std::vector<infoEnnemies_t> _vecEnnemies;
