@@ -1,21 +1,18 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "./Player.hpp"
-#include "./Enemy.hpp"
 #include "./Background.hpp"
 #include "./Ecs.hpp"
+#include "./Player.hpp"
 
 class Game {
     public:
-        Game();
+        Game(registry);
         void run();
     private:
         sf::RenderWindow window;
-        Player player;
-        GameECS ecs;
+        GameECS _ecs;
         Background background;
-        std::vector<Enemy> enemies;
-
+        Player player;
         void handleInput();
         void update(float);
         void render();

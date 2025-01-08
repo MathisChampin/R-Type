@@ -1,51 +1,50 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
-class Player : public sf::Sprite {
-    public:
-        Player();
-        void handleInput(const sf::Event& event);
-        void update(float deltaTimem);
-        
-        int getPosX() {
-            return posX;
+class Player {
+public:
+    Player() = default;
+
+    Player(std::string filename, float x, float y, int frameWidth, int frameHeight, int frameCount, float animationSpeed)
+        : _frameWidth(frameWidth), _frameHeight(frameHeight), _frameCount(frameCount), _animationSpeed(animationSpeed) {
+        if (!_texture.loadFromFile(filename)) {
+            std::cerr << "Error loading texture from file: " << filename << std::endl;
         }
+        _sprite.setTexture(_texture);
+        _sprite.setPosition(sf::Vector2f(x, y));
+        _sprite.setTextureRect(sf::IntRect(0, 0, _frameWidth, _frameHeight));
+        _currentFrame = 0;
+        _elapsedTime = 0.0f;
+    }
 
-        int getPosY() {
-            return posY;
+    ~Player() = default;
+
+    void update(float deltaTime) {
+        _elapsedTime += deltaTime;
+
+        if (_elapsedTime >= _animationSpeed) {
+            _elapsedTime = 0.0f;
+            _currentFrame = (_currentFrame + 1) % _frameCount;
+
+            int left = _currentFrame * _frameWidth;
+            _sprite.setTextureRect(sf::IntRect(left, 0, _frameWidth, _frameHeight));
         }
+    }
 
-        int getVelX() {
-            return velocityX;
-        }
+    void drawSprite(sf::RenderWindow &window)
+    {
+        window.draw(_sprite);
+    }
 
-        int getVely() {
-            return velocityY;
-        }
-
-    private:
-        sf::Texture texture;
-        sf::IntRect frameRect;
-
-        int velocityX;
-        int velocityY;
-        int posX;
-        int posY;
-    
-        bool isJumping;
-        const float gravity = 0.5f;
-        const float jumpHeight = -12.0f;
-    
-        int frameWidth;
-        int frameHeight;
-        int totalFrames;
-        int currentFrame;
-        float animationSpeed;
-        float timeSinceLastFrame;
-
-        void moveLeft();
-        void moveRight();
-        void jump();
-        void updateAnimation(float deltaTime);
-
+private:
+    sf::Texture _texture;
+    sf::Sprite _sprite;
+    int _frameWidth;
+    int _frameHeight;
+    int _frameCount;
+    float _animationSpeed;
+    int _currentFrame;
+    float _elapsedTime;
 };
