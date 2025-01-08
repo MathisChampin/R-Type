@@ -10,6 +10,7 @@
     #include "size.hpp"
     #include "level.hpp"
     #include "controllable.hpp"
+    #include "system.hpp"
 
 class GameECS {
     public:
@@ -78,6 +79,32 @@ class GameECS {
             return 0;
         }
 
+        void movePlayer(component::controllable::Key direction) {
+            auto &controllables = m_ecs.get_components<component::controllable>();
+            auto &attributes = m_ecs.get_components<component::attribute>();
+
+            for (size_t i = 0; i < attributes.size(); ++i) {
+                if (attributes[i]._type == component::attribute::Player1) {
+                    auto &ctl = controllables[i];
+                    ctl.active_key = direction;
+                    sys.control_system(m_ecs);
+                }
+            }
+        }
+
+        const sf::Vector2f getPlayerPosition() {
+            auto &attributes = m_ecs.get_components<component::attribute>();
+            auto &positions = m_ecs.get_components<component::position>();
+
+            for (size_t i = 0; i < attributes.size(); ++i) {
+                if (attributes[i]._type == component::attribute::Player1) {
+                    auto &pos = positions[i];
+                    return sf::Vector2f(pos.x, pos.y);
+                }
+            }
+            return sf::Vector2f(0, 0);
+        }
+
         registry getEcs()
         {
             return m_ecs;
@@ -85,5 +112,6 @@ class GameECS {
 
     private:
         registry m_ecs;
+        System sys;
 };
 

@@ -24,6 +24,13 @@ void Game::handleInput() {
         if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape) {
             window.close();
         }
+        if (event.key.code == sf::Keyboard::Left) {
+            _ecs.movePlayer(component::controllable::Left);
+            player.setPosition(_ecs.getPlayerPosition());
+        } else if (event.key.code == sf::Keyboard::Right) {
+            _ecs.movePlayer(component::controllable::Right);
+            player.setPosition(_ecs.getPlayerPosition());
+        }
     }
 }
 

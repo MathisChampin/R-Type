@@ -33,6 +33,10 @@ public:
         }
     }
 
+    void setPosition(const sf::Vector2f& position) {
+        _sprite.setPosition(position);
+    }
+
     void drawSprite(sf::RenderWindow &window)
     {
         window.draw(_sprite);
