@@ -36,6 +36,7 @@ namespace NmpServer
         inputThread.join();
         systemThread.join();
         handleInputThread.join();
+        shootEnnemiesThread.join();
     }
 
     uint32_t Server::getId(component::attribute &att)
@@ -67,6 +68,7 @@ namespace NmpServer
         sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
         sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
         int id = 0;
+        std::cout << "BEGIN SEND ENTITY" << std::endl;
         for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
             auto &st = states[i];
             auto &att = attributes[i];
@@ -80,15 +82,15 @@ namespace NmpServer
                 id = getId(att);
                 auto &pos = positions[i];
                 auto &s = sizes[i];
-                std::cout << "id client: "  << i << std::endl;
+                std::cout << "id entity: "  << i << std::endl;
                 SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
-                auto &_vecPlayer = _ptp.get_vector();
-                for (const auto &[entity, endpoint] : _vecPlayer) {
-                    send_data(packet, endpoint);
-                }
+                broadcast(packet);
             }
         }
+        Packet packet(EVENT::EOI);
+        broadcast(packet);
+        std::cout << "END SEND ENTITY" << std::endl;
     }
 
     void Server::notifyShoot()
@@ -113,7 +115,7 @@ namespace NmpServer
     void Server::threadInput()
     {
         while (true) {
-            get_data();
+            this->get_data();
         }
     }
 
@@ -147,7 +149,7 @@ namespace NmpServer
                 std::lock_guard<std::mutex> lock(_ecsMutex);
                 auto &ecs = _ptp.getECS();
                 sys.collision_system(ecs);
-                sys.kill_system(ecs);
+                //sys.kill_system(ecs);
                 sys.position_system(ecs);
                 send_entity(ecs);
             }
@@ -178,9 +180,9 @@ namespace NmpServer
                   << endpoint.port() << std::endl;
 
         _binary.serialize(packet, _bufferSerialize);
-        for (auto elem: _bufferSerialize) {
-            std::cout << "elem: " << elem << std::endl;
-        }
+        // for (auto elem: _bufferSerialize) {
+        //     std::cout << "elem: " << elem << std::endl;
+        // }
         _socketSend.send_to(asio::buffer(_bufferSerialize), endpoint);
         _bufferSerialize.clear();
     }
@@ -231,5 +233,13 @@ namespace NmpServer
     asio::ip::udp::endpoint Server::getLastEndpoint() const
     {
         return _copy_endpoint;
+    }
+
+    void Server::broadcast(Packet &packet)
+    {
+        auto &_vecPlayer = _ptp.get_vector();
+        for (const auto &[entity, endpoint] : _vecPlayer) {
+            send_data(packet, endpoint);
+        }
     }
 }

@@ -7,7 +7,8 @@ namespace NmpBinary
         std::vector<std::string> buffAction;
         std::size_t posDelim = action.find('/', 0);
 
-        for (; posDelim != std::string::npos; posDelim = action.find('/', posDelim)) {
+        for (; posDelim != std::string::npos; posDelim = action.find('/', posDelim))
+        {
             buffAction.push_back(action.substr(0, posDelim));
             action.erase(0, posDelim + 1);
         }
@@ -25,7 +26,7 @@ namespace NmpBinary
         return value;
     }
 
-     void Binary::serialize(NmpClient::Packet &packet, std::vector<uint32_t> &buffer)
+    void Binary::serialize(NmpClient::Packet &packet, std::vector<uint32_t> &buffer)
     {
         NmpClient::EVENT opcode = packet.getOpCode();
         std::size_t id = packet.getId();
@@ -35,7 +36,8 @@ namespace NmpBinary
         buffer.push_back(static_cast<uint32_t>(id));
         buffer.push_back(static_cast<uint32_t>(opcode));
 
-        if (opcode == NmpClient::EVENT::MOVE) {
+        if (opcode == NmpClient::EVENT::MOVE)
+        {
             NmpClient::DIRECTION direction = packet.getArg().value();
             std::cout << static_cast<int>(direction) << std::endl;
 
@@ -47,11 +49,14 @@ namespace NmpBinary
     {
         NmpClient::EVENT event = static_cast<NmpClient::EVENT>(buffer[0]);
 
-        if (event == NmpClient::EVENT::MOVE) {
+        if (event == NmpClient::EVENT::MOVE)
+        {
             int x = static_cast<int>(buffer[1]);
             int y = static_cast<int>(buffer[2]);
             return NmpClient::Packet(event, x, y);
-        } else if (event == NmpClient::EVENT::SPRITE) {
+        }
+        else if (event == NmpClient::EVENT::SPRITE)
+        {
             NmpClient::SpriteInfo sprite = {
                 static_cast<int>(buffer[1]),
                 static_cast<int>(buffer[2]),
@@ -60,11 +65,14 @@ namespace NmpBinary
                 static_cast<int>(buffer[5]),
                 static_cast<int>(buffer[6])};
             return NmpClient::Packet(NmpClient::EVENT::SPRITE, sprite);
-        } else if (event == NmpClient::EVENT::JOIN) {
+        }
+        else if (event == NmpClient::EVENT::JOIN)
+        {
             std::size_t id = static_cast<std::size_t>(buffer[1]);
             std::cout << "id deserialize: " << id << std::endl;
             return NmpClient::Packet(id, event);
-        }
+        } else if (event == NmpClient::EVENT::EOI)
+            return NmpClient::Packet(NmpClient::EVENT::EOI);
         return NmpClient::Packet(event, 0, 0);
     }
 
@@ -75,7 +83,8 @@ namespace NmpBinary
 
     void Binary::printBuffer(std::vector<uint32_t> &buffer)
     {
-        for (auto elem : buffer) {
+        for (auto elem : buffer)
+        {
             std::cout << "bufferSerialize: " << elem << std::endl;
         }
     }
