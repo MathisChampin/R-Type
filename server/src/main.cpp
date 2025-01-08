@@ -10,6 +10,8 @@ int main()
     {
         NmpServer::Server server;
         server.run();
+        // NmpServer::Parser parser("../../server/configFile/level1.json");
+        // parser.parseConfig();
     }
     catch (const std::exception& e)
     {
