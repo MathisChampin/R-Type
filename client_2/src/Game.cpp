@@ -1,7 +1,7 @@
 #include "../include/Game.hpp"
 #include <iostream>
 
-Game::Game(registry ecs): window(sf::VideoMode(1920, 1080), "Game2", sf::Style::Default), _ecs(ecs), background(), player("./assets/player.png", 100, 750, 240, 160, 8, 0.1f) {
+Game::Game(registry ecs): window(sf::VideoMode(1920, 1080), "Game2", sf::Style::Default), _ecs(ecs), background(), player("./assets/player.png", 100, 750, 240, 160, 8, 0.1f), text("./assets/Roboto-Black.ttf") {
     window.setFramerateLimit(60);
 
     _ecs.createPlayer();
@@ -36,5 +36,9 @@ void Game::render() {
     window.clear();
     background.drawParallax(window);
     player.drawSprite(window);
+    text.displayText(window, "Score:", 100, 0);
+    text.displayText(window, std::to_string(_ecs.getScorePlayer()), 210, 2);
+    text.displayText(window, "Life:", 1700, 0);
+    text.displayText(window, std::to_string(_ecs.getLifePlayer()), 1780, 2);
     window.display();
 }

@@ -3,6 +3,7 @@
 #include "./Background.hpp"
 #include "./Ecs.hpp"
 #include "./Player.hpp"
+#include "./Text.hpp"
 
 class Game {
     public:
@@ -13,6 +14,7 @@ class Game {
         GameECS _ecs;
         Background background;
         Player player;
+        TextManager text;
         void handleInput();
         void update(float);
         void render();

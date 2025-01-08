@@ -50,6 +50,34 @@ class GameECS {
             return Entity{};
         }
 
+        int getScorePlayer() {
+            auto &attributes = m_ecs.get_components<component::attribute>();
+            auto &scores = m_ecs.get_components<component::score>();
+
+            for (size_t i = 0; i < attributes.size() && i < scores.size(); i++) {
+                auto &at = attributes[i];
+                if (at._type == component::attribute::Player1) {
+                    auto &s = scores[i];
+                    return s.score;
+                }
+            }
+            return 0;
+        }
+
+        int getLifePlayer() {
+            auto &attributes = m_ecs.get_components<component::attribute>();
+            auto &lifes = m_ecs.get_components<component::life>();
+
+            for (size_t i = 0; i < attributes.size() && i < lifes.size(); i++) {
+                auto &at = attributes[i];
+                if (at._type == component::attribute::Player1) {
+                    auto &l = lifes[i];
+                    return l.life;
+                }
+            }
+            return 0;
+        }
+
         registry getEcs()
         {
             return m_ecs;

@@ -47,4 +47,6 @@ private:
     float _animationSpeed;
     int _currentFrame;
     float _elapsedTime;
+    int score;
+    int life;
 };
