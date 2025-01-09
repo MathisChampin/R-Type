@@ -38,7 +38,8 @@ jobs:
             libflac-dev \
             libxcursor-dev \
             libfreetype6-dev \
-            libcriterion-dev
+            libcriterion-dev \
+            asio-dev
 
       - name: Run Cppcheck on Client Sources
         run: |
@@ -56,6 +57,12 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
+      - name: Verify CPM Dependencies
+        run: |
+          echo "Listing CPM dependencies for verification:"
+          ls -la build/_deps/asio-src/asio/include
+          ls -la build/_deps/nlohmann_json-src/include
+
       - name: Build the Project
         run: |
           cmake --build build
@@ -65,3 +72,4 @@ jobs:
           cmake --build build --target ecs
           cmake --build build --target client
           cmake --build build --target server
+          cmake --build build --target client_2
