@@ -46,9 +46,9 @@ jobs:
 
       - name: Verify CPM Dependencies
         run: |
-          echo "Verifying CPM dependencies in CI..."
-          ls -la build/_deps/asio-src/asio/include || echo "ASIO not found!"
-          ls -la build/_deps/nlohmann_json-src/include || echo "nlohmann_json not found!"
+          echo "Verifying CPM dependencies in CI environment:"
+          ls -la build/_deps/asio-src/asio/include || echo "ASIO not found in CPM directory!"
+          ls -la build/_deps/nlohmann_json-src/include || echo "nlohmann_json not found in CPM directory!"
 
       - name: Run Cppcheck on Client Sources
         run: |
