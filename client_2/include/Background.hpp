@@ -15,7 +15,6 @@ class Background {
         void drawParallax(sf::RenderWindow &w);
 
     private:
-        // Ajout des duplicatas pour chaque sprite
         Sprite _oneBack{"./assets/background1.png", 0, 0};
         Sprite _oneBackDuplicate{"./assets/background1.png", 1920, 0};
 

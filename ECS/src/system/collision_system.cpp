@@ -38,6 +38,20 @@ bool is_player(const component::attribute &attribute)
     }
 }
 
+bool is_enemy(const component::attribute &attribute)
+{
+    switch (attribute._type) {
+        case component::attribute::Ennemies5:
+        case component::attribute::Ennemies4:
+        case component::attribute::Ennemies3:
+        case component::attribute::Ennemies2:
+        case component::attribute::Ennemies:
+            return true;
+        default:
+            return false;
+    }
+}
+
 void handle_collision_with_player(size_t i, size_t j,
     sparse_array<component::life> &lifes,
     sparse_array<component::state> &states,
@@ -72,14 +86,15 @@ void handle_collision_with_player(size_t i, size_t j,
 void handle_collision_with_enemy(size_t i, size_t shoot_id, size_t idEnnemy,
     sparse_array<component::score> &scores,
     sparse_array<component::state> &states,
-    const sparse_array<component::attribute> &attributes)
+    const sparse_array<component::attribute> &attributes,
+    registry &reg)
 {
-    std::cout << "COLLISION WITH ENEMY" << "\n\n";
-
+    Entity tmp = reg.get_entity(shoot_id);
     auto &score = scores[shoot_id];
     auto &state = states[idEnnemy];
     auto &state_shoot = states[i];
-
+    if (is_enemy(attributes[tmp.get_id()]))
+        return;
     if (state._stateKey == component::state::stateKey::Alive) {
         int score_increment = 0;
 
@@ -159,12 +174,8 @@ void System::collision_system(registry &reg)
                 continue;
             if (is_player(attributes[j])) {
                 handle_collision_with_player(i, j, lifes, states, attributes);
-            } else if (attributes[j]._type == component::attribute::Ennemies ||
-                    attributes[j]._type == component::attribute::Ennemies2 ||
-                    attributes[j]._type == component::attribute::Ennemies3 ||
-                    attributes[j]._type == component::attribute::Ennemies4 ||
-                    attributes[j]._type == component::attribute::Ennemies5) {
-                        handle_collision_with_enemy(i, shoot_id.id, j, scores, states, attributes);
+            } else if (is_enemy(attributes[j])) {
+                        handle_collision_with_enemy(i, shoot_id.id, j, scores, states, attributes, reg);
             }
         }
     }

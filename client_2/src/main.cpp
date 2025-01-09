@@ -2,7 +2,9 @@
 
 int main()
 {
-    Game game;
+    registry ecs;
+
+    Game game(ecs);
     game.run();
     return 0;
 }
