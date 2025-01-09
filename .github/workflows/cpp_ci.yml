@@ -44,25 +44,19 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
-      - name: Verify CPM Dependencies
+      - name: Lint commit messages
         run: |
-          echo "Verifying CPM dependencies in CI environment:"
-          ls -la build/_deps/asio-src/asio/include || echo "ASIO not found in CPM directory!"
-          ls -la build/_deps/nlohmann_json-src/include || echo "nlohmann_json not found in CPM directory!"
+          npx commitlint --from=HEAD~10 --to=HEAD
 
-      - name: Run Cppcheck on Client Sources
+      - name: Run Cppcheck
         run: |
-          cppcheck --enable=all --std=c++20 --language=c++ --include=client/include client/src/
-
-      - name: Run Cppcheck on ECS Sources
-        run: |
-          cppcheck --enable=all --std=c++20 --language=c++ --include=ECS/include ECS/src/
-
-      - name: Run Cppcheck on Server Sources
-        run: |
-          cppcheck --enable=all --std=c++20 --language=c++ --include=server/include server/src/
+          cppcheck --project=cppcheck-config.json --error-exitcode=1
 
       - name: Build the Project
         run: |
           cmake --build build
 
+      - name: Run ECS Unit Tests
+        run: |
+          cmake --build build --target unit_tests
+          ./build/ECS/unit_tests

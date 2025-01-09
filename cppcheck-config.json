@@ -1,0 +1,11 @@
+{
+    "language": "c++",
+    "std": "c++20",
+    "enable": "all",
+    "includes": [
+      "client/include",
+      "server/include",
+      "ECS/include"
+    ]
+  }
+  
