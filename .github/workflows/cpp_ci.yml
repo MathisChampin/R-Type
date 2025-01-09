@@ -32,7 +32,9 @@ jobs:
             libudev-dev \
             libgl1-mesa-dev \
             libglu1-mesa-dev \
-            libopenal-dev
+            libopenal-dev \
+            libvorbis-dev \
+            libogg-dev
 
       - name: Run Cppcheck on Client Sources
         run: |
