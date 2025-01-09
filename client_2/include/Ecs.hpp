@@ -204,6 +204,18 @@ class GameECS {
             return 0;
         }
 
+        bool checkPlayer() {
+            auto &attributes = m_ecs.get_components<component::attribute>();
+
+            for (size_t i = 0; i < attributes.size(); i++) {
+                auto &at = attributes[i];
+                if (at._type == component::attribute::Clear) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         int getLifePlayer() {
             auto &attributes = m_ecs.get_components<component::attribute>();
             auto &lifes = m_ecs.get_components<component::life>();
@@ -221,9 +233,10 @@ class GameECS {
         void movePlayer(component::controllable::Key direction) {
             auto &controllables = m_ecs.get_components<component::controllable>();
             auto &attributes = m_ecs.get_components<component::attribute>();
-
+            
             for (size_t i = 0; i < attributes.size(); ++i) {
-                if (attributes[i]._type == component::attribute::Player1) {
+                if (attributes[i]._type == component::attribute::Player1 || attributes[i]._type == component::attribute::Clear) {
+                    attributes[i]._type = component::attribute::Player1;
                     auto &ctl = controllables[i];
                     ctl.active_key = direction;
                     sys.control_system(m_ecs);
@@ -244,6 +257,7 @@ class GameECS {
             return sf::Vector2f(0, 0);
         }
 
+        
         registry getEcs()
         {
             return m_ecs;

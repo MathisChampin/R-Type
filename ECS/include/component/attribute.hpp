@@ -17,6 +17,7 @@ namespace component {
             Shoot2,
             Shoot3,
             Shoot5,
+            Clear,
             None
         };
         entityType _type;

@@ -6,7 +6,7 @@ Game::Game(registry ecs):
     player("./assets/player.png", 100, 750, 240, 160, 8, 0.1f), text("./assets/Roboto-Black.ttf") {
     window.setFramerateLimit(60);
 
-    _ecs.createPlayer();  // Créer le joueur
+    _ecs.createPlayer();
 }
 
 void Game::run() {
@@ -34,22 +34,23 @@ void Game::handleInput() {
             player.setPosition(_ecs.getPlayerPosition());
         } else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
             _ecs.movePlayer(component::controllable::Shoot);
+        } else if (event.key.code == sf::Keyboard::Space) {
+            _ecs.movePlayer(component::controllable::Clear);
         }
     }
 }
 
 void Game::update(float deltaTime) {
     player.update(deltaTime);
-    _ecs.update(deltaTime);  // Mise à jour des ennemis et de leur position
+    _ecs.update(deltaTime);
     background.moveParallax();
 }
 
 void Game::render() {
     window.clear();
     background.drawParallax(window);
-    player.drawSprite(window);
-
-    // Dessiner tous les ennemis
+    if (!_ecs.checkPlayer())
+        player.drawSprite(window);
     _ecs.drawEnemies(window);
     _ecs.drawShoots(window);
     text.displayText(window, "Score:", 100, 0);
