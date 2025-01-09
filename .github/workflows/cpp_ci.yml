@@ -66,9 +66,3 @@ jobs:
         run: |
           cmake --build build
 
-      - name: Test Build Targets
-        run: |
-          cmake --build build --target ecs
-          cmake --build build --target client
-          cmake --build build --target server
-          cmake --build build --target client_2
