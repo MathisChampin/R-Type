@@ -61,8 +61,10 @@ void handle_collision_with_player(size_t i, size_t j,
     auto &state = states[j];
     auto &state_shoot = states[i];
 
+    std::cout << "Collision player avec id shoot : " << i << std::endl;
+
     if (attributes[i]._type == component::attribute::Shoot5) {
-        if (state._stateKey == component::state::stateKey::Alive) {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
             life.life -= 2;
 
             if (life.life <= 0) {
@@ -71,7 +73,7 @@ void handle_collision_with_player(size_t i, size_t j,
         }
         state_shoot._stateKey = component::state::stateKey::Dead;
     } else {
-        if (state._stateKey == component::state::stateKey::Alive) {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
             life.life -= 1;
             if (life.life <= 0) {
                 state._stateKey = component::state::stateKey::Dead;
@@ -95,7 +97,7 @@ void handle_collision_with_enemy(size_t i, size_t shoot_id, size_t idEnnemy,
     auto &state_shoot = states[i];
     if (is_enemy(attributes[tmp.get_id()]))
         return;
-    if (state._stateKey == component::state::stateKey::Alive) {
+    if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
         int score_increment = 0;
 
         switch (attributes[idEnnemy]._type) {
