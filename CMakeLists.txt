@@ -38,6 +38,11 @@ add_subdirectory(server)
 add_subdirectory(client)
 add_subdirectory(client_2)
 
+if(DEFINED ENV{GITHUB_ACTIONS})
+    message(STATUS "Running in CI environment: Forcing CPM include directories")
+    include_directories(${asio_SOURCE_DIR}/asio/include)
+endif()
+
 if(WIN32)
     find_package(Threads REQUIRED)  
 endif()

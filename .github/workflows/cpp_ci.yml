@@ -38,19 +38,7 @@ jobs:
             libflac-dev \
             libxcursor-dev \
             libfreetype6-dev \
-            libcriterion-dev \
-
-      - name: Run Cppcheck on Client Sources
-        run: |
-          cppcheck --enable=all --std=c++20 --language=c++ --include=client/include client/src/
-      
-      - name: Run Cppcheck on ECS Sources
-        run: |
-          cppcheck --enable=all --std=c++20 --language=c++ --include=ECS/include ECS/src/
-      
-      - name: Run Cppcheck on Server Sources
-        run: |
-          cppcheck --enable=all --std=c++20 --language=c++ --include=server/include server/src/
+            libcriterion-dev
 
       - name: Configure the Project
         run: |
@@ -58,9 +46,21 @@ jobs:
 
       - name: Verify CPM Dependencies
         run: |
-          echo "Listing CPM dependencies for verification:"
-          ls -la build/_deps/asio-src/asio/include
-          ls -la build/_deps/nlohmann_json-src/include
+          echo "Verifying CPM dependencies in CI..."
+          ls -la build/_deps/asio-src/asio/include || echo "ASIO not found!"
+          ls -la build/_deps/nlohmann_json-src/include || echo "nlohmann_json not found!"
+
+      - name: Run Cppcheck on Client Sources
+        run: |
+          cppcheck --enable=all --std=c++20 --language=c++ --include=client/include client/src/
+
+      - name: Run Cppcheck on ECS Sources
+        run: |
+          cppcheck --enable=all --std=c++20 --language=c++ --include=ECS/include ECS/src/
+
+      - name: Run Cppcheck on Server Sources
+        run: |
+          cppcheck --enable=all --std=c++20 --language=c++ --include=server/include server/src/
 
       - name: Build the Project
         run: |
