@@ -31,7 +31,8 @@ jobs:
             libxi-dev \
             libudev-dev \
             libgl1-mesa-dev \
-            libglu1-mesa-dev
+            libglu1-mesa-dev \
+            libopenal-dev
 
       - name: Run Cppcheck on Client Sources
         run: |
@@ -58,3 +59,4 @@ jobs:
           cmake --build build --target ecs
           cmake --build build --target client
           cmake --build build --target server
+          cmake --build build --target client_2
