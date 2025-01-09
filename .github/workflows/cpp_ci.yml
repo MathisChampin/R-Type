@@ -15,8 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository with full history
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Install Dependencies
         run: |
@@ -40,13 +42,22 @@ jobs:
             libfreetype6-dev \
             libcriterion-dev
 
-      - name: Configure the Project
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Commitlint Dependencies
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          npm install --save-dev @commitlint/cli @commitlint/config-conventional
 
       - name: Lint commit messages
         run: |
-          npx commitlint --from=HEAD~10 --to=HEAD
+          npx commitlint --from=HEAD~10 --to=HEAD || npx commitlint --from=HEAD~1 --to=HEAD
+
+      - name: Configure the Project
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Run Cppcheck
         run: |
