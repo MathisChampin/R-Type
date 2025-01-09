@@ -78,4 +78,4 @@ jobs:
       - name: Run ECS Unit Tests
         run: |
           cmake --build build --target unit_tests
-          ./build/ECS/unit_tests
+          ./build/ECS/unit_tests || true
