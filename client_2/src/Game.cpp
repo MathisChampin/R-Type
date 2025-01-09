@@ -32,7 +32,8 @@ void Game::handleInput() {
         } else if (event.key.code == sf::Keyboard::Right) {
             _ecs.movePlayer(component::controllable::Right);
             player.setPosition(_ecs.getPlayerPosition());
-        }
+        } else if (event.key.code == sf::Keyboard::Space)
+            _ecs.movePlayer(component::controllable::Shoot);
     }
 }
 
