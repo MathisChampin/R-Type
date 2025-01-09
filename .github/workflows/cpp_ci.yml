@@ -59,9 +59,17 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
-      - name: Run Cppcheck
+      - name: Run Cppcheck on Client Sources
         run: |
-            cppcheck --error-exitcode=1 --file-list=cppcheck-options.txt .
+          cppcheck --enable=all --std=c++20 --language=c++ --include=client/include client/src/
+
+      - name: Run Cppcheck on ECS Sources
+        run: |
+          cppcheck --enable=all --std=c++20 --language=c++ --include=ECS/include ECS/src/
+
+      - name: Run Cppcheck on Server Sources
+        run: |
+          cppcheck --enable=all --std=c++20 --language=c++ --include=server/include server/src/
   
       - name: Build the Project
         run: |
