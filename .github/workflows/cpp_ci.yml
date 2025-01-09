@@ -35,7 +35,8 @@ jobs:
             libopenal-dev \
             libvorbis-dev \
             libogg-dev \
-            libflac-dev
+            libflac-dev \
+            libxcursor-dev
 
       - name: Run Cppcheck on Client Sources
         run: |
@@ -62,4 +63,3 @@ jobs:
           cmake --build build --target ecs
           cmake --build build --target client
           cmake --build build --target server
-          cmake --build build --target client_2
