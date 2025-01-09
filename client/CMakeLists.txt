@@ -21,7 +21,6 @@ target_include_directories(r_type_client PRIVATE
     ${CMAKE_SOURCE_DIR}/_deps/sfml-src/include
 )
 
-# Lier les bibliothèques selon la plateforme
 if(UNIX)
     target_link_libraries(r_type_client
         PRIVATE sfml-system sfml-window sfml-graphics sfml-audio pthread
