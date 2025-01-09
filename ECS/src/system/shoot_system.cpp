@@ -18,7 +18,7 @@ void create_shoot(Entity entity, registry &reg)
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot});
     reg.add_component<component::position>(shoot, {pos.x, pos.y});
     reg.add_component<component::controllable>(shoot, {component::controllable::NoKey});
-    reg.add_component<component::velocity>(shoot, {20, 0});
+    reg.add_component<component::velocity>(shoot, {10, 0});
     reg.add_component<component::size>(shoot, {9, 9});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
@@ -35,7 +35,7 @@ void create_shoot_ennemie(Entity entity, registry &reg)
 
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot});
     reg.add_component<component::position>(shoot, {pos.x, pos.y});
-    reg.add_component<component::velocity>(shoot, {-10, 0});
+    reg.add_component<component::velocity>(shoot, {-5, 0});
     reg.add_component<component::size>(shoot, {9, 9});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});

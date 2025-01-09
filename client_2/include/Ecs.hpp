@@ -13,6 +13,7 @@
     #include "system.hpp"
     #include "Enemy.hpp"
     #include "Shoot.hpp"
+    #include "idPlayer.hpp"
     #include <vector>
     #include <memory>
 
@@ -29,6 +30,7 @@ class GameECS {
             m_ecs.register_component<component::size>();
             m_ecs.register_component<component::state>();
             m_ecs.register_component<component::velocity>();
+            m_ecs.register_component<component::idPlayer>();
         }
 
         void createPlayer() {
@@ -84,15 +86,19 @@ class GameECS {
             }
         }
 
+        void drawShoots(sf::RenderWindow& window) {
+            for (auto& shootSprite : enemyShoot) {
+                shootSprite->drawSprite(window);
+            }    
+        }
+
         void drawEnemies(sf::RenderWindow& window) {
             for (auto& enemySprite : enemySprites) {
                 enemySprite->drawSprite(window);
             }
-            if (enemyShoot.size() > 0) {
-                for (auto& shootSprite : enemyShoot) {
-                    shootSprite->drawSprite(window);
-                }    
-            }
+            for (auto& shootSprite : enemyShoot) {
+                shootSprite->drawSprite(window);
+            }    
         }
 
         void updatePositionEnemys()
@@ -169,6 +175,7 @@ class GameECS {
             sys.position_system(m_ecs);
             updatePositionEnemys();
             updatePositionShoots();
+            sys.collision_system(m_ecs);
         }
 
         Entity getPlayer()
