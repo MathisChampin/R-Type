@@ -39,7 +39,6 @@ jobs:
             libxcursor-dev \
             libfreetype6-dev \
             libcriterion-dev \
-            asio-dev
 
       - name: Run Cppcheck on Client Sources
         run: |
