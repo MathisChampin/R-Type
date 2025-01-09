@@ -37,7 +37,8 @@ jobs:
             libogg-dev \
             libflac-dev \
             libxcursor-dev \
-            libfreetype6-dev
+            libfreetype6-dev \
+            libcriterion-dev
 
       - name: Run Cppcheck on Client Sources
         run: |
