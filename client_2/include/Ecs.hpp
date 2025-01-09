@@ -41,6 +41,7 @@ class GameECS {
             m_ecs.add_component(player, component::score{0});
             m_ecs.add_component(player, component::level{component::level::Level0});
             m_ecs.add_component(player, component::controllable{component::controllable::NoKey});
+            m_ecs.add_component(player, component::state{component::state::Alive});
         }
 
         void createEnemy() {
@@ -53,6 +54,7 @@ class GameECS {
             m_ecs.add_component(enemy, component::score{0});
             m_ecs.add_component(enemy, component::level{component::level::Level0});
             m_ecs.add_component(enemy, component::controllable{component::controllable::NoKey});
+            m_ecs.add_component(enemy, component::state{component::state::Alive});
 
             std::shared_ptr<Enemy> enemySprite = std::make_shared<Enemy>(enemy.get_id(), "./assets/enemy.png", 1850, 780, 90, 93, 8, 0.1f);
             enemySprites.push_back(enemySprite);
@@ -68,14 +70,24 @@ class GameECS {
         {
             auto &attributes = m_ecs.get_components<component::attribute>();
             auto &positions = m_ecs.get_components<component::position>();
+            auto &states = m_ecs.get_components<component::state>();
+            std::vector<std::shared_ptr<Enemy>> enemiesToRemove;
 
             for (size_t i = 0; i < attributes.size(); i++) {
                 auto &att = attributes[i];
-                if (att._type == component::attribute::Ennemies) {
+                auto &s = states[i];
+                if (att._type == component::attribute::Ennemies && s._stateKey == component::state::Alive) {
                     auto &pos = positions[i];
                     for (auto& enemySprite : enemySprites) {
                         if (enemySprite->get_id() == i) {
                             enemySprite->setPosition(sf::Vector2f(pos.x, pos.y));
+                        }
+                    }
+                } else if (att._type == component::attribute::Ennemies && s._stateKey == component::state::Dead) {
+                    for (auto it = enemySprites.begin(); it != enemySprites.end(); ++it) {
+                        if ((*it)->get_id() == i) {
+                            enemiesToRemove.push_back(*it);
+                            enemySprites.erase(it);
                         }
                     }
                 }
