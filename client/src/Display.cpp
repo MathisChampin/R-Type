@@ -63,6 +63,86 @@ void Game::get_player(NmpClient::SpriteInfo &sp)
     handler_packets();
 }
 
+void Game::get_ennemies5(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy5.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies4(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy4.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies3(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy3.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies2(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy2.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
 void Game::get_ennemies(NmpClient::SpriteInfo &sp)
 {
     std::cout << "handle ennemies: " << sp.idClient << std::endl;

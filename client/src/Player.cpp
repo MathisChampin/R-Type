@@ -106,6 +106,7 @@ void Player::handleInput()
         //m_client.send_input(packet);
         std::cout << "Key pressed: " << static_cast<int>(*currentDirection) << std::endl;
         sendQueuedMovements();
+        currentDirection = nullptr;
     }
 }
 
