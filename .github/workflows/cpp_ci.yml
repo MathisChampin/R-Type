@@ -36,7 +36,8 @@ jobs:
             libvorbis-dev \
             libogg-dev \
             libflac-dev \
-            libxcursor-dev
+            libxcursor-dev \
+            libfreetype6-dev
 
       - name: Run Cppcheck on Client Sources
         run: |
