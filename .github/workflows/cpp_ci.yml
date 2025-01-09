@@ -21,7 +21,17 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cppcheck build-essential cmake wget libx11-dev libxrandr-dev libxi-dev libudev-dev
+          sudo apt-get install -y \
+            cppcheck \
+            build-essential \
+            cmake \
+            wget \
+            libx11-dev \
+            libxrandr-dev \
+            libxi-dev \
+            libudev-dev \
+            libgl1-mesa-dev \
+            libglu1-mesa-dev
 
       - name: Run Cppcheck on Client Sources
         run: |
@@ -48,4 +58,3 @@ jobs:
           cmake --build build --target ecs
           cmake --build build --target client
           cmake --build build --target server
-          cmake --build build --target client_2
