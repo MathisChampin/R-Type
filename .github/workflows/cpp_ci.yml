@@ -61,8 +61,8 @@ jobs:
 
       - name: Run Cppcheck
         run: |
-          cppcheck --project=cppcheck-config.json --error-exitcode=1
-
+            cppcheck --error-exitcode=1 --file-list=cppcheck-options.txt .
+  
       - name: Build the Project
         run: |
           cmake --build build

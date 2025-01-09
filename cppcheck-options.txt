@@ -1,0 +1,8 @@
+--std=c++20
+--enable=all
+--language=c++
+--inconclusive
+--force
+-I client/include
+-I server/include
+-I ECS/include
