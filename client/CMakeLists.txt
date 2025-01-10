@@ -27,6 +27,15 @@ target_include_directories(r_type_client PRIVATE
 
 if(UNIX)
     target_link_libraries(r_type_client PRIVATE sfml-system sfml-window sfml-graphics sfml-audio pthread)
+    add_custom_command(
+    TARGET r_type_client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/client/config
+        $<TARGET_FILE_DIR:r_type_client>/config
+    COMMENT "Copie des config dans le répertoire binaire"
+)
+
+    
 elseif(MSVC)
     set(SFML_LIB_DIR "${CMAKE_SOURCE_DIR}/_deps/sfml-build/lib/Debug")
     target_link_directories(r_type_client PRIVATE ${SFML_LIB_DIR})
@@ -58,6 +67,15 @@ elseif(MSVC)
             $<TARGET_FILE_DIR:r_type_client>
         COMMENT "Copie de OpenAL32.dll dans le répertoire binaire"
     )
+
+    add_custom_command(
+    TARGET r_type_client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/client/config
+        $<TARGET_FILE_DIR:r_type_client>
+    COMMENT "Copie des config dans le répertoire binaire"
+)
+
 endif()
 
 add_custom_command(
@@ -68,13 +86,6 @@ add_custom_command(
     COMMENT "Copie des assets dans le répertoire binaire"
 )
 
-add_custom_command(
-    TARGET r_type_client POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/client/config
-        $<TARGET_FILE_DIR:r_type_client>/config
-    COMMENT "Copie des config dans le répertoire binaire"
-)
 
 target_compile_definitions(r_type_client PRIVATE ASIO_STANDALONE)
 
