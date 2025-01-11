@@ -135,6 +135,7 @@ namespace NmpServer
 
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
         _refServer.get().send_data(joinPacket, lastEndpoint);
+        //_refServer.get()._vecPlayer = _vecPlayer;
     }
 
     void ProtocoleHandler::initComponents()
@@ -174,6 +175,7 @@ namespace NmpServer
         _ecs.add_component<component::state>(player, {component::state::Alive});
         _ecs.add_component<component::velocity>(player, {0, 0});
         _ecs.add_component<component::idPlayer>(player, {player.get_id()});
+        //_refServer.get()._vecPlayer.push_back(std::make_pair(player, lastEndpoint));
         _vecPlayer.push_back(std::make_pair(player, lastEndpoint));  
     }
 
