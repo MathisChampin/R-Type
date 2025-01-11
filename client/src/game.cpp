@@ -17,7 +17,7 @@ Game::Game()
     initializeMenuOptions();
     initializeIpAddressText();
 }
-
+ 
 Game::~Game()
 {
     m_enemies.clear();
