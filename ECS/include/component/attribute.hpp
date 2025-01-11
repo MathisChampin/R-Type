@@ -18,6 +18,8 @@ namespace component {
             Shoot3,
             Shoot5,
             Clear,
+            PowerUpMove,
+            PowerUpShoot,
             None
         };
         entityType _type;
