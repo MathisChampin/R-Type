@@ -9,7 +9,7 @@
 #include "velocity.hpp"
 #include <iostream>
 
-bool check_collision_power_up_move(sparse_array<component::position> &positions,
+bool check_collision_power_up_shoot(sparse_array<component::position> &positions,
     sparse_array<component::size> &sizes,
     size_t entity1,
     size_t entity2)
@@ -25,7 +25,7 @@ bool check_collision_power_up_move(sparse_array<component::position> &positions,
     return collision_x && collision_y;
 }
 
-bool is_Player(const component::attribute &attribute)
+bool Is_player(const component::attribute &attribute)
 {
     switch (attribute._type) {
         case component::attribute::Player1:
@@ -38,12 +38,12 @@ bool is_Player(const component::attribute &attribute)
     }
 }
 
-bool is_powerup(const component::attribute &attribute)
+bool is_powerup_shoot(const component::attribute &attribute)
 {
-    return attribute._type == component::attribute::PowerUpMove;
+    return attribute._type == component::attribute::PowerUpShoot;
 }
 
-bool System::collision_power_up_move(registry &reg)
+bool System::collision_power_up_shoot(registry &reg)
 {
     auto &positions = reg.get_components<component::position>();
     auto &sizes = reg.get_components<component::size>();
@@ -51,14 +51,14 @@ bool System::collision_power_up_move(registry &reg)
     auto &states = reg.get_components<component::state>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
-        if (!is_Player(attributes[i]))
+        if (!Is_player(attributes[i]))
             continue;
 
         for (size_t j = 0; j < attributes.size(); j++) {
-            if (!is_powerup(attributes[j]))
+            if (!is_powerup_shoot(attributes[j]))
                 continue;
 
-            if (check_collision_power_up_move(positions, sizes, i, j)) {
+            if (check_collision_power_up_shoot(positions, sizes, i, j)) {
                 states[j]._stateKey = component::state::Dead;
                 return true;
             }
@@ -67,106 +67,145 @@ bool System::collision_power_up_move(registry &reg)
     return false;
 }
 
-void System::power_up_velocity_p1(registry &reg)
+void System::update_shoot_velocity_p1(registry &reg)
 {
     auto &velocity = reg.get_components<component::velocity>();
     auto &attributes = reg.get_components<component::attribute>();
+    auto &id_player = reg.get_components<component::idPlayer>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Player1) {
-            velocity[i].x += 5;
-            velocity[i].y += 5;
+            for (size_t j = 0; j < attributes.size(); j++) {
+                if (attributes[j]._type == component::attribute::Shoot && id_player[j].id == i) {
+                    velocity[j].x += 5;
+                    velocity[j].y += 5;
+                }
+            }
         }
     }
 }
 
-void System::power_up_velocity_p2(registry &reg)
+void System::update_shoot_velocity_p2(registry &reg)
 {
     auto &velocity = reg.get_components<component::velocity>();
     auto &attributes = reg.get_components<component::attribute>();
+    auto &id_player = reg.get_components<component::idPlayer>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Player2) {
-            velocity[i].x += 5;
-            velocity[i].y += 5;
+            for (size_t j = 0; j < attributes.size(); j++) {
+                if (attributes[j]._type == component::attribute::Shoot && id_player[j].id == i) {
+                    velocity[j].x += 5;
+                    velocity[j].y += 5;
+                }
+            }
         }
     }
 }
 
-void System::power_up_velocity_p3(registry &reg)
+void System::update_shoot_velocity_p3(registry &reg)
 {
     auto &velocity = reg.get_components<component::velocity>();
     auto &attributes = reg.get_components<component::attribute>();
+    auto &id_player = reg.get_components<component::idPlayer>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Player3) {
-            velocity[i].x += 5;
-            velocity[i].y += 5;
+            for (size_t j = 0; j < attributes.size(); j++) {
+                if (attributes[j]._type == component::attribute::Shoot && id_player[j].id == i) {
+                    velocity[j].x += 5;
+                    velocity[j].y += 5;
+                }
+            }
         }
     }
 }
 
-void System::power_up_velocity_p4(registry &reg)
+void System::update_shoot_velocity_p4(registry &reg)
 {
     auto &velocity = reg.get_components<component::velocity>();
     auto &attributes = reg.get_components<component::attribute>();
+    auto &id_player = reg.get_components<component::idPlayer>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Player4) {
-            velocity[i].x += 5;
-            velocity[i].y += 5;
+            for (size_t j = 0; j < attributes.size(); j++) {
+                if (attributes[j]._type == component::attribute::Shoot && id_player[j].id == i) {
+                    velocity[j].x += 5;
+                    velocity[j].y += 5;
+                }
+            }
         }
     }
 }
-
-void System::reset_velocity_p1(registry &reg)
+void System::reset_shoot_velocity_p1(registry &reg)
 {
     auto &velocity = reg.get_components<component::velocity>();
     auto &attributes = reg.get_components<component::attribute>();
+    auto &id_player = reg.get_components<component::idPlayer>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Player1) {
-            velocity[i].x -= 5;
-            velocity[i].y -= 5;
+            for (size_t j = 0; j < attributes.size(); j++) {
+                if (attributes[j]._type == component::attribute::Shoot && id_player[j].id == i) {
+                    velocity[j].x -= 5;
+                    velocity[j].y -= 5;
+                }
+            }
         }
     }
 }
 
-void System::reset_velocity_p2(registry &reg)
+void System::reset_shoot_velocity_p2(registry &reg)
 {
     auto &velocity = reg.get_components<component::velocity>();
     auto &attributes = reg.get_components<component::attribute>();
+    auto &id_player = reg.get_components<component::idPlayer>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Player2) {
-            velocity[i].x -= 5;
-            velocity[i].y -= 5;
+            for (size_t j = 0; j < attributes.size(); j++) {
+                if (attributes[j]._type == component::attribute::Shoot && id_player[j].id == i) {
+                    velocity[j].x -= 5;
+                    velocity[j].y -= 5;
+                }
+            }
         }
     }
 }
 
-void System::reset_velocity_p3(registry &reg)
+void System::reset_shoot_velocity_p3(registry &reg)
 {
     auto &velocity = reg.get_components<component::velocity>();
     auto &attributes = reg.get_components<component::attribute>();
+    auto &id_player = reg.get_components<component::idPlayer>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Player3) {
-            velocity[i].x -= 5;
-            velocity[i].y -= 5;
+            for (size_t j = 0; j < attributes.size(); j++) {
+                if (attributes[j]._type == component::attribute::Shoot && id_player[j].id == i) {
+                    velocity[j].x -= 5;
+                    velocity[j].y -= 5;
+                }
+            }
         }
     }
 }
 
-void System::reset_velocity_p4(registry &reg)
+void System::reset_shoot_velocity_p4(registry &reg)
 {
     auto &velocity = reg.get_components<component::velocity>();
     auto &attributes = reg.get_components<component::attribute>();
+    auto &id_player = reg.get_components<component::idPlayer>();
 
     for (size_t i = 0; i < attributes.size(); i++) {
         if (attributes[i]._type == component::attribute::Player4) {
-            velocity[i].x -= 5;
-            velocity[i].y -= 5;
+            for (size_t j = 0; j < attributes.size(); j++) {
+                if (attributes[j]._type == component::attribute::Shoot && id_player[j].id == i) {
+                    velocity[j].x -= 5;
+                    velocity[j].y -= 5;
+                }
+            }
         }
     }
 }
