@@ -15,6 +15,8 @@ set(SOURCES
     ${SRC_DIR}/Packet.cpp
     ${SRC_DIR}/ProtocoleHandler.cpp
     ${SRC_DIR}/Parser.cpp
+    ${SRC_DIR}/LobbyServerTCP.cpp
+
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
