@@ -13,6 +13,7 @@ SRC =   $(SRC_SYSTEM)controllable_system.cpp \
 		$(SRC_SYSTEM)kill_system.cpp		\
 		$(SRC_SYSTEM)win_system.cpp		\
 		$(SRC_SYSTEM)lose_system.cpp		\
+		$(SRC_SYSTEM)collision_power_up_move_system.cpp	\
 
 SRC_MAIN	=	$(SRC_DIR)main.cpp
 
@@ -21,7 +22,8 @@ SRC_TEST =  tests/system/testsPosition.cpp \
 			tests/system/testsShoot.cpp		\
 			tests/system/testsLevel.cpp		\
 			tests/system/testsWin.cpp		\
-			tests/system/testsLose.cpp
+			tests/system/testsLose.cpp		\
+			tests/system/testsCollisionPowerUpMove.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

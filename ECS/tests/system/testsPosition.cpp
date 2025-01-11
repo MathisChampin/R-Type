@@ -3,6 +3,7 @@
 #include "position.hpp"
 #include "velocity.hpp"
 #include "attribute.hpp"
+#include "state.hpp"
 
 Test(PositionSystem, UpdatePositionEnnemies1) {
     registry reg;
@@ -15,6 +16,7 @@ Test(PositionSystem, UpdatePositionEnnemies1) {
     reg.add_component<component::position>(entity, {10, 20});
     reg.add_component<component::velocity>(entity, {5, 0});
     reg.add_component<component::attribute>(entity, {component::attribute::Ennemies});
+    reg.add_component<component::state>(entity, {component::state::Alive});
 
     sys.position_system(reg);
 
@@ -34,6 +36,7 @@ Test(PositionSystem, UpdatePositionEnnemies2) {
     reg.add_component<component::position>(entity, {30, 40});
     reg.add_component<component::velocity>(entity, {0, -5});
     reg.add_component<component::attribute>(entity, {component::attribute::Ennemies2});
+    reg.add_component<component::state>(entity, {component::state::Alive});
 
     sys.position_system(reg);
 
@@ -54,6 +57,7 @@ Test(PositionSystem, UpdatePositionEnnemies3) {
     reg.add_component<component::position>(entity, {50, 100});
     reg.add_component<component::velocity>(entity, {3, 4});
     reg.add_component<component::attribute>(entity, {component::attribute::Ennemies3});
+    reg.add_component<component::state>(entity, {component::state::Alive});
 
     sys.position_system(reg);
 
@@ -83,6 +87,7 @@ Test(PositionSystem, UpdatePositionEnnemies4) {
     reg.add_component<component::position>(entity, {100, 500});
     reg.add_component<component::velocity>(entity, {2, -5});
     reg.add_component<component::attribute>(entity, {component::attribute::Ennemies4});
+    reg.add_component<component::state>(entity, {component::state::Alive});
 
     sys.position_system(reg);
 
@@ -112,6 +117,7 @@ Test(PositionSystem, UpdatePositionEnnemies5) {
     reg.add_component<component::position>(entity, {200, 300});
     reg.add_component<component::velocity>(entity, {0, 0});
     reg.add_component<component::attribute>(entity, {component::attribute::Ennemies5});
+    reg.add_component<component::state>(entity, {component::state::Alive});
 
     sys.position_system(reg);
 
@@ -132,6 +138,7 @@ Test(PositionSystem, UpdatePositionShoot) {
     reg.add_component<component::position>(entity1, {10, 20});
     reg.add_component<component::velocity>(entity1, {5, 0});
     reg.add_component<component::attribute>(entity1, {component::attribute::Shoot});
+    reg.add_component<component::state>(entity1, {component::state::Alive});
 
     sys.position_system(reg);
 
@@ -143,6 +150,7 @@ Test(PositionSystem, UpdatePositionShoot) {
     reg.add_component<component::position>(entity2, {30, 40});
     reg.add_component<component::velocity>(entity2, {0, -5});
     reg.add_component<component::attribute>(entity2, {component::attribute::Shoot2});
+    reg.add_component<component::state>(entity2, {component::state::Alive});
 
     sys.position_system(reg);
 
@@ -154,6 +162,7 @@ Test(PositionSystem, UpdatePositionShoot) {
     reg.add_component<component::position>(entity3, {50, 100});
     reg.add_component<component::velocity>(entity3, {3, 4});
     reg.add_component<component::attribute>(entity3, {component::attribute::Shoot3});
+    reg.add_component<component::state>(entity3, {component::state::Alive});
 
     sys.position_system(reg);
 
@@ -173,6 +182,7 @@ Test(PositionSystem, UpdatePositionShoot) {
     reg.add_component<component::position>(entity5, {200, 300});
     reg.add_component<component::velocity>(entity5, {2, -3});
     reg.add_component<component::attribute>(entity5, {component::attribute::Shoot5});
+    reg.add_component<component::state>(entity5, {component::state::Alive});
 
     sys.position_system(reg);
 
