@@ -30,7 +30,7 @@ namespace NmpServer
         std::thread handleInputThread(&Server::threaEvalInput, this);
         std::thread shootEnnemiesThread(&Server::threadShootEnnemies, this);
 
-
+        std::cout << "ma mere" << std::endl;
         notifyShoot();
 
         inputThread.join();
@@ -48,14 +48,14 @@ namespace NmpServer
             att._type == component::attribute::Player3 ||
             att._type == component::attribute::Player4) {
             id = 1;
-            std::cout << "je t'envoie un player" << std::endl;
+            //std::cout << "je t'envoie un player" << std::endl;
             }
         if (att._type == component::attribute::Ennemies) {
             id = 2;
-            std::cout << "je t'envoie un ennemie" << std::endl;
+            //std::cout << "je t'envoie un ennemie" << std::endl;
         }
         if (att._type == component::attribute::Shoot) {
-            std::cout << "je t'envoie un shoot" << std::endl;
+            //std::cout << "je t'envoie un shoot" << std::endl;
             id = 3;
         }
         return id;
@@ -68,7 +68,7 @@ namespace NmpServer
         sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
         sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
         int id = 0;
-        std::cout << "BEGIN SEND ENTITY" << std::endl;
+        //std::cout << "BEGIN SEND ENTITY" << std::endl;
         for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
             auto &st = states[i];
             auto &att = attributes[i];
@@ -82,7 +82,7 @@ namespace NmpServer
                 id = getId(att);
                 auto &pos = positions[i];
                 auto &s = sizes[i];
-                std::cout << "id entity: "  << i << std::endl;
+                //std::cout << "id entity: "  << i << std::endl;
                 SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
                 broadcast(packet);
@@ -90,7 +90,7 @@ namespace NmpServer
         }
         Packet packet(EVENT::EOI);
         broadcast(packet);
-        std::cout << "END SEND ENTITY" << std::endl;
+        //std::cout << "END SEND ENTITY" << std::endl;
     }
 
     void Server::notifyShoot()
@@ -100,9 +100,9 @@ namespace NmpServer
 
         clock.start();
         while (1) {
-            std::cout << "time elapsed: " << clock.elapsedSeconds() << std::endl;
+            //std::cout << "time elapsed: " << clock.elapsedSeconds() << std::endl;
             if (clock.elapsedSeconds() >= 5.0) {
-                std::cout << "Notify shoot" << std::endl;
+                //std::cout << "Notify shoot" << std::endl;
                 _shootReady = true;
                 _cvShoot.notify_one();
                 clock.start();
@@ -135,7 +135,6 @@ namespace NmpServer
 
             _ptp.fillPacket(packet);
             _ptp.executeOpCode();
-
         }
     }
 
@@ -167,17 +166,17 @@ namespace NmpServer
             auto &ecs = _ptp.getECS();
             sys.shoot_system_ennemies(ecs);
             _shootReady = false;
-            std::cout << "has shoot" << std::endl;
+            //std::cout << "has shoot" << std::endl;
         }
     }
 
     void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
     {
-        std::cout << "send packet" << std::endl;
+        // std::cout << "send packet" << std::endl;
 
-        std::cout << "Sending to remote endpoint: " 
-                  << endpoint.address().to_string() << ":"
-                  << endpoint.port() << std::endl;
+        // std::cout << "Sending to remote endpoint: " 
+        //           << endpoint.address().to_string() << ":"
+        //           << endpoint.port() << std::endl;
 
         _binary.serialize(packet, _bufferSerialize);
         // for (auto elem: _bufferSerialize) {
@@ -199,11 +198,11 @@ namespace NmpServer
             bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
 
             if (bytes > 0) {
-                std::cout << "Received data from remote endpoint: " 
-                          << _remote_endpoint.address().to_string() << ":"
-                          << _remote_endpoint.port() << std::endl;
+                // std::cout << "Received data from remote endpoint: " 
+                //           << _remote_endpoint.address().to_string() << ":"
+                //           << _remote_endpoint.port() << std::endl;
 
-                std::cout << "bytes: " << bytes << std::endl;
+                // std::cout << "bytes: " << bytes << std::endl;
 
                 extract_bytes(bytes, rawData);
                 NmpServer::Packet packet = _binary.deserialize(rawData);

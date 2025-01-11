@@ -54,14 +54,29 @@ namespace NmpServer
     void ProtocoleHandler::updateMoveEcs(
         Entity &player, 
         component::controllable::Key &control, 
-        sparse_array<component::position>::value_type &pos)
+        sparse_array<component::position>::value_type &pos,
+        component::attribute &att)
     {
         System sys;
         std::optional<asio::ip::udp::endpoint> foundEndpoint{this->foundEndpointByClient(player)}; 
 
         if (foundEndpoint.has_value()) {
-            _ecs.emplace_component<component::controllable>(player, control);
-            sys.control_system(_ecs);
+            if (att._type == component::attribute::Player1) {
+                _ecs.emplace_component<component::controllable>(player, control);
+                sys.control_system_p1(_ecs);
+            }
+            if (att._type == component::attribute::Player2) {
+                _ecs.emplace_component<component::controllable>(player, control);
+                sys.control_system_p2(_ecs);
+            }
+            if (att._type == component::attribute::Player3) {
+                _ecs.emplace_component<component::controllable>(player, control);
+                sys.control_system_p3(_ecs);
+            }
+            if (att._type == component::attribute::Player4) {
+                _ecs.emplace_component<component::controllable>(player, control);
+                sys.control_system_p4(_ecs);
+            }
             //Packet packetPos(EVENT::MOVE, pos.x, pos.y);
             //_refServer.get().send_data(packetPos, foundEndpoint.value());
         } else {
@@ -72,33 +87,35 @@ namespace NmpServer
 
     void ProtocoleHandler::evalMove()
     {
-        //std::cout << "evalMove" << std::endl;
-        //std::cout << "id client: " << _pck.getId() << std::endl;
+        std::cout << "evalMove" << std::endl;
+        std::cout << "id client: " << _pck.getId() << std::endl;
         std::size_t idClient{ _pck.getId()};
         sparse_array<component::position> &pos = _ecs.get_components<component::position>();
         Entity player = _ecs.get_entity(idClient);
         sparse_array<component::position>::value_type &position = pos[player.get_id()];
         std::optional<NmpServer::DIRECTION> direction = _pck.getArg();
+        auto &attributes = _ecs.get_components<component::attribute>();
+        auto &att = attributes[player.get_id()];
 
         if (direction == DIRECTION::DOWN) {
             std::cout << "DOWN" << std::endl;
             auto control = component::controllable::Down;
-            updateMoveEcs(player, control, position);
+            updateMoveEcs(player, control, position, att);
         } else if (direction == DIRECTION::UP) {
             std::cout << "UP" << std::endl;
             auto control = component::controllable::Up;
-            updateMoveEcs(player, control, position);
+            updateMoveEcs(player, control, position, att);
         } else if (direction == DIRECTION::LEFT) {
             std::cout << "LEFT" << std::endl;
             auto control = component::controllable::Left;
-            updateMoveEcs(player, control, position);
+            updateMoveEcs(player, control, position, att);
         } else if (direction == DIRECTION::RIGHT) {
             std::cout << "RIGHT" << std::endl;
             auto control = component::controllable::Right;
-            updateMoveEcs(player, control, position);
+            updateMoveEcs(player, control, position, att);
         } else if ((direction == DIRECTION::SHOOT)) {
             auto control = component::controllable::Shoot;
-            updateMoveEcs(player, control, position);
+            updateMoveEcs(player, control, position, att);
         } else 
             std::cout << "x " << position.x << " y " << position.y << std::endl;
             //std::cout << "NO KEY" << std::endl;
