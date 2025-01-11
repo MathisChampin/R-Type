@@ -38,6 +38,14 @@ namespace NmpClient
          */
         Packet(EVENT event, SpriteInfo &sprites);
 
+        /**
+         * @brief Constructs a Packet object.
+         *
+         * @param event The event associated with the packet.
+         * @param elem the info to print score or life.
+         */
+        Packet(EVENT event, int elem);
+
         bool checkPacket() override;
         EVENT getOpCode() override;
         std::optional<DIRECTION> getArg() override;
@@ -46,6 +54,7 @@ namespace NmpClient
 
         int getX() const;
         int getY() const;
+        int getElem() const;
 
     private:
         EVENT _opCode;
@@ -54,5 +63,6 @@ namespace NmpClient
         std::size_t _id;
         int _x{0};
         int _y{0};
+        int _elem{0};
     };
 }

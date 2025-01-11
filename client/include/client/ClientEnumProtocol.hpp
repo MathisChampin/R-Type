@@ -11,7 +11,9 @@ namespace NmpClient
         QUIT = 3,
         SPRITE = 4,
         JOIN = 5,
-        EOI = 6
+        EOI = 6,
+        LIFE = 7,
+        SCORE = 8
     };
 
     enum class DIRECTION : uint32_t
