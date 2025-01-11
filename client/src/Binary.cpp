@@ -80,6 +80,7 @@ namespace NmpBinary
             int life = static_cast<int>(buffer[1]);
             return NmpClient::Packet(NmpClient::EVENT::LIFE, life);
         }
+        return NmpClient::Packet(event, 0, 0);
     }
 
     void Binary::clearBuffer(std::vector<uint32_t> &buffer)

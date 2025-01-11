@@ -23,17 +23,16 @@ void Game::launch_getter(std::size_t id, NmpClient::SpriteInfo &sp)
 void Game::handler_packets()
 {
     auto data = m_client.get_data();
-    if (!data.has_value())
-    {
-        return;
-    }
+    if (!data.has_value()) {return;}
     auto p = data.value();
-    if (p.getOpCode() != NmpClient::EVENT::SPRITE)
-    {
+    if (p.getOpCode() == NmpClient::EVENT::EOI) {
         std::cout << "END OF FRAME" << std::endl;
         std::cout << "count before: " << _spriteMng.getSpriteCount() << std::endl;
         _spriteMng.eraseOldSprite(_containerEndFrameId);
         std::cout << "count after: " << _spriteMng.getSpriteCount() << std::endl;
+        return;
+    } else if (p.getOpCode() == NmpClient::EVENT::LIFE) {
+        std::cout << "LIFE: " << p.getElem() << std::endl;
         return;
     }
     auto spriteInf = p.getSpriteInfo();
