@@ -40,5 +40,7 @@ client:
 server:
 	cmake --build $(BUILD_DIR) --target server
 
+client_2:
+	cmake --build $(BUILD_DIR) --target client_2
 clean:
 	$(RM) $(BUILD_DIR) $(CMAKE_GENERATED_FILES) $(CMAKE_GENERATED_DIRS)

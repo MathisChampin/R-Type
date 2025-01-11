@@ -17,11 +17,11 @@ add_executable(r_type_client ${CLIENT_SOURCES} ${CLIENT_HEADERS})
 target_include_directories(r_type_client PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/client/include
-    ${CMAKE_BINARY_DIR}/include
     ${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include
     ${CMAKE_SOURCE_DIR}/_deps/sfml-src/include
 )
 
+# Lier les bibliothèques selon la plateforme
 if(UNIX)
     target_link_libraries(r_type_client
         PRIVATE sfml-system sfml-window sfml-graphics sfml-audio pthread
@@ -67,6 +67,14 @@ add_custom_command(
     COMMENT "Copie des assets dans le répertoire binaire"
 )
 
+add_custom_command(
+    TARGET r_type_client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/client/config
+        $<TARGET_FILE_DIR:r_type_client>/config
+    COMMENT "Copie des config dans le répertoire binaire"
+)
+
 target_compile_definitions(r_type_client PRIVATE ASIO_STANDALONE)
 
 foreach(header ${CLIENT_HEADERS})
@@ -77,3 +85,5 @@ add_custom_command(
     TARGET r_type_client PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/include/client
 )
+
+target_link_libraries(r_type_client PRIVATE nlohmann_json)

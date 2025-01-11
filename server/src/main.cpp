@@ -4,18 +4,16 @@
 #include <filesystem>
 #include <thread>
 
-#include "LobbyServerTCP.hpp"
-#include <asio.hpp>
-
-
-int main() {
-    try {
-        asio::io_context ioContext;
-        LobbyServerTCP server(ioContext, 8080); 
-        server.startAccepting();
-        ioContext.run();
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+int main()
+{
+    try
+    {
+        NmpServer::Server server;
+        server.run();
+        // NmpServer::Parser parser("../../server/configFile/level1.json");
+        // parser.parseConfig();
     }
-    return 0;
-}
+    catch (const std::exception& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }

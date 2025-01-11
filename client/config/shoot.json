@@ -1,0 +1,6 @@
+{
+    "type": "shoot",
+    "texture": "assets/player/bullets.png",
+    "position": { "x": 800, "y": 400 },
+    "size": { "width": 50, "height": 50 }
+}

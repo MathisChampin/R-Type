@@ -9,7 +9,15 @@ namespace component {
             Player3,
             Player4,
             Ennemies,
+            Ennemies2,
+            Ennemies3,
+            Ennemies4,
+            Ennemies5,
             Shoot,
+            Shoot2,
+            Shoot3,
+            Shoot5,
+            Clear,
             None
         };
         entityType _type;

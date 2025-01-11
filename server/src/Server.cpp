@@ -30,12 +30,13 @@ namespace NmpServer
         std::thread handleInputThread(&Server::threaEvalInput, this);
         std::thread shootEnnemiesThread(&Server::threadShootEnnemies, this);
 
-
+        std::cout << "ma mere" << std::endl;
         notifyShoot();
 
         inputThread.join();
         systemThread.join();
         handleInputThread.join();
+        shootEnnemiesThread.join();
     }
 
     uint32_t Server::getId(component::attribute &att)
@@ -47,14 +48,14 @@ namespace NmpServer
             att._type == component::attribute::Player3 ||
             att._type == component::attribute::Player4) {
             id = 1;
-            std::cout << "je t'envoie un player" << std::endl;
+            //std::cout << "je t'envoie un player" << std::endl;
             }
         if (att._type == component::attribute::Ennemies) {
             id = 2;
-            std::cout << "je t'envoie un ennemie" << std::endl;
+            //std::cout << "je t'envoie un ennemie" << std::endl;
         }
         if (att._type == component::attribute::Shoot) {
-            std::cout << "je t'envoie un shoot" << std::endl;
+            //std::cout << "je t'envoie un shoot" << std::endl;
             id = 3;
         }
         return id;
@@ -67,6 +68,7 @@ namespace NmpServer
         sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
         sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
         int id = 0;
+        //std::cout << "BEGIN SEND ENTITY" << std::endl;
         for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
             auto &st = states[i];
             auto &att = attributes[i];
@@ -80,15 +82,15 @@ namespace NmpServer
                 id = getId(att);
                 auto &pos = positions[i];
                 auto &s = sizes[i];
-                std::cout << "id client: "  << i << std::endl;
+                //std::cout << "id entity: "  << i << std::endl;
                 SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
-                auto &_vecPlayer = _ptp.get_vector();
-                for (const auto &[entity, endpoint] : _vecPlayer) {
-                    send_data(packet, endpoint);
-                }
+                broadcast(packet);
             }
         }
+        Packet packet(EVENT::EOI);
+        broadcast(packet);
+        //std::cout << "END SEND ENTITY" << std::endl;
     }
 
     void Server::notifyShoot()
@@ -98,9 +100,9 @@ namespace NmpServer
 
         clock.start();
         while (1) {
-            std::cout << "time elapsed: " << clock.elapsedSeconds() << std::endl;
+            //std::cout << "time elapsed: " << clock.elapsedSeconds() << std::endl;
             if (clock.elapsedSeconds() >= 5.0) {
-                std::cout << "Notify shoot" << std::endl;
+                //std::cout << "Notify shoot" << std::endl;
                 _shootReady = true;
                 _cvShoot.notify_one();
                 clock.start();
@@ -113,7 +115,7 @@ namespace NmpServer
     void Server::threadInput()
     {
         while (true) {
-            get_data();
+            this->get_data();
         }
     }
 
@@ -133,7 +135,6 @@ namespace NmpServer
 
             _ptp.fillPacket(packet);
             _ptp.executeOpCode();
-
         }
     }
 
@@ -147,7 +148,7 @@ namespace NmpServer
                 std::lock_guard<std::mutex> lock(_ecsMutex);
                 auto &ecs = _ptp.getECS();
                 sys.collision_system(ecs);
-                sys.kill_system(ecs);
+                //sys.kill_system(ecs);
                 sys.position_system(ecs);
                 send_entity(ecs);
             }
@@ -165,22 +166,22 @@ namespace NmpServer
             auto &ecs = _ptp.getECS();
             sys.shoot_system_ennemies(ecs);
             _shootReady = false;
-            std::cout << "has shoot" << std::endl;
+            //std::cout << "has shoot" << std::endl;
         }
     }
 
     void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
     {
-        std::cout << "send packet" << std::endl;
+        // std::cout << "send packet" << std::endl;
 
-        std::cout << "Sending to remote endpoint: " 
-                  << endpoint.address().to_string() << ":"
-                  << endpoint.port() << std::endl;
+        // std::cout << "Sending to remote endpoint: " 
+        //           << endpoint.address().to_string() << ":"
+        //           << endpoint.port() << std::endl;
 
         _binary.serialize(packet, _bufferSerialize);
-        for (auto elem: _bufferSerialize) {
-            std::cout << "elem: " << elem << std::endl;
-        }
+        // for (auto elem: _bufferSerialize) {
+        //     std::cout << "elem: " << elem << std::endl;
+        // }
         _socketSend.send_to(asio::buffer(_bufferSerialize), endpoint);
         _bufferSerialize.clear();
     }
@@ -197,11 +198,11 @@ namespace NmpServer
             bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
 
             if (bytes > 0) {
-                std::cout << "Received data from remote endpoint: " 
-                          << _remote_endpoint.address().to_string() << ":"
-                          << _remote_endpoint.port() << std::endl;
+                // std::cout << "Received data from remote endpoint: " 
+                //           << _remote_endpoint.address().to_string() << ":"
+                //           << _remote_endpoint.port() << std::endl;
 
-                std::cout << "bytes: " << bytes << std::endl;
+                // std::cout << "bytes: " << bytes << std::endl;
 
                 extract_bytes(bytes, rawData);
                 NmpServer::Packet packet = _binary.deserialize(rawData);
@@ -231,5 +232,13 @@ namespace NmpServer
     asio::ip::udp::endpoint Server::getLastEndpoint() const
     {
         return _copy_endpoint;
+    }
+
+    void Server::broadcast(Packet &packet)
+    {
+        auto &_vecPlayer = _ptp.get_vector();
+        for (const auto &[entity, endpoint] : _vecPlayer) {
+            send_data(packet, endpoint);
+        }
     }
 }
