@@ -6,7 +6,10 @@
 class System {
     public:
         void position_system(registry &reg);
-        void control_system(registry &reg);
+        void control_system_p1(registry &reg);
+        void control_system_p2(registry &reg);
+        void control_system_p3(registry &reg);
+        void control_system_p4(registry &reg);
         void collision_system(registry &reg);
         void level_system(registry &reg);
         void shoot_system_player(registry &reg);

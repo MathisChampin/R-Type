@@ -61,8 +61,6 @@ void handle_collision_with_player(size_t i, size_t j,
     auto &state = states[j];
     auto &state_shoot = states[i];
 
-    std::cout << "Collision player avec id shoot : " << i << std::endl;
-
     if (attributes[i]._type == component::attribute::Shoot5) {
         if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
             life.life -= 2;
