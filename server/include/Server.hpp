@@ -4,6 +4,7 @@
 #include "Binary.hpp"
 #include "ProtocolHandler.hpp"
 #include "Registry.hpp"
+#include "Parser.hpp"
 #include <mutex>
 #include <queue>
 #include <thread>
@@ -33,6 +34,7 @@ namespace NmpServer {
             void threadShootEnnemies();
             void send_entity(registry &);
             void notifyShoot();
+            bool check_level(registry &);
 
             uint32_t getId(component::attribute &att);
 
@@ -56,5 +58,6 @@ namespace NmpServer {
 
             NmpBinary::Binary _binary;
             ProtocoleHandler _ptp;
+            Parser _parser;
     };
 }

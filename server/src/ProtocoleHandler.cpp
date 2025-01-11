@@ -31,7 +31,6 @@ namespace NmpServer
     {
         std::cout << "protocole Handler create" << std::endl;
         this->initComponents();
-        this->initEnnemies();
     }
 
     void ProtocoleHandler::fillPacket(Packet &packet)
@@ -133,6 +132,7 @@ namespace NmpServer
         auto lastPlayer = _vecPlayer.back().first;
         auto lastEndpoint = _vecPlayer.back().second;
 
+        std::cout << "send new id: " << lastPlayer.get_id() << std::endl;
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
         _refServer.get().send_data(joinPacket, lastEndpoint);
         //_refServer.get()._vecPlayer = _vecPlayer;
@@ -168,7 +168,7 @@ namespace NmpServer
         }
         _ecs.add_component<component::controllable>(player, {component::controllable::NoKey});
         _ecs.add_component<component::level>(player, {component::level::Level0});
-        _ecs.add_component<component::life>(player, {4});
+        _ecs.add_component<component::life>(player, {3});
         _ecs.add_component<component::position>(player, {50, 500});
         _ecs.add_component<component::score>(player, {0});
         _ecs.add_component<component::size>(player, {32, 14});
@@ -179,23 +179,45 @@ namespace NmpServer
         _vecPlayer.push_back(std::make_pair(player, lastEndpoint));  
     }
 
-    void ProtocoleHandler::initEnnemies()
+    void ProtocoleHandler::initEnnemies(int posX, int posY, int type)
     {
-        static std::mt19937 rng(std::random_device{}());
-        std::uniform_int_distribution<int> dist(0, 1080);
 
         Entity ennemies = _ecs.spawn_entity();
-        int y = dist(rng);
 
-        _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
+        if (type == 1)
+            _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
+        if (type == 2)
+            _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies2});
+        if (type == 3)
+            _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies3});
+        if (type == 4)
+            _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies4});
+        if (type == 5)
+            _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies5});
+
         _ecs.add_component<component::level>(ennemies, {component::level::Level0});
         _ecs.add_component<component::controllable>(ennemies, {component::controllable::Key::NoKey});
         _ecs.add_component<component::life>(ennemies, {1});
-        _ecs.add_component<component::position>(ennemies, {1800, y});
+        _ecs.add_component<component::position>(ennemies, {posX, posY});
         _ecs.add_component<component::size>(ennemies, {33, 36});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
         _ecs.add_component<component::idPlayer>(ennemies, {ennemies.get_id()});
-        _ecs.add_component<component::velocity>(ennemies, {-1, 0});
+        _ecs.add_component<component::velocity>(ennemies, {-2, 0});
     }
 
+    void ProtocoleHandler::loadEnnemiesFromconfig(const std::vector<infoEnnemies_t> vecEnnemies)
+    {
+        for (auto elem : vecEnnemies)
+            initEnnemies(elem.posX, elem.posY, elem.type);
+    }
+
+    void ProtocoleHandler::clearPlayer()
+    {
+        _vecPlayer.clear();
+        for (auto it = _refServer.get()._vecPlayer.begin(); it != _refServer.get()._vecPlayer.end(); ++it) {
+            std::cout << "send new id" << std::endl;
+            evalJoin();
+        }
+
+    }
 }

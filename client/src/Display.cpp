@@ -1,6 +1,8 @@
 #include "../include/Game.hpp"
 #include <iostream>
 #include <queue>
+#include <thread> // Pour std::this_thread::sleep_for
+#include <chrono> // Pour std::chrono::milliseconds
 
 // plusieurs cas diiférents
 // si id pas trouvé -> j'ajoute dans la map
@@ -33,7 +35,11 @@ void Game::handler_packets()
         return;
     } else if (p.getOpCode() == NmpClient::EVENT::LIFE) {
         std::cout << "LIFE: " << p.getElem() << std::endl;
-        return;
+    } else if (p.getOpCode() == NmpClient::EVENT::JOIN) {
+        _spriteMng.eraseAll();
+        m_client._id = p.getId();
+        std::cout << "new id" << p.getId() << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     auto spriteInf = p.getSpriteInfo();
    _containerEndFrameId.insert(spriteInf.idClient);

@@ -10,9 +10,12 @@ namespace NmpServer
         _io_context(),
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
         _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081)),
-        _ptp(*this)
+        _ptp(*this),
+        _parser("../../server/configFile/test.json")
     {
         _bufferAsio.fill(0);
+        _parser.parseConfig();
+        _ptp.loadEnnemiesFromconfig(_parser.getVector());
     }
 
     Server::~Server()
@@ -94,12 +97,6 @@ namespace NmpServer
             auto &att = attributes[i];
             // auto &l = lifes[i];
             // auto &a = attributes[i];
-            if (st._stateKey == component::state::stateKey::Dead && 
-                att._type == component::attribute::Ennemies) {
-                    std::cout << "Un ennemi est mort. Fermeture du programme proprement." << std::endl;
-                    _running = false;
-                    std::exit(EXIT_SUCCESS);
-            }
             if (st._stateKey == component::state::stateKey::Alive) {
                 id = getId(att);
                 auto &pos = positions[i];
@@ -169,6 +166,22 @@ namespace NmpServer
         }
     }
 
+    bool Server::check_level(registry &_ecs)
+    {
+        auto &att = _ecs.get_components<component::attribute>();
+        auto &st = _ecs.get_components<component::state>();
+
+        for (size_t i = 0; i < att.size(); i++) {
+            if ((att[i]._type == component::attribute::Ennemies ||
+            att[i]._type == component::attribute::Ennemies2 ||
+            att[i]._type == component::attribute::Ennemies3 ||
+            att[i]._type == component::attribute::Ennemies4 ||
+            att[i]._type == component::attribute::Ennemies5) && st[i]._stateKey == component::state::Alive)
+                return true;
+        }
+        return false;
+    }
+
     void Server::threadSystem()
     {
         System sys;
@@ -179,9 +192,14 @@ namespace NmpServer
                 std::lock_guard<std::mutex> lock(_ecsMutex);
                 auto &ecs = _ptp.getECS();
                 sys.collision_system(ecs);
-                //sys.kill_system(ecs);
                 sys.position_system(ecs);
                 send_entity(ecs);
+                if (!check_level(ecs)) {
+                    sys.kill_system(ecs);
+                    _ptp.clearPlayer();
+                    _parser.loadNewLevel("../../server/configFile/level2.json");
+                    _ptp.loadEnnemiesFromconfig(_parser.getVector());
+                }
             }
             std::this_thread::sleep_for(frameDuration);
         }
@@ -201,24 +219,22 @@ namespace NmpServer
         }
     }
 
-void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
-{
-    _binary.serialize(packet, _bufferSerialize);
+    void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
+    {
+        _binary.serialize(packet, _bufferSerialize);
 
-    _socketSend.async_send_to(
-        asio::buffer(_bufferSerialize),
-        endpoint,
-        [](const std::error_code &error, std::size_t /*bytes_transferred*/) {
-            if (error) {
-                std::cerr << "Error sending data: " << error.message() << std::endl;
+        _socketSend.async_send_to(
+            asio::buffer(_bufferSerialize),
+            endpoint,
+            [](const std::error_code &error, std::size_t /*bytes_transferred*/) {
+                if (error) {
+                    std::cerr << "Error sending data: " << error.message() << std::endl;
+                }
             }
-        }
-    );
+        );
 
-    _bufferSerialize.clear();
-}
-
-
+        _bufferSerialize.clear();
+    }
 
     void Server::get_data() 
     {
