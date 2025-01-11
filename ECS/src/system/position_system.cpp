@@ -8,27 +8,27 @@ void position_ennemies(
     sparse_array<component::position> &positions,
     sparse_array<component::attribute> &attributes,
     sparse_array<component::velocity> &velocities,
-    sparse_array<component::state> &states,
     int i
 )
 {
     auto &pos = positions[i];
     auto &vel = velocities[i];
     const auto &att = attributes[i];
-    auto &s = states[i];
 
     switch (att._type) {
         case component::attribute::Ennemies:
             pos.x += vel.x;
             if (pos.x <= 0) {
-                s._stateKey = component::state::Dead;
+                pos.x = 1960;
             }
             break;
         case component::attribute::Ennemies2:
             pos.y += vel.y;
-            if (pos.y <= 0 || pos.y >= 1080) {
-                s._stateKey = component::state::Dead;
+            if (pos.y <= 0) {
+                pos.y = 1080;
             }
+            if (pos.y >= 1080)
+                pos.y = 0;
             break;
         case component::attribute::Ennemies3:
             pos.x += vel.x;
@@ -40,7 +40,7 @@ void position_ennemies(
                 vel.y = std::abs(vel.y);
             }
             if (pos.x <= 0) {
-                s._stateKey = component::state::Dead;
+                pos.x = 1960;
             }
             break;
         case component::attribute::Ennemies4:
@@ -53,7 +53,7 @@ void position_ennemies(
                 vel.y = -std::abs(vel.y);
             }
             if (pos.x <= 0) {
-                s._stateKey = component::state::Dead;
+                pos.x = 1960;
             }
             break;
         default:
@@ -113,7 +113,7 @@ void System::position_system(registry &reg)
     auto &states = reg.get_components<component::state>();
 
     for (size_t i = 0; i < positions.size() && i < velocities.size() && i < attributes.size(); i++) {        
-        position_ennemies(positions, attributes, velocities, states, i);
+        position_ennemies(positions, attributes, velocities, i);
         position_shoot(positions, attributes, velocities, states, i);
     }
 }
