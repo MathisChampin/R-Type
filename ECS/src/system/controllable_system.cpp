@@ -46,6 +46,8 @@ void System::control_system(registry& reg)
             auto &ctl = controllables[i];
             auto &pos = positions[i];
 
+            if (ctl.active_key == component::controllable::Shoot)
+                shoot_system_player(reg);
             if (ctl.active_key == component::controllable::Key::Clear) {
                attributes[i]._type = component::attribute::Clear;
             }
