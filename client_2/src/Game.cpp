@@ -7,6 +7,7 @@ Game::Game(registry ecs):
     window.setFramerateLimit(60);
 
     _ecs.createPlayer();
+    _ecs.createEnemy();
 }
 
 void Game::run() {

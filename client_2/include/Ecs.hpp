@@ -123,6 +123,7 @@ class GameECS {
                         if ((*it)->get_id() == i) {
                             enemiesToRemove.push_back(*it);
                             enemySprites.erase(it);
+                            createEnemy();
                         }
                     }
                 }
@@ -139,14 +140,21 @@ class GameECS {
             for (size_t i = 0; i < attributes.size(); i++) {
                 auto &att = attributes[i];
                 auto &s = states[i];
+                std::cout << "je suis au dessus des if" << std::endl;
                 if (att._type == component::attribute::Shoot && s._stateKey == component::state::Alive) {
                     auto &pos = positions[i];
+                    std::cout << "je suis dans le if de set pos" << std::endl;
                     for (auto& shootSprite : enemyShoot) {
                         if (shootSprite->get_id() == i) {
                             shootSprite->setPosition(sf::Vector2f(pos.x, pos.y));
                         }
                     }
                 } else if (att._type == component::attribute::Shoot && s._stateKey == component::state::Dead) {
+                    std::cout << "je suis dans le if de supprime shoot" << std::endl;
+                    if (enemyShoot.empty()) {
+                        std::cout << "je suis vide" << std::endl;
+                        return;
+                    }
                     for (auto it = enemyShoot.begin(); it != enemyShoot.end(); ++it) {
                         if ((*it)->get_id() == i) {
                             shootsToRemove.push_back(*it);
@@ -161,7 +169,6 @@ class GameECS {
             enemySpawnTimer += deltaTime;
 
             if (enemySpawnTimer >= 2.0f) {
-                createEnemy();
                 sys.shoot_system_ennemies(m_ecs);
                 createShoot();
                 enemySpawnTimer = 0.0f;
@@ -173,9 +180,13 @@ class GameECS {
         void update(float deltaTime) {
             spawnEnemiesAtInterval(deltaTime);
             sys.position_system(m_ecs);
+            std::cout << "en dessous de position" << std::endl;
             updatePositionEnemys();
+            std::cout << "en dessous de update enemy" << std::endl;
             updatePositionShoots();
+            std::cout << "en dessous de shoot" << std::endl;
             sys.collision_system(m_ecs);
+            std::cout << "en dessous de colission" << std::endl;
         }
 
         Entity getPlayer()
@@ -196,7 +207,7 @@ class GameECS {
 
             for (size_t i = 0; i < attributes.size() && i < scores.size(); i++) {
                 auto &at = attributes[i];
-                if (at._type == component::attribute::Player1) {
+                if (at._type == component::attribute::Player1 || at._type == component::attribute::Clear) {
                     auto &s = scores[i];
                     return s.score;
                 }
@@ -222,7 +233,7 @@ class GameECS {
 
             for (size_t i = 0; i < attributes.size() && i < lifes.size(); i++) {
                 auto &at = attributes[i];
-                if (at._type == component::attribute::Player1) {
+                if (at._type == component::attribute::Player1 || at._type == component::attribute::Clear) {
                     auto &l = lifes[i];
                     return l.life;
                 }
@@ -239,7 +250,7 @@ class GameECS {
                     attributes[i]._type = component::attribute::Player1;
                     auto &ctl = controllables[i];
                     ctl.active_key = direction;
-                    sys.control_system(m_ecs);
+                    sys.control_system_p1(m_ecs);
                 }
             }
         }
