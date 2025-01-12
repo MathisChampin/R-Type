@@ -25,6 +25,7 @@ namespace NmpServer {
             void broadcast(Packet &packet) override;
             asio::ip::udp::endpoint getLastEndpoint() const;
             void sendScore(int i, sparse_array<component::life> &lifes, sparse_array<component::attribute> &attributes);
+            void sendScores(int i, sparse_array<component::score> &scores, sparse_array<component::attribute> &attributes);
 
             std::vector<asio::ip::udp::endpoint> _vecPlayer;
         private:

@@ -83,6 +83,26 @@ namespace NmpServer
         }
     }
 
+
+    void Server::sendScores(int i, sparse_array<component::score> &scores, sparse_array<component::attribute> &attributes)
+    {
+        //mutex.lock();
+        auto &s = scores[i];
+        auto &att = attributes[i];
+        Packet packet(EVENT::SCORE, s.score);
+
+        if (att._type == component::attribute::Player1) {
+            std::cout << "send score player 1" << std::endl;
+            send_data(packet, _vecPlayer[0]);
+        } else if (att._type == component::attribute::Player2) {
+            send_data(packet, _vecPlayer[1]);
+        } else if (att._type == component::attribute::Player3) {
+            send_data(packet, _vecPlayer[2]);
+        } else if (att._type == component::attribute::Player4) {
+            send_data(packet, _vecPlayer[3]);
+        }
+    }
+
     void Server::send_entity(registry &_ecs)
     {
         sparse_array<component::position> &positions = _ecs.get_components<component::position>();
@@ -90,6 +110,7 @@ namespace NmpServer
         sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
         sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
         sparse_array<component::life> &lifes = _ecs.get_components<component::life>();
+        sparse_array<component::score> &scores = _ecs.get_components<component::score>();
         int id = 0;
         //std::cout << "BEGIN SEND ENTITY" << std::endl;
         for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
@@ -112,6 +133,7 @@ namespace NmpServer
                  att._type == component::attribute::Player3 || 
                  att._type == component::attribute::Player4)) {
                 sendScore(i, lifes, attributes);
+                sendScores(i, scores, attributes);
             }
         }
         Packet packet(EVENT::EOI);
@@ -185,7 +207,7 @@ namespace NmpServer
     void Server::threadSystem()
     {
         System sys;
-        const auto frameDuration = std::chrono::milliseconds(50);
+        const auto frameDuration = std::chrono::milliseconds(70);
 
         while (_running) {
             {
