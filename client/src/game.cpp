@@ -18,6 +18,7 @@ Game::Game()
     initializeIpAddressText();
 
     m_life.initialize("./assets/life/hearts.png");
+    m_score.initialize(m_font, 30, sf::Vector2f(20, 60));
 }
 
 Game::~Game()
@@ -168,6 +169,7 @@ void Game::render(float deltaTime)
         m_playingBackground.render(m_window);
         _spriteMng.drawAll(m_window, sf::seconds(deltaTime));     
         m_life.render(m_window);
+        m_score.render(m_window);
     }
     else if (m_currentState == GameState::Options)
     {
