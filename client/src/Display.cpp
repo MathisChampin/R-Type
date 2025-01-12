@@ -34,7 +34,13 @@ void Game::handler_packets()
         std::cout << "count after: " << _spriteMng.getSpriteCount() << std::endl;
         return;
     } else if (p.getOpCode() == NmpClient::EVENT::LIFE) {
-        std::cout << "LIFE: " << p.getElem() << std::endl;
+        int newLife = p.getElem();
+        std::cout << "LIFE: " << newLife << std::endl;
+        m_life.updateLife(newLife);
+    }else if (p.getOpCode() == NmpClient::EVENT::SCORE) {
+        int newScore = p.getElem();
+        std::cout << "SCORE: " << newScore << std::endl;
+        // m_score.updateScore(newScore);
     } else if (p.getOpCode() == NmpClient::EVENT::JOIN) {
         _spriteMng.eraseAll();
         m_client._id = p.getId();
