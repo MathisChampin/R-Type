@@ -57,7 +57,12 @@ private:
 
     void get_player(NmpClient::SpriteInfo &sp);
     void get_ennemies(NmpClient::SpriteInfo &sp);
+    void get_ennemies2(NmpClient::SpriteInfo &sp);
+    void get_ennemies3(NmpClient::SpriteInfo &sp);
+    void get_ennemies4(NmpClient::SpriteInfo &sp);
+    void get_ennemies5(NmpClient::SpriteInfo &sp);
     void get_shoots(NmpClient::SpriteInfo &sp);
+
     void handler_packets();
     void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
     void destroy_uselles_sprites();
@@ -91,8 +96,13 @@ private:
     std::queue<NmpClient::Packet> _queuePacket;
     std::map<std::size_t, std::function<void(NmpClient::SpriteInfo &sp)>> _mapHandlerPacket{
         {1, [this](NmpClient::SpriteInfo &sp) { get_player(sp); }},
-        {2, [this](NmpClient::SpriteInfo &sp) { get_ennemies(sp); }},
-        {3, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {2, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+
+        {3, [this](NmpClient::SpriteInfo &sp) { get_ennemies(sp); }},
+        {4, [this](NmpClient::SpriteInfo &sp) { get_ennemies2(sp); }},
+        {5, [this](NmpClient::SpriteInfo &sp) { get_ennemies3(sp); }},
+        {6, [this](NmpClient::SpriteInfo &sp) { get_ennemies4(sp); }},
+        {7, [this](NmpClient::SpriteInfo &sp) { get_ennemies5(sp); }},
     };
 
     Life m_life;
