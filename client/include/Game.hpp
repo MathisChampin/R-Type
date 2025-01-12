@@ -16,7 +16,8 @@
 #include "Enemy.hpp"
 #include "Shoot.hpp"
 #include "SpriteManager.hpp"
-#include "Life.hpp" // Ajout de la classe Life
+#include "Life.hpp"
+#include "Score.hpp"
 
 enum class GameState
 {
@@ -96,6 +97,7 @@ private:
     };
 
     Life m_life;
+    Score m_score;
 };
 
 #endif // GAME_HPP
