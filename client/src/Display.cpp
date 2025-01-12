@@ -39,7 +39,7 @@ void Game::handler_packets()
         _spriteMng.eraseAll();
         m_client._id = p.getId();
         std::cout << "new id" << p.getId() << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     auto spriteInf = p.getSpriteInfo();
    _containerEndFrameId.insert(spriteInf.idClient);

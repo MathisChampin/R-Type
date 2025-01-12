@@ -211,12 +211,23 @@ namespace NmpServer
             initEnnemies(elem.posX, elem.posY, elem.type);
     }
 
+    void ProtocoleHandler::joinNewLevel(asio::ip::udp::endpoint ip)
+    {
+        Entity player;
+        this->initPlayer();
+        auto lastPlayer = _vecPlayer.back().first;
+
+        std::cout << "send new id: " << lastPlayer.get_id() << std::endl;
+        Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
+        _refServer.get().send_data(joinPacket, ip);
+    }
+
     void ProtocoleHandler::clearPlayer()
     {
         _vecPlayer.clear();
-        for (auto it = _refServer.get()._vecPlayer.begin(); it != _refServer.get()._vecPlayer.end(); ++it) {
+        for (auto elem : _refServer.get()._vecPlayer) {
             std::cout << "send new id" << std::endl;
-            evalJoin();
+            joinNewLevel(elem);
         }
 
     }

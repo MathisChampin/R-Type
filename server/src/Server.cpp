@@ -221,18 +221,17 @@ namespace NmpServer
 
     void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
     {
+        // std::cout << "send packet" << std::endl;
+
+        // std::cout << "Sending to remote endpoint: " 
+        //           << endpoint.address().to_string() << ":"
+        //           << endpoint.port() << std::endl;
+
         _binary.serialize(packet, _bufferSerialize);
-
-        _socketSend.async_send_to(
-            asio::buffer(_bufferSerialize),
-            endpoint,
-            [](const std::error_code &error, std::size_t /*bytes_transferred*/) {
-                if (error) {
-                    std::cerr << "Error sending data: " << error.message() << std::endl;
-                }
-            }
-        );
-
+        // for (auto elem: _bufferSerialize) {
+        //     std::cout << "elem: " << elem << std::endl;
+        // }
+        _socketSend.send_to(asio::buffer(_bufferSerialize), endpoint);
         _bufferSerialize.clear();
     }
 
