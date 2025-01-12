@@ -16,22 +16,19 @@ include(cmake/CPM.cmake)
 
 CPMAddPackage(
     NAME nlohmann_json
-    GITHUB_REPOSITORY nlohmann/json
-    GIT_TAG v3.11.2
+    URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
 )
-
 
 CPMAddPackage(
     NAME sfml
-    GITHUB_REPOSITORY SFML/SFML
-    GIT_TAG 2.6.1
+    URL https://github.com/SFML/SFML/archive/refs/tags/2.6.1.tar.gz
 )
 
 CPMAddPackage(
     NAME asio
-    GITHUB_REPOSITORY chriskohlhoff/asio
-    GIT_TAG asio-1-30-2
+    URL https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-30-2.tar.gz
 )
+
 
 add_subdirectory(ECS)
 add_subdirectory(server)

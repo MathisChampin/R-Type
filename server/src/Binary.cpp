@@ -47,11 +47,14 @@ namespace NmpBinary
             buffer.push_back(static_cast<uint32_t>(sprite.sizeX));
             buffer.push_back(static_cast<uint32_t>(sprite.sizeY));
         } else if (opcode == NmpServer::EVENT::JOIN) { 
-            std::cout << "send id: " << id << std::endl;
             buffer.push_back(static_cast<uint32_t>(opcode));
             buffer.push_back(static_cast<uint32_t>(id));
         } else if (opcode == NmpServer::EVENT::EOI) {
             buffer.push_back(static_cast<uint32_t>(opcode));
+        } else if (opcode == NmpServer::EVENT::LIFE || opcode == NmpServer::EVENT::SCORE) {
+            int elem = packet.getElem();
+            buffer.push_back(static_cast<uint32_t>(opcode));
+            buffer.push_back(static_cast<uint32_t>(elem));
         }
     }
 

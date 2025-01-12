@@ -29,7 +29,7 @@ Test(ShootSystemTest, CreateShoot_Player) {
     auto &attributes = reg.get_components<component::attribute>();
 
     cr_assert_eq(positions.size(), 2, "Le joueur et un tir doivent être présents.");
-    cr_assert_eq(velocities[1].x, 20, "La vitesse X du tir du joueur devrait être 20.");
+    cr_assert_eq(velocities[1].x, 10, "La vitesse X du tir du joueur devrait être 10.");
     cr_assert_eq(velocities[1].y, 0, "La vitesse Y du tir du joueur devrait être 0.");
     cr_assert_eq(sizes[1].x, 9, "La taille X du tir devrait être 9.");
     cr_assert_eq(sizes[1].y, 9, "La taille Y du tir devrait être 9.");
@@ -54,7 +54,7 @@ Test(ShootSystemTest, CreateShoot_Ennemy1) {
     auto &attributes = reg.get_components<component::attribute>();
 
     cr_assert_eq(positions[1].x, 200, "La position X du tir ennemi devrait être 200.");
-    cr_assert_eq(velocities[1].x, -20, "La vitesse X du tir ennemi devrait être -20.");
+    cr_assert_eq(velocities[1].x, -5, "La vitesse X du tir ennemi devrait être -5.");
     cr_assert_eq(attributes[1]._type, component::attribute::Shoot, "Le type d'attribut devrait être 'Shoot'.");
     cr_assert_eq(sizes[1].x, 9, "La taille X du tir ennemi devrait être 9.");
 }

@@ -21,8 +21,9 @@ namespace NmpServer
             ~Parser() = default;
 
             void parseConfig();
+            void loadNewLevel(std::string file);
+            std::vector<infoEnnemies_t> getVector() const;
 
-            void forEachEnnemy(const std::function<void(int, int, int)> &createEnnemies);
 
         private:
             void displayVec();

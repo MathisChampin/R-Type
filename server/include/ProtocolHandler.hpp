@@ -2,6 +2,7 @@
 
 #include "Registry.hpp"
 #include "Packet.hpp"
+#include "Parser.hpp"
 
 #include "attribute.hpp"
 #include "controllable.hpp"
@@ -37,16 +38,20 @@ namespace NmpServer {
                 return _vecPlayer;
             }
 
+            void loadEnnemiesFromconfig(const std::vector<infoEnnemies_t> vecEnnemies);
+            void clearPlayer();
+    
         private:
             void evalMove();
             void evalQuit();
             void evalJoin();
 
             void initPlayer();
-            void initEnnemies();
             void initComponents();
+            void initEnnemies(int posX, int posY, int type);
+            void joinNewLevel(asio::ip::udp::endpoint ip);
         
-            void updateMoveEcs(Entity &player, component::controllable::Key &control, sparse_array<component::position>::value_type &pos);
+            void updateMoveEcs(Entity &player, component::controllable::Key &control, sparse_array<component::position>::value_type &pos, component::attribute &att);
             std::optional<asio::ip::udp::endpoint> foundEndpointByClient(Entity &player);
             uint32_t getId(component::attribute &att);
 
@@ -61,5 +66,6 @@ namespace NmpServer {
             std::vector<std::pair<Entity, asio::ip::udp::endpoint>> _vecPlayer;
             std::chrono::steady_clock::time_point _lastEnemyCreationTime;
             std::chrono::steady_clock::time_point _lastShootCreationTime;
+            int _nbPlayer{0};
     };
 }

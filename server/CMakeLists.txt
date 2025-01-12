@@ -15,6 +15,8 @@ set(SOURCES
     ${SRC_DIR}/Packet.cpp
     ${SRC_DIR}/ProtocoleHandler.cpp
     ${SRC_DIR}/Parser.cpp
+    ${SRC_DIR}/LobbyServerTCP.cpp
+
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -26,3 +28,5 @@ elseif(UNIX)
     target_include_directories(${PROJECT_NAME} PRIVATE ${Asio_SOURCE_DIR}/asio/include)
     target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs pthread)
 endif()
+
+target_link_libraries(r_type_server PRIVATE nlohmann_json)

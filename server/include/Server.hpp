@@ -4,6 +4,7 @@
 #include "Binary.hpp"
 #include "ProtocolHandler.hpp"
 #include "Registry.hpp"
+#include "Parser.hpp"
 #include <mutex>
 #include <queue>
 #include <thread>
@@ -23,7 +24,10 @@ namespace NmpServer {
             void extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec) override;
             void broadcast(Packet &packet) override;
             asio::ip::udp::endpoint getLastEndpoint() const;
+            void sendScore(int i, sparse_array<component::life> &lifes, sparse_array<component::attribute> &attributes);
+            void sendScores(int i, sparse_array<component::score> &scores, sparse_array<component::attribute> &attributes);
 
+            std::vector<asio::ip::udp::endpoint> _vecPlayer;
         private:
             void threadInput();
             void threaEvalInput();
@@ -31,6 +35,7 @@ namespace NmpServer {
             void threadShootEnnemies();
             void send_entity(registry &);
             void notifyShoot();
+            bool check_level(registry &);
 
             uint32_t getId(component::attribute &att);
 
@@ -39,6 +44,7 @@ namespace NmpServer {
             std::queue<Packet> _queue;
             std::mutex _queueMutex;
             std::mutex _ecsMutex;
+            std::mutex _playerMutex;
             std::condition_variable _cv;
             std::condition_variable _cvShoot;
             asio::io_context _io_context;
@@ -53,5 +59,6 @@ namespace NmpServer {
 
             NmpBinary::Binary _binary;
             ProtocoleHandler _ptp;
+            Parser _parser;
     };
 }

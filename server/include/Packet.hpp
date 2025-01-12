@@ -13,6 +13,13 @@ namespace NmpServer
             Packet(EVENT event, int x, int y);
             Packet(EVENT event, SpriteInfo &sprites);
             Packet(EVENT event);
+            /**
+             * @brief Constructs a Packet object.
+             *
+             * @param event The event associated with the packet.
+             * @param elem the info to print score or life.
+             */
+            Packet(EVENT event, int elem);
 
             Packet& operator=(const Packet &other);
 
@@ -24,6 +31,7 @@ namespace NmpServer
             
             int getX() const;
             int getY() const;
+            int getElem() const;
 
         private:
             EVENT _opCode;
@@ -32,5 +40,6 @@ namespace NmpServer
             std::size_t _id;
             int _x{0};
             int _y{0};
+            int _elem{0};
     };
 }
