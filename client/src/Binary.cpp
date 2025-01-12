@@ -71,9 +71,16 @@ namespace NmpBinary
             std::size_t id = static_cast<std::size_t>(buffer[1]);
             std::cout << "id deserialize: " << id << std::endl;
             return NmpClient::Packet(id, event);
-        } else if (event == NmpClient::EVENT::EOI)
+        } else if (event == NmpClient::EVENT::EOI) {
             return NmpClient::Packet(NmpClient::EVENT::EOI);
-        return NmpClient::Packet(event, 0, 0);
+        } else if (event == NmpClient::EVENT::SCORE) {
+            int score = static_cast<int>(buffer[1]);
+            return NmpClient::Packet(NmpClient::EVENT::SCORE, score);
+        } else if (event == NmpClient::EVENT::LIFE) {
+            int life = static_cast<int>(buffer[1]);
+            return NmpClient::Packet(NmpClient::EVENT::LIFE, life);
+        }
+        return NmpClient::Packet(event, 0,0);
     }
 
     void Binary::clearBuffer(std::vector<uint32_t> &buffer)

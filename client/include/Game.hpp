@@ -16,8 +16,7 @@
 #include "Enemy.hpp"
 #include "Shoot.hpp"
 #include "SpriteManager.hpp"
-// #include "client/TextureManager.hpp"
-// #include "client/Sprite.hpp"
+#include "Life.hpp" // Ajout de la classe Life
 
 enum class GameState
 {
@@ -96,6 +95,7 @@ private:
         {3, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
     };
 
+    Life m_life;
 };
 
 #endif // GAME_HPP

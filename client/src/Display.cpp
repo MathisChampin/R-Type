@@ -1,6 +1,8 @@
 #include "../include/Game.hpp"
 #include <iostream>
 #include <queue>
+#include <thread> // Pour std::this_thread::sleep_for
+#include <chrono> // Pour std::chrono::milliseconds
 
 // plusieurs cas diiférents
 // si id pas trouvé -> j'ajoute dans la map
@@ -23,18 +25,27 @@ void Game::launch_getter(std::size_t id, NmpClient::SpriteInfo &sp)
 void Game::handler_packets()
 {
     auto data = m_client.get_data();
-    if (!data.has_value())
-    {
-        return;
-    }
+    if (!data.has_value()) {return;}
     auto p = data.value();
-    if (p.getOpCode() != NmpClient::EVENT::SPRITE)
-    {
+    if (p.getOpCode() == NmpClient::EVENT::EOI) {
         std::cout << "END OF FRAME" << std::endl;
         std::cout << "count before: " << _spriteMng.getSpriteCount() << std::endl;
         _spriteMng.eraseOldSprite(_containerEndFrameId);
         std::cout << "count after: " << _spriteMng.getSpriteCount() << std::endl;
         return;
+    } else if (p.getOpCode() == NmpClient::EVENT::LIFE) {
+        int newLife = p.getElem();
+        std::cout << "LIFE: " << newLife << std::endl;
+        m_life.updateLife(newLife);
+    }else if (p.getOpCode() == NmpClient::EVENT::SCORE) {
+        int newScore = p.getElem();
+        std::cout << "SCORE: " << newScore << std::endl;
+        // m_score.updateScore(newScore);
+    } else if (p.getOpCode() == NmpClient::EVENT::JOIN) {
+        _spriteMng.eraseAll();
+        m_client._id = p.getId();
+        std::cout << "new id" << p.getId() << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     auto spriteInf = p.getSpriteInfo();
    _containerEndFrameId.insert(spriteInf.idClient);

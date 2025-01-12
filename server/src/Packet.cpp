@@ -26,6 +26,12 @@ namespace NmpServer
         //std::cout << "SERVER packet end of frame created" << std::endl;
     }
 
+    Packet::Packet(EVENT event, int elem) :
+        _opCode(event), _elem(elem)
+    {
+        //std::cout << "CLIENT packet score or life created" << std::endl;
+    }
+
     bool Packet::checkPacket()
     {
         if (_opCode != EVENT::MOVE && _opCode != EVENT::SHOOT && _opCode != EVENT::QUIT) {
@@ -79,6 +85,11 @@ namespace NmpServer
     int Packet::getY() const
     {
         return _y;
+    }
+
+    int Packet::getElem() const
+    {
+        return _elem;
     }
 
     Packet& Packet::operator=(const Packet &other) {
