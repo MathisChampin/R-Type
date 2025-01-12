@@ -1,6 +1,10 @@
 {
     "type": "shoot",
-    "texture": "assets/player/bullets.png",
+    "texture": "assets/bullet/1.png",
+    "texture2": "assets/bullet/2.png",
+    "texture3": "assets/bullet/3.png",
+    "texture4": "assets/bullet/4.png",
+    "texture5": "assets/bullet/5.png",
     "position": { "x": 800, "y": 400 },
-    "size": { "width": 50, "height": 50 }
+    "size": { "width": 150, "height": 150 }
 }

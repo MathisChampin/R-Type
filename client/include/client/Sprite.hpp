@@ -23,7 +23,7 @@ public:
         size.x = config["size"]["width"];
         size.y = config["size"]["height"];
 
-        if (config["type"] == "player" || config["type"] == "enemy")
+        if (config["type"] == "player" || config["type"] == "enemy" || config["type"] == "shoot")
         {
             for (int i = 1; i <= 5; ++i)
             {

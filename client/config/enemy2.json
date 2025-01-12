@@ -1,12 +1,9 @@
 {
     "type": "enemy",
-    "texture": "assets/enemy/sprite_1.png",
-    "texture2": "assets/enemy/sprite_2.png",
-    "texture3": "assets/enemy/sprite_3.png",
-    "texture4": "assets/enemy/sprite_4.png",
-    "texture5": "assets/enemy/sprite_5.png",
-    "texture6": "assets/enemy/sprite_6.png",
-    "texture7": "assets/enemy/sprite_7.png",
+    "texture": "assets/enemy/Dove_part_1_rotated.png",
+    "texture2": "assets/enemy/Dove_part_2_rotated.png",
+    "texture3": "assets/enemy/Dove_part_3_rotated.png",
+    "texture4": "assets/enemy/Dove_part_4_rotated.png",
     "position": { "x": 100, "y": 200 },
     "size": { "width": 50, "height": 50 }
 }
