@@ -12,20 +12,30 @@ if(NOT CLIENT_SOURCES)
     message(FATAL_ERROR "No source files found in ${CMAKE_SOURCE_DIR}/client/src/")
 endif()
 
+if(NOT DEFINED asio_SOURCE_DIR AND NOT EXISTS ${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include/asio.hpp)
+    message(FATAL_ERROR "ASIO not found. Ensure it is downloaded via CPM or exists in the expected directory.")
+endif()
+
 add_executable(r_type_client ${CLIENT_SOURCES} ${CLIENT_HEADERS})
 
 target_include_directories(r_type_client PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/client/include
-    ${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include
+    $<IF:$<BOOL:${asio_SOURCE_DIR}>,${asio_SOURCE_DIR}/asio/include,${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include>
     ${CMAKE_SOURCE_DIR}/_deps/sfml-src/include
 )
 
-# Lier les bibliothèques selon la plateforme
 if(UNIX)
-    target_link_libraries(r_type_client
-        PRIVATE sfml-system sfml-window sfml-graphics sfml-audio pthread
-    )
+    target_link_libraries(r_type_client PRIVATE sfml-system sfml-window sfml-graphics sfml-audio pthread)
+    add_custom_command(
+    TARGET r_type_client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/client/config
+        $<TARGET_FILE_DIR:r_type_client>/config
+    COMMENT "Copie des config dans le répertoire binaire"
+)
+
+    
 elseif(MSVC)
     set(SFML_LIB_DIR "${CMAKE_SOURCE_DIR}/_deps/sfml-build/lib/Debug")
     target_link_directories(r_type_client PRIVATE ${SFML_LIB_DIR})
@@ -57,6 +67,15 @@ elseif(MSVC)
             $<TARGET_FILE_DIR:r_type_client>
         COMMENT "Copie de OpenAL32.dll dans le répertoire binaire"
     )
+
+    add_custom_command(
+    TARGET r_type_client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/client/config
+        $<TARGET_FILE_DIR:r_type_client>
+    COMMENT "Copie des config dans le répertoire binaire"
+)
+
 endif()
 
 add_custom_command(
@@ -67,13 +86,6 @@ add_custom_command(
     COMMENT "Copie des assets dans le répertoire binaire"
 )
 
-add_custom_command(
-    TARGET r_type_client POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/client/config
-        $<TARGET_FILE_DIR:r_type_client>/config
-    COMMENT "Copie des config dans le répertoire binaire"
-)
 
 target_compile_definitions(r_type_client PRIVATE ASIO_STANDALONE)
 

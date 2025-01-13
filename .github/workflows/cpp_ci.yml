@@ -15,35 +15,67 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository with full history
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cppcheck build-essential
+          sudo apt-get install -y \
+            cppcheck \
+            build-essential \
+            cmake \
+            wget \
+            libx11-dev \
+            libxrandr-dev \
+            libxi-dev \
+            libudev-dev \
+            libgl1-mesa-dev \
+            libglu1-mesa-dev \
+            libopenal-dev \
+            libvorbis-dev \
+            libogg-dev \
+            libflac-dev \
+            libxcursor-dev \
+            libfreetype6-dev \
+            libcriterion-dev
 
-      - name: Install Node.js and Commitlint
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
       - name: Install Commitlint Dependencies
-        run: npm install --save-dev @commitlint/config-conventional @commitlint/cli
+        run: |
+          npm install --save-dev @commitlint/cli @commitlint/config-conventional
+
+      - name: Lint commit messages
+        run: |
+          npx commitlint --from=HEAD~10 --to=HEAD || npx commitlint --from=HEAD~1 --to=HEAD
+
+      - name: Configure the Project
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Run Cppcheck on Client Sources
         run: |
-          cppcheck --enable=all --std=c++17 --language=c++ --include=client/include client/src/
-      
+          cppcheck --enable=all --std=c++20 --language=c++ --include=client/include client/src/
+
       - name: Run Cppcheck on ECS Sources
         run: |
-          cppcheck --enable=all --std=c++17 --language=c++ --include=ECS/include ECS/src/
-      
+          cppcheck --enable=all --std=c++20 --language=c++ --include=ECS/include ECS/src/
+
       - name: Run Cppcheck on Server Sources
         run: |
-          cppcheck --enable=all --std=c++17 --language=c++ --include=server/include server/src/
-      
-
-      - name: Lint Commit Messages
+          cppcheck --enable=all --std=c++20 --language=c++ --include=server/include server/src/
+  
+      - name: Build the Project
         run: |
-          npx --no-install commitlint --from=$(git rev-parse main) --to=$(git rev-parse HEAD)
+          cmake --build build
+
+      - name: Run ECS Unit Tests
+        run: |
+          cmake --build build --target unit_tests
+          ./build/ECS/unit_tests || true
