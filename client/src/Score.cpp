@@ -39,7 +39,6 @@ void Score::updateScore(int newScore) {
     m_scoreText.setPosition(sf::Vector2f(1920 - 10, m_scoreText.getPosition().y));
 }
 
-
 void Score::render(sf::RenderWindow &window)
 {
     window.draw(m_scoreText);

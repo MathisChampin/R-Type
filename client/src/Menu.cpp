@@ -9,14 +9,14 @@ Menu::Menu(sf::RenderWindow &window)
         std::cerr << "Erreur : Impossible de charger la police !" << std::endl;
     }
 
-    if (!loadMusic())
-    {
-        std::cerr << "Erreur : Impossible de charger la musique !" << std::endl;
-    }
-    else
-    {
-        setupMusic();
-    }
+    // if (!loadMusic())
+    // {
+    //     std::cerr << "Erreur : Impossible de charger la musique !" << std::endl;
+    // }
+    // else
+    // {
+    //     setupMusic();
+    // }
 
     setupTitle();
     setupFooter();
@@ -28,16 +28,16 @@ bool Menu::loadFont()
     return m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf");
 }
 
-bool Menu::loadMusic()
-{
-    return m_music.openFromFile("./assets/music/background.mp3");
-}
+// bool Menu::loadMusic()
+// {
+//     return m_music.openFromFile("./assets/music/background.mp3");
+// }
 
-void Menu::setupMusic()
-{
-    m_music.setLoop(true);
-    m_music.play();
-}
+// void Menu::setupMusic()
+// {
+//     m_music.setLoop(true);
+//     m_music.play();
+// }
 
 void Menu::setupTitle()
 {

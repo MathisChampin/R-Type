@@ -1,13 +1,8 @@
 #include "../include/Game.hpp"
 #include <iostream>
 #include <queue>
-#include <thread> // Pour std::this_thread::sleep_for
-#include <chrono> // Pour std::chrono::milliseconds
-
-// plusieurs cas diiférents
-// si id pas trouvé -> j'ajoute dans la map
-// si id trouvé -> update
-// si pas mentionné erase -> probablement autre fonction
+#include <thread>
+#include <chrono>
 
 void Game::launch_getter(std::size_t id, NmpClient::SpriteInfo &sp)
 {
@@ -24,8 +19,15 @@ void Game::launch_getter(std::size_t id, NmpClient::SpriteInfo &sp)
 
 void Game::handler_packets()
 {
-    auto data = m_client.get_data();
-    if (!data.has_value()) {return;}
+    if (!m_client.has_value()) {
+        return;
+    }
+
+    auto data = m_client->get_data();
+    if (!data.has_value()) {
+        return;
+    }
+
     auto p = data.value();
     if (p.getOpCode() == NmpClient::EVENT::EOI) {
         std::cout << "END OF FRAME" << std::endl;
@@ -42,13 +44,14 @@ void Game::handler_packets()
         m_score.updateScore(newScore);
     } else if (p.getOpCode() == NmpClient::EVENT::JOIN) {
         _spriteMng.eraseAll();
-        m_client._id = p.getId();
-        std::cout << "new id" << p.getId() << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        if (m_client.has_value()) {
+            m_client->_id = p.getId();
+            std::cout << "new id" << p.getId() << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        }
     }
     auto spriteInf = p.getSpriteInfo();
-   _containerEndFrameId.insert(spriteInf.idClient);
-    //std::cout << "id sprite: " << spriteInf.id << std::endl;
+    _containerEndFrameId.insert(spriteInf.idClient);
     launch_getter(spriteInf.id, spriteInf);
 }
 
@@ -187,6 +190,10 @@ void Game::get_shoots(NmpClient::SpriteInfo &sp)
     {
         auto sprite = std::make_shared<Sprite>("../../client/config/shoot.json");
         sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
         _spriteMng.addSprite(sprite, sp.idClient);
     }
     handler_packets();
@@ -194,17 +201,15 @@ void Game::get_shoots(NmpClient::SpriteInfo &sp)
 
 void Game::run()
 {
-    // std::queue<NmpClient::Packet> queuePacket;
-
     while (m_window.isOpen())
     {
         float deltaTime = m_clock.restart().asSeconds();
         std::cout << "BEGIN LOOP\n";
         handleEvents();
-        // std::cout << "JE SORS DE RENDER" << std::endl;
-        // std::cout << "JE SORS DE HANDLEEVENTS" << std::endl;
 
-        handler_packets();
+        if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby) {
+            handler_packets();
+        }
 
         update(deltaTime);
         render(deltaTime);

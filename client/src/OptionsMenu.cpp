@@ -8,9 +8,9 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     {
         std::cerr << "Erreur : Impossible de charger la police !" << std::endl;
     }
-    m_music.setLoop(true);
-    m_music.play();
-    m_music.setVolume(m_volume);
+    // m_music.setLoop(true);
+    // m_music.play();
+    // m_music.setVolume(m_volume);
 
     setupTitleText();
     setupVolumeText();
@@ -56,7 +56,7 @@ void OptionsMenu::updateVolumeBar()
 
 void OptionsMenu::updateMusicVolume()
 {
-    m_music.setVolume(m_volume);
+    // m_music.setVolume(m_volume);
 }
 
 void OptionsMenu::handleEvent(const sf::Event &event)

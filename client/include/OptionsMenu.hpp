@@ -31,7 +31,7 @@ private:
     sf::RectangleShape m_volumeBarBackground;
     sf::RectangleShape m_volumeBarForeground;
     float m_volume;
-    sf::Music m_music;
+    // sf::Music m_music;
 
     void setupTitleText();
     void setupVolumeText();
