@@ -120,6 +120,7 @@ void System::shoot_system_ennemies(registry &reg)
         if (att._type == component::attribute::Ennemies2 && st._stateKey == component::state::stateKey::Alive) {
             Entity ennemies = reg.get_entity(i);
             create_shoot_ennemie2(ennemies, reg);
+            std::cout  << "je creer shoot for ennemi 2" << std::endl;
         }
         if ((att._type == component::attribute::Ennemies3 || att._type == component::attribute::Ennemies4) && st._stateKey == component::state::stateKey::Alive) {
             Entity ennemies = reg.get_entity(i);
