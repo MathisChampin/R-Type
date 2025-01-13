@@ -18,17 +18,17 @@ void position_ennemies(
     switch (att._type) {
         case component::attribute::Ennemies:
             pos.x += vel.x;
-            if (pos.x <= 0) {
+            if (pos.x <= -10) {
                 pos.x = 1960;
             }
             break;
         case component::attribute::Ennemies2:
             pos.y += vel.y;
             if (pos.y <= 0) {
-                pos.y = 1080;
+                vel.y = std::abs(vel.y);
             }
             if (pos.y >= 1080)
-                pos.y = 0;
+                vel.y = -std::abs(vel.y);
             break;
         case component::attribute::Ennemies3:
             pos.x += vel.x;
@@ -47,12 +47,10 @@ void position_ennemies(
             pos.x += vel.x;
             pos.y += vel.y;
 
-            if (pos.y <= 0) {
-                vel.y = std::abs(vel.y);
-            } else if (pos.y >= 1080) {
-                vel.y = -std::abs(vel.y);
+            if (pos.y <= -40) {
+                pos.y = 1090;
             }
-            if (pos.x <= 0) {
+            if (pos.x <= -10) {
                 pos.x = 1960;
             }
             break;

@@ -26,7 +26,7 @@ namespace NmpClient
     std::optional<Packet> Client::get_data()
     {
         asio::ip::udp::endpoint clientEndpoint;
-        std::vector<uint32_t> test;
+        std::vector<int> test;
         std::error_code ignored_error;
         _socket.non_blocking(true);
 
@@ -35,8 +35,8 @@ namespace NmpClient
             bytes = _socket.receive_from(asio::buffer(_bufferAsio), clientEndpoint, 0, ignored_error);
     
             if (bytes > 0) {
-                for (std::size_t i = 0; i < bytes / sizeof(uint32_t); ++i) {
-                    uint32_t val = reinterpret_cast<uint32_t *>(_bufferAsio.data())[i];
+                for (std::size_t i = 0; i < bytes / sizeof(int); ++i) {
+                    int val = reinterpret_cast<int *>(_bufferAsio.data())[i];
                     test.push_back(val);
                 }
     

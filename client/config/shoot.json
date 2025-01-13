@@ -5,6 +5,11 @@
     "texture3": "assets/bullet/3.png",
     "texture4": "assets/bullet/4.png",
     "texture5": "assets/bullet/5.png",
+    "texture6": "assets/bullet/6.png",
+    "texture7": "assets/bullet/7.png",
+    "texture8": "assets/bullet/8.png",
+    "texture9": "assets/bullet/9.png",
+    "texture10": "assets/bullet/10.png",
     "position": { "x": 800, "y": 400 },
     "size": { "width": 150, "height": 150 }
 }

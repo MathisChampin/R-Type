@@ -53,7 +53,7 @@ namespace NmpServer {
         
             void updateMoveEcs(Entity &player, component::controllable::Key &control, sparse_array<component::position>::value_type &pos, component::attribute &att);
             std::optional<asio::ip::udp::endpoint> foundEndpointByClient(Entity &player);
-            uint32_t getId(component::attribute &att);
+            int getId(component::attribute &att);
 
             std::reference_wrapper<Server> _refServer;
             registry _ecs;

@@ -12,13 +12,13 @@ namespace NmpBinary {
             Binary() = default;
             ~Binary() = default;
 
-            void serialize(NmpServer::Packet &packet,  std::vector<uint32_t> &buffer);
-            NmpServer::Packet deserialize(std::vector<uint32_t> &buffer);
-            void clearBuffer(std::vector<uint32_t> &buffer);
-            void printBuffer(std::vector<uint32_t> &buffer);
+            void serialize(NmpServer::Packet &packet,  std::vector<int> &buffer);
+            NmpServer::Packet deserialize(std::vector<int> &buffer);
+            void clearBuffer(std::vector<int> &buffer);
+            void printBuffer(std::vector<int> &buffer);
 
         private:
             std::vector<std::string> getAction(std::string &action);
-            uint8_t getOctets(uint32_t &code, unsigned int octets);
+            uint getOctets(int &code, unsigned int octets);
     };
 }

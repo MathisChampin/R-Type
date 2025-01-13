@@ -173,7 +173,7 @@ namespace NmpServer
         _ecs.add_component<component::score>(player, {0});
         _ecs.add_component<component::size>(player, {32, 14});
         _ecs.add_component<component::state>(player, {component::state::Alive});
-        _ecs.add_component<component::velocity>(player, {0, 0});
+        _ecs.add_component<component::velocity>(player, {10, 10});
         _ecs.add_component<component::idPlayer>(player, {player.get_id()});
         //_refServer.get()._vecPlayer.push_back(std::make_pair(player, lastEndpoint));
         _vecPlayer.push_back(std::make_pair(player, lastEndpoint));  
@@ -184,16 +184,26 @@ namespace NmpServer
 
         Entity ennemies = _ecs.spawn_entity();
 
-        if (type == 1)
+        if (type == 1) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
-        if (type == 2)
+            _ecs.add_component<component::velocity>(ennemies, {-2, 0});
+        }
+        if (type == 2) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies2});
-        if (type == 3)
+            _ecs.add_component<component::velocity>(ennemies, {0, -2});
+        }
+        if (type == 3) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies3});
-        if (type == 4)
+            _ecs.add_component<component::velocity>(ennemies, {-2, -2});
+        }
+        if (type == 4) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies4});
-        if (type == 5)
+            _ecs.add_component<component::velocity>(ennemies, {-2, -2});
+        }
+        if (type == 5) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies5});
+            _ecs.add_component<component::velocity>(ennemies, {0, 0});
+        }
 
         _ecs.add_component<component::level>(ennemies, {component::level::Level0});
         _ecs.add_component<component::controllable>(ennemies, {component::controllable::Key::NoKey});
@@ -202,7 +212,6 @@ namespace NmpServer
         _ecs.add_component<component::size>(ennemies, {33, 36});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
         _ecs.add_component<component::idPlayer>(ennemies, {ennemies.get_id()});
-        _ecs.add_component<component::velocity>(ennemies, {-2, 0});
     }
 
     void ProtocoleHandler::loadEnnemiesFromconfig(const std::vector<infoEnnemies_t> vecEnnemies)
