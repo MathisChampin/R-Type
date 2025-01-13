@@ -14,11 +14,11 @@ namespace NmpServer
         //std::cout << "SERVER packet sprite created" << std::endl;
     }
 
-    Packet::Packet(EVENT event, int x, int y) :
-        _opCode(event), _x(x), _y(y)
-    {
-        //std::cout << "SERVER packet pos created for id: " << _id <<  std::endl;
-    }
+    // Packet::Packet(EVENT event, int x, int y) :
+    //     _opCode(event), _x(x), _y(y)
+    // {
+    //     //std::cout << "SERVER packet pos created for id: " << _id <<  std::endl;
+    // }
 
     Packet::Packet(EVENT event) :
         _opCode(event)
@@ -26,8 +26,8 @@ namespace NmpServer
         //std::cout << "SERVER packet end of frame created" << std::endl;
     }
 
-    Packet::Packet(EVENT event, int elem) :
-        _opCode(event), _elem(elem)
+    Packet::Packet(EVENT event, int life, int score) :
+        _opCode(event), _life(life), _score(score)
     {
         //std::cout << "CLIENT packet score or life created" << std::endl;
     }
@@ -87,9 +87,14 @@ namespace NmpServer
         return _y;
     }
 
-    int Packet::getElem() const
+    int Packet::getLife() const
     {
-        return _elem;
+        return _life;
+    }
+
+    int Packet::getScore() const
+    {
+        return _score;
     }
 
     Packet& Packet::operator=(const Packet &other) {

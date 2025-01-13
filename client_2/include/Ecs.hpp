@@ -37,7 +37,7 @@ class GameECS {
             Entity player = m_ecs.spawn_entity();
     
             m_ecs.add_component(player, component::position{100, 750});
-            m_ecs.add_component(player, component::velocity{5, 15});
+            m_ecs.add_component(player, component::velocity{10, 10});
             m_ecs.add_component(player, component::size{240, 160});
             m_ecs.add_component(player, component::attribute{component::attribute::Player1});
             m_ecs.add_component(player, component::life{3});
@@ -95,10 +95,7 @@ class GameECS {
         void drawEnemies(sf::RenderWindow& window) {
             for (auto& enemySprite : enemySprites) {
                 enemySprite->drawSprite(window);
-            }
-            for (auto& shootSprite : enemyShoot) {
-                shootSprite->drawSprite(window);
-            }    
+            }  
         }
 
         void updatePositionEnemys()
@@ -137,25 +134,24 @@ class GameECS {
             auto &states = m_ecs.get_components<component::state>();
             std::vector<std::shared_ptr<Shoot>> shootsToRemove;
 
+            if (enemyShoot.empty())
+                return;
             for (size_t i = 0; i < attributes.size(); i++) {
                 auto &att = attributes[i];
                 auto &s = states[i];
-                std::cout << "je suis au dessus des if" << std::endl;
                 if (att._type == component::attribute::Shoot && s._stateKey == component::state::Alive) {
                     auto &pos = positions[i];
-                    std::cout << "je suis dans le if de set pos" << std::endl;
                     for (auto& shootSprite : enemyShoot) {
                         if (shootSprite->get_id() == i) {
                             shootSprite->setPosition(sf::Vector2f(pos.x, pos.y));
                         }
                     }
                 } else if (att._type == component::attribute::Shoot && s._stateKey == component::state::Dead) {
-                    std::cout << "je suis dans le if de supprime shoot" << std::endl;
-                    if (enemyShoot.empty()) {
-                        std::cout << "je suis vide" << std::endl;
-                        return;
-                    }
+                    std::cout << "je suis dans le else if" << std::endl;
                     for (auto it = enemyShoot.begin(); it != enemyShoot.end(); ++it) {
+                        if (enemyShoot.empty()) {
+                            return;
+                        }
                         if ((*it)->get_id() == i) {
                             shootsToRemove.push_back(*it);
                             enemyShoot.erase(it);
@@ -169,6 +165,8 @@ class GameECS {
             enemySpawnTimer += deltaTime;
 
             if (enemySpawnTimer >= 2.0f) {
+                if (enemySprites.empty())
+                    createEnemy();
                 sys.shoot_system_ennemies(m_ecs);
                 createShoot();
                 enemySpawnTimer = 0.0f;
@@ -180,13 +178,10 @@ class GameECS {
         void update(float deltaTime) {
             spawnEnemiesAtInterval(deltaTime);
             sys.position_system(m_ecs);
-            std::cout << "en dessous de position" << std::endl;
             updatePositionEnemys();
-            std::cout << "en dessous de update enemy" << std::endl;
             updatePositionShoots();
-            std::cout << "en dessous de shoot" << std::endl;
             sys.collision_system(m_ecs);
-            std::cout << "en dessous de colission" << std::endl;
+            sys.lose_system(m_ecs);
         }
 
         Entity getPlayer()
@@ -268,7 +263,17 @@ class GameECS {
             return sf::Vector2f(0, 0);
         }
 
-        
+        void check_lose(sf::RenderWindow &window)
+        {
+            auto &attributes = m_ecs.get_components<component::attribute>();
+            auto &states = m_ecs.get_components<component::state>();
+
+            for (size_t i = 0; i < attributes.size(); i++) {
+                if (attributes[i]._type == component::attribute::Player1 && states[i]._stateKey ==  component::state::Lose)
+                    window.close();
+            }
+        }
+
         registry getEcs()
         {
             return m_ecs;

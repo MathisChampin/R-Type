@@ -33,13 +33,12 @@ void Game::handler_packets()
         _spriteMng.eraseOldSprite(_containerEndFrameId);
         std::cout << "count after: " << _spriteMng.getSpriteCount() << std::endl;
         return;
-    } else if (p.getOpCode() == NmpClient::EVENT::LIFE) {
-        int newLife = p.getElem();
+    } else if (p.getOpCode() == NmpClient::EVENT::INFO) {
+        int newLife = p.getLife();
+        int newScore = p.getScore();
         std::cout << "LIFE: " << newLife << std::endl;
-        m_life.updateLife(newLife);
-    }else if (p.getOpCode() == NmpClient::EVENT::SCORE) {
-        int newScore = p.getElem();
         std::cout << "SCORE: " << newScore << std::endl;
+        m_life.updateLife(newLife);
         m_score.updateScore(newScore);
     } else if (p.getOpCode() == NmpClient::EVENT::JOIN) {
         _spriteMng.eraseAll();
