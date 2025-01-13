@@ -171,7 +171,7 @@ namespace NmpServer
         _ecs.add_component<component::life>(player, {3});
         _ecs.add_component<component::position>(player, {50, 500});
         _ecs.add_component<component::score>(player, {0});
-        _ecs.add_component<component::size>(player, {32, 14});
+        _ecs.add_component<component::size>(player, {100, 50});
         _ecs.add_component<component::state>(player, {component::state::Alive});
         _ecs.add_component<component::velocity>(player, {10, 10});
         _ecs.add_component<component::idPlayer>(player, {player.get_id()});
@@ -209,7 +209,7 @@ namespace NmpServer
         _ecs.add_component<component::controllable>(ennemies, {component::controllable::Key::NoKey});
         _ecs.add_component<component::life>(ennemies, {1});
         _ecs.add_component<component::position>(ennemies, {posX, posY});
-        _ecs.add_component<component::size>(ennemies, {33, 36});
+        _ecs.add_component<component::size>(ennemies, {50, 50});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
         _ecs.add_component<component::idPlayer>(ennemies, {ennemies.get_id()});
     }
