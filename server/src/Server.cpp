@@ -11,7 +11,7 @@ namespace NmpServer
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
         _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081)),
         _ptp(*this),
-        _parser("../../server/configFile/test.json")
+        _parser("../../server/configFile/level2.json")
     {
         _bufferAsio.fill(0);
         _parser.parseConfig();
