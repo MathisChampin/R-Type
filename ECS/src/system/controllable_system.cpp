@@ -27,16 +27,22 @@ int check_position_y(int posy, int input)
     return posy;
 }
 
-void move_player(component::controllable::Key key, int velx, int vely, int posx, int posy)
+int move_player_x(component::controllable::Key key, int velx, int posx)
+{
+    if (key == component::controllable::Left)
+        posx -= velx;
+    if (key == component::controllable::Right)
+        posx += velx;
+    return posx;
+}
+
+int move_player_y(component::controllable::Key key, int vely, int posy)
 {
     if (key == component::controllable::Down)
         posy += vely;
     if (key == component::controllable::Up)
         posy -= vely;
-    if (key == component::controllable::Left)
-        posx -= velx;
-    if (key == component::controllable::Right)
-        posx -= velx;
+    return posy;
 }
 
 void System::control_system_p1(registry& reg)
@@ -58,7 +64,8 @@ void System::control_system_p1(registry& reg)
                attributes[i]._type = component::attribute::Clear;
             }
 
-            move_player(ctl.active_key, vel.x, vel.y, pos.x, pos.y);
+            pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
+            pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
     }
 }
@@ -82,7 +89,8 @@ void System::control_system_p2(registry& reg)
                attributes[i]._type = component::attribute::Clear;
             }
 
-            move_player(ctl.active_key, vel.x, vel.y, pos.x, pos.y);
+            pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
+            pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
     }
 }
@@ -106,7 +114,8 @@ void System::control_system_p3(registry& reg)
                attributes[i]._type = component::attribute::Clear;
             }
 
-            move_player(ctl.active_key, vel.x, vel.y, pos.x, pos.y);
+            pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
+            pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
     }
 }
@@ -130,7 +139,8 @@ void System::control_system_p4(registry& reg)
                attributes[i]._type = component::attribute::Clear;
             }
 
-            move_player(ctl.active_key, vel.x, vel.y, pos.x, pos.y);
+            pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
+            pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
     }
 }

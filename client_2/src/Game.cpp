@@ -49,6 +49,7 @@ void Game::update(float deltaTime) {
 
 void Game::render() {
     window.clear();
+    _ecs.check_lose(window);
     background.drawParallax(window);
     if (!_ecs.checkPlayer())
         player.drawSprite(window);
