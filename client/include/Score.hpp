@@ -13,8 +13,8 @@ public:
     void render(sf::RenderWindow &window);
 
 private:
-    sf::Text m_scoreText;  // Texte affichant le score
-    int m_currentScore;    // Valeur actuelle du score
+    sf::Text m_scoreText;
+    int m_currentScore;
 };
 
 #endif // SCORE_HPP
