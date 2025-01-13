@@ -88,6 +88,18 @@ namespace NmpServer
             std::cout << "je t'envoie un ennemis 5" << std::endl;
             id = 7;
         }
+        if (att._type == component::attribute::Shoot2) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 8;
+        }
+        if (att._type == component::attribute::Shoot3) {
+            std::cout << "je t'envoie un shoot" << std::endl;
+            id = 9;
+        }
+        if (att._type == component::attribute::Shoot5) {
+            std::cout << "je t'envoie un shoot" << std::endl;
+            id = 10;
+        }
         return id;
     }
 
