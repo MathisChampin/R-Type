@@ -11,7 +11,7 @@ namespace NmpServer
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
         _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081)),
         _ptp(*this),
-        _parser("../../server/configFile/level1.json")
+        _parser("../../server/configFile/test.json")
     {
         _bufferAsio.fill(0);
         _parser.parseConfig();
@@ -215,6 +215,7 @@ namespace NmpServer
                 auto &ecs = _ptp.getECS();
                 sys.collision_system(ecs);
                 sys.position_system(ecs);
+                sys.lose_system(ecs);
                 copyEcs();
 
                 // if (!check_level(ecs)) {

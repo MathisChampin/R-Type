@@ -25,10 +25,10 @@ void position_ennemies(
         case component::attribute::Ennemies2:
             pos.y += vel.y;
             if (pos.y <= 0) {
-                pos.y = 1080;
+                vel.y = std::abs(vel.y);
             }
             if (pos.y >= 1080)
-                pos.y = 0;
+                vel.y = -std::abs(vel.y);
             break;
         case component::attribute::Ennemies3:
             pos.x += vel.x;
