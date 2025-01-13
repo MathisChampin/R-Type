@@ -98,9 +98,15 @@ namespace NmpServer
         auto &att = _attributes[i];
 
         Packet packet(EVENT::INFO, l.life, s.score);
-        size_t playerIndex = static_cast<size_t>(att._type) - static_cast<size_t>(component::attribute::Player1);
-        if (playerIndex < _vecPlayer.size()) {
-            send_data(packet, _vecPlayer[playerIndex]);
+        if (att._type == component::attribute::Player1) {
+            std::cout << "send life player 1" << std::endl;
+            send_data(packet, _vecPlayer[0]);
+        } else if (att._type == component::attribute::Player2) {
+            send_data(packet, _vecPlayer[1]);
+        } else if (att._type == component::attribute::Player3) {
+            send_data(packet, _vecPlayer[2]);
+        } else if (att._type == component::attribute::Player4) {
+            send_data(packet, _vecPlayer[3]);
         }
     }
 
