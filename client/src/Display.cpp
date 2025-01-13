@@ -40,7 +40,7 @@ void Game::handler_packets()
     }else if (p.getOpCode() == NmpClient::EVENT::SCORE) {
         int newScore = p.getElem();
         std::cout << "SCORE: " << newScore << std::endl;
-        // m_score.updateScore(newScore);
+        m_score.updateScore(newScore);
     } else if (p.getOpCode() == NmpClient::EVENT::JOIN) {
         _spriteMng.eraseAll();
         m_client._id = p.getId();
