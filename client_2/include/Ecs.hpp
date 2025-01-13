@@ -181,6 +181,7 @@ class GameECS {
             updatePositionEnemys();
             updatePositionShoots();
             sys.collision_system(m_ecs);
+            sys.lose_system(m_ecs);
         }
 
         Entity getPlayer()
@@ -262,7 +263,17 @@ class GameECS {
             return sf::Vector2f(0, 0);
         }
 
-        
+        void check_lose(sf::RenderWindow &window)
+        {
+            auto &attributes = m_ecs.get_components<component::attribute>();
+            auto &states = m_ecs.get_components<component::state>();
+
+            for (size_t i = 0; i < attributes.size(); i++) {
+                if (attributes[i]._type == component::attribute::Player1 && states[i]._stateKey ==  component::state::Lose)
+                    window.close();
+            }
+        }
+
         registry getEcs()
         {
             return m_ecs;
