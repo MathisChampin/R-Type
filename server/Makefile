@@ -220,125 +220,95 @@ rebuild_all/fast:
 	$(MAKE) $(MAKESILENT) -f ecs_build/CMakeFiles/rebuild_all.dir/build.make ecs_build/CMakeFiles/rebuild_all.dir/build
 .PHONY : rebuild_all/fast
 
-src/Binary.o: src/Binary.cpp.o
+# target to build an object file
+src/Binary.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Binary.o
 .PHONY : src/Binary.o
 
-# target to build an object file
-src/Binary.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Binary.cpp.o
-.PHONY : src/Binary.cpp.o
-
-src/Binary.i: src/Binary.cpp.i
+# target to preprocess a source file
+src/Binary.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Binary.i
 .PHONY : src/Binary.i
 
-# target to preprocess a source file
-src/Binary.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Binary.cpp.i
-.PHONY : src/Binary.cpp.i
-
-src/Binary.s: src/Binary.cpp.s
+# target to generate assembly for a file
+src/Binary.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Binary.s
 .PHONY : src/Binary.s
 
-# target to generate assembly for a file
-src/Binary.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Binary.cpp.s
-.PHONY : src/Binary.cpp.s
-
-src/Packet.o: src/Packet.cpp.o
+# target to build an object file
+src/Packet.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Packet.o
 .PHONY : src/Packet.o
 
-# target to build an object file
-src/Packet.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Packet.cpp.o
-.PHONY : src/Packet.cpp.o
-
-src/Packet.i: src/Packet.cpp.i
+# target to preprocess a source file
+src/Packet.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Packet.i
 .PHONY : src/Packet.i
 
-# target to preprocess a source file
-src/Packet.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Packet.cpp.i
-.PHONY : src/Packet.cpp.i
-
-src/Packet.s: src/Packet.cpp.s
+# target to generate assembly for a file
+src/Packet.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Packet.s
 .PHONY : src/Packet.s
 
-# target to generate assembly for a file
-src/Packet.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Packet.cpp.s
-.PHONY : src/Packet.cpp.s
+# target to build an object file
+src/Parser.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Parser.o
+.PHONY : src/Parser.o
 
-src/ProtocoleHandler.o: src/ProtocoleHandler.cpp.o
+# target to preprocess a source file
+src/Parser.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Parser.i
+.PHONY : src/Parser.i
+
+# target to generate assembly for a file
+src/Parser.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Parser.s
+.PHONY : src/Parser.s
+
+# target to build an object file
+src/ProtocoleHandler.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/ProtocoleHandler.o
 .PHONY : src/ProtocoleHandler.o
 
-# target to build an object file
-src/ProtocoleHandler.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/ProtocoleHandler.cpp.o
-.PHONY : src/ProtocoleHandler.cpp.o
-
-src/ProtocoleHandler.i: src/ProtocoleHandler.cpp.i
+# target to preprocess a source file
+src/ProtocoleHandler.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/ProtocoleHandler.i
 .PHONY : src/ProtocoleHandler.i
 
-# target to preprocess a source file
-src/ProtocoleHandler.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/ProtocoleHandler.cpp.i
-.PHONY : src/ProtocoleHandler.cpp.i
-
-src/ProtocoleHandler.s: src/ProtocoleHandler.cpp.s
+# target to generate assembly for a file
+src/ProtocoleHandler.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/ProtocoleHandler.s
 .PHONY : src/ProtocoleHandler.s
 
-# target to generate assembly for a file
-src/ProtocoleHandler.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/ProtocoleHandler.cpp.s
-.PHONY : src/ProtocoleHandler.cpp.s
-
-src/Server.o: src/Server.cpp.o
+# target to build an object file
+src/Server.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Server.o
 .PHONY : src/Server.o
 
-# target to build an object file
-src/Server.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Server.cpp.o
-.PHONY : src/Server.cpp.o
-
-src/Server.i: src/Server.cpp.i
+# target to preprocess a source file
+src/Server.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Server.i
 .PHONY : src/Server.i
 
-# target to preprocess a source file
-src/Server.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Server.cpp.i
-.PHONY : src/Server.cpp.i
-
-src/Server.s: src/Server.cpp.s
+# target to generate assembly for a file
+src/Server.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Server.s
 .PHONY : src/Server.s
 
-# target to generate assembly for a file
-src/Server.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/Server.cpp.s
-.PHONY : src/Server.cpp.s
-
-src/main.o: src/main.cpp.o
+# target to build an object file
+src/main.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/main.o
 .PHONY : src/main.o
 
-# target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
-
-src/main.i: src/main.cpp.i
+# target to preprocess a source file
+src/main.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/main.i
 .PHONY : src/main.i
 
-# target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
-
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
-
 # target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
+src/main.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/r_type_server.dir/build.make CMakeFiles/r_type_server.dir/src/main.s
+.PHONY : src/main.s
 
 # Help Target
 help:
@@ -362,6 +332,9 @@ help:
 	@echo "... src/Packet.o"
 	@echo "... src/Packet.i"
 	@echo "... src/Packet.s"
+	@echo "... src/Parser.o"
+	@echo "... src/Parser.i"
+	@echo "... src/Parser.s"
 	@echo "... src/ProtocoleHandler.o"
 	@echo "... src/ProtocoleHandler.i"
 	@echo "... src/ProtocoleHandler.s"

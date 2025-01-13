@@ -11,8 +11,7 @@ namespace NmpServer
         SPRITE = 4,
         JOIN = 5,
         EOI = 6,
-        LIFE = 7,
-        SCORE = 8,
+        INFO = 7
     };
 
     enum class DIRECTION : uint32_t {

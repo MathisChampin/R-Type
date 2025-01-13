@@ -33,13 +33,12 @@ void Game::handler_packets()
         _spriteMng.eraseOldSprite(_containerEndFrameId);
         std::cout << "count after: " << _spriteMng.getSpriteCount() << std::endl;
         return;
-    } else if (p.getOpCode() == NmpClient::EVENT::LIFE) {
-        int newLife = p.getElem();
+    } else if (p.getOpCode() == NmpClient::EVENT::INFO) {
+        int newLife = p.getLife();
+        int newScore = p.getScore();
         std::cout << "LIFE: " << newLife << std::endl;
-        m_life.updateLife(newLife);
-    }else if (p.getOpCode() == NmpClient::EVENT::SCORE) {
-        int newScore = p.getElem();
         std::cout << "SCORE: " << newScore << std::endl;
+        m_life.updateLife(newLife);
         m_score.updateScore(newScore);
     } else if (p.getOpCode() == NmpClient::EVENT::JOIN) {
         _spriteMng.eraseAll();
@@ -67,6 +66,86 @@ void Game::get_player(NmpClient::SpriteInfo &sp)
     else
     {
         auto sprite = std::make_shared<Sprite>("../../client/config/player.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies5(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy5.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies4(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy4.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies3(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy3.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies2(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy2.json");
         sprite.get()->setPosition(vecPos);
         _spriteMng.addSprite(sprite, sp.idClient);
     }

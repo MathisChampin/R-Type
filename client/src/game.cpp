@@ -17,7 +17,7 @@ Game::Game()
     initializeMenuOptions();
     initializeIpAddressText();
 
-    m_life.initialize("./assets/life/hearts.png");
+    m_life.initialize("./assets/life/hearts.png", 5, 15.f);
     m_score.initialize(m_font, 30, sf::Vector2f(20, 60));
 }
 

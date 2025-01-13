@@ -1,0 +1,9 @@
+{
+    "type": "enemy",
+    "texture": "assets/enemy/Lightning_part_1_rotated.png",
+    "texture2": "assets/enemy/Lightning_part_2_rotated.png",
+    "texture3": "assets/enemy/Lightning_part_3_rotated.png",
+    "texture4": "assets/enemy/Lightning_part_4_rotated.png",
+    "position": { "x": 100, "y": 200 },
+    "size": { "width": 50, "height": 50 }
+}

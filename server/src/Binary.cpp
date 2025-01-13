@@ -51,10 +51,12 @@ namespace NmpBinary
             buffer.push_back(static_cast<uint32_t>(id));
         } else if (opcode == NmpServer::EVENT::EOI) {
             buffer.push_back(static_cast<uint32_t>(opcode));
-        } else if (opcode == NmpServer::EVENT::LIFE || opcode == NmpServer::EVENT::SCORE) {
-            int elem = packet.getElem();
+        } else if (opcode == NmpServer::EVENT::INFO) {
+            int life = packet.getLife();
+            int score = packet.getScore();
             buffer.push_back(static_cast<uint32_t>(opcode));
-            buffer.push_back(static_cast<uint32_t>(elem));
+            buffer.push_back(static_cast<uint32_t>(life));
+            buffer.push_back(static_cast<uint32_t>(score));
         }
     }
 
