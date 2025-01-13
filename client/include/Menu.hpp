@@ -40,7 +40,7 @@ private:
     std::vector<sf::Text> m_options;
     std::vector<std::function<void()>> m_callbacks;
     int m_hoveredItem;
-    sf::Music m_music;
+    // sf::Music m_music;
 
     sf::Text m_title;
     sf::Text m_footer;
