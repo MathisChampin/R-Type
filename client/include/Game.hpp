@@ -1,3 +1,4 @@
+// Game.hpp
 #ifndef GAME_HPP
 #define GAME_HPP
 
@@ -16,19 +17,18 @@
 #include "Enemy.hpp"
 #include "Shoot.hpp"
 #include "SpriteManager.hpp"
-// #include "client/TextureManager.hpp"
-// #include "client/Sprite.hpp"
+#include "Life.hpp"
+#include "Score.hpp"
+#include "SoundManager.hpp"
 
-enum class GameState
-{
+enum class GameState {
     Menu,
     Playing,
     Options,
     PlayingInLobby
 };
 
-class Game
-{
+class Game {
 public:
     Game();
     ~Game();
@@ -41,6 +41,8 @@ private:
     void initializeFont();
     void initializeMenuOptions();
     void initializeIpAddressText();
+    void initializeSoundManager();
+    void initializeGameComponents();
 
     // Network methods
     void get_player();
@@ -54,14 +56,19 @@ private:
     // Game loop methods
     void update(float deltaTime);
     void render(float deltaTime);
-
-
+ 
     void get_player(NmpClient::SpriteInfo &sp);
     void get_ennemies(NmpClient::SpriteInfo &sp);
+    void get_ennemies2(NmpClient::SpriteInfo &sp);
+    void get_ennemies3(NmpClient::SpriteInfo &sp);
+    void get_ennemies4(NmpClient::SpriteInfo &sp);
+    void get_ennemies5(NmpClient::SpriteInfo &sp);
     void get_shoots(NmpClient::SpriteInfo &sp);
+
     void handler_packets();
     void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
     void destroy_uselles_sprites();
+
     // Member variables
     sf::RenderWindow m_window;
     sf::Font m_font;
@@ -72,10 +79,10 @@ private:
     OptionsMenu m_optionsMenu;
     ParallaxBackground m_menuBackground;
     ParallaxBackground m_playingBackground;
-    NmpClient::Client m_client;
+    std::optional<NmpClient::Client> m_client;
+    std::optional<Player> m_players;
 
     // Vectors to store players and enemies
-    Player m_players;
     std::vector<Enemy> m_enemies;
     std::vector<Shoot> m_shoots;
 
@@ -87,15 +94,28 @@ private:
     // Timing
     sf::Clock m_clock;
 
+    // Sound
+    SoundManager m_SoundManager;
+
     SpriteManager _spriteMng;
     std::unordered_set<std::size_t> _containerEndFrameId;
     std::queue<NmpClient::Packet> _queuePacket;
     std::map<std::size_t, std::function<void(NmpClient::SpriteInfo &sp)>> _mapHandlerPacket{
         {1, [this](NmpClient::SpriteInfo &sp) { get_player(sp); }},
-        {2, [this](NmpClient::SpriteInfo &sp) { get_ennemies(sp); }},
-        {3, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {2, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {3, [this](NmpClient::SpriteInfo &sp) { get_ennemies(sp); }},
+        {4, [this](NmpClient::SpriteInfo &sp) { get_ennemies2(sp); }},
+        {5, [this](NmpClient::SpriteInfo &sp) { get_ennemies3(sp); }},
+        {6, [this](NmpClient::SpriteInfo &sp) { get_ennemies4(sp); }},
+        {7, [this](NmpClient::SpriteInfo &sp) { get_ennemies5(sp); }},
+        {8, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {9, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {10, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+
     };
 
+    Life m_life;
+    Score m_score;
 };
 
 #endif // GAME_HPP

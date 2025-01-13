@@ -13,15 +13,21 @@ namespace NmpClient
         //std::cout << "CLIENT packet sprite created" << std::endl;
     }
 
-    Packet::Packet(EVENT event, int x, int y) : _opCode(event), _x(x), _y(y)
-    {
-        //std::cout << "CLIENT packet pos created" <<  std::endl;
-    }
+    // Packet::Packet(EVENT event, int x, int y) : _opCode(event), _x(x), _y(y)
+    // {
+    //     //std::cout << "CLIENT packet pos created" <<  std::endl;
+    // }
 
     Packet::Packet(EVENT event) :
         _opCode(event)
     {
         //std::cout << "CLIENT packet end of frame created" << std::endl;
+    }
+
+    Packet::Packet(EVENT event, int life, int score) :
+        _opCode(event), _life(life), _score(score)
+    {
+        //std::cout << "CLIENT packet score or life created" << std::endl;
     }
 
     bool Packet::checkPacket()
@@ -88,4 +94,13 @@ namespace NmpClient
         return _arg;
     }
 
+    int Packet::getLife() const
+    {
+        return _life;
+    }
+
+    int Packet::getScore() const
+    {
+        return _score;
+    }
 }

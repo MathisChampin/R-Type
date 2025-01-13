@@ -5,6 +5,7 @@
 #include "idPlayer.hpp"
 #include "attribute.hpp"
 #include "size.hpp"
+#include "velocity.hpp"
 
 Test(ControlSystem, MoveRight) {
     registry reg;
@@ -16,8 +17,10 @@ Test(ControlSystem, MoveRight) {
     Entity entity = reg.spawn_entity();
     reg.add_component<component::position>(entity, {40, 20});
     reg.add_component<component::controllable>(entity, {component::controllable::Right});
+    reg.add_component<component::attribute>(entity, {component::attribute::Player1});
+    reg.add_component<component::velocity>(entity, {10, 10});
 
-    sys.control_system(reg);
+    sys.control_system_p1(reg);
 
     const auto &pos = positions[entity.get_id()];
     cr_assert_eq(pos.x, 50, "Expected position x to be 50, but got %d", pos.x);
@@ -34,11 +37,13 @@ Test(ControlSystem, MoveUp) {
     Entity entity = reg.spawn_entity();
     reg.add_component<component::position>(entity, {30, 1030});
     reg.add_component<component::controllable>(entity, {component::controllable::Up});
+    reg.add_component<component::attribute>(entity, {component::attribute::Player1});
+    reg.add_component<component::velocity>(entity, {10, 10});
 
-    sys.control_system(reg);
+    sys.control_system_p1(reg);
 
     const auto &pos = positions[entity.get_id()];
-    cr_assert_eq(pos.x, 30, "Expected position x to be 0, but got %d", pos.x);
+    cr_assert_eq(pos.x, 30, "Expected position x to be 30, but got %d", pos.x);
     cr_assert_eq(pos.y, 1020, "Expected position y to be 1020, but got %d", pos.y);
 }
 
@@ -51,9 +56,11 @@ Test(ControlSystem, MoveDown) {
 
     Entity entity = reg.spawn_entity();
     reg.add_component<component::position>(entity, {30, 1030});
+    reg.add_component<component::attribute>(entity, {component::attribute::Player1});
     reg.add_component<component::controllable>(entity, {component::controllable::Down});
+    reg.add_component<component::velocity>(entity, {10, 10});
 
-    sys.control_system(reg);
+    sys.control_system_p1(reg);
 
     const auto &pos = positions[entity.get_id()];
     cr_assert_eq(pos.x, 30, "Expected position x to be 0, but got %d", pos.x);
@@ -69,9 +76,11 @@ Test(ControlSystem, MoveLeft) {
 
     Entity entity = reg.spawn_entity();
     reg.add_component<component::position>(entity, {30, 20});
+    reg.add_component<component::attribute>(entity, {component::attribute::Player1});
     reg.add_component<component::controllable>(entity, {component::controllable::Left});
+    reg.add_component<component::velocity>(entity, {10, 10});
 
-    sys.control_system(reg);
+    sys.control_system_p1(reg);
 
     const auto &pos = positions[entity.get_id()];
     cr_assert_eq(pos.x, 30, "Expected position x to be 30, but got %d", pos.x);

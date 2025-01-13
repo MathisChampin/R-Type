@@ -26,6 +26,10 @@ set(SOURCES
     ${SRC_SYSTEM}/level_system.cpp
     ${SRC_SYSTEM}/shoot_system.cpp
     ${SRC_SYSTEM}/kill_system.cpp
+    ${SRC_SYSTEM}/lose_system.cpp
+    ${SRC_SYSTEM}/win_system.cpp
+    ${SRC_SYSTEM}/collision_power_up_move_system.cpp
+    ${SRC_SYSTEM}/collision_power_up_shoot_system.cpp
 )
 
 set(MAIN_SOURCES

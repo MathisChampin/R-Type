@@ -34,13 +34,6 @@ namespace NmpServer
         this->displayVec();
     }
 
-    void Parser::forEachEnnemy(const std::function<void(int, int, int)> &createEnnemies)
-    {
-        for (const auto &ennemy : _vecEnnemies) {
-            createEnnemies(ennemy.type, ennemy.posX, ennemy.posY);
-        }
-    }
-
     void Parser::displayVec()
     {
         for (const auto &ennemy : _vecEnnemies) {
@@ -49,5 +42,16 @@ namespace NmpServer
                       << " posY: " << ennemy.posY
                       << " delaySpawn: " << ennemy.delaySpawn << std::endl;
         }
+    }
+
+    std::vector<infoEnnemies_t> Parser::getVector() const
+    {
+        return _vecEnnemies;
+    }
+
+    void Parser::loadNewLevel(std::string file)
+    {
+        _fileName = file;
+        parseConfig();
     }
 }

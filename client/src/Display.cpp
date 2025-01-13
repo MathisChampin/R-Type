@@ -1,11 +1,8 @@
 #include "../include/Game.hpp"
 #include <iostream>
 #include <queue>
-
-// plusieurs cas diiférents
-// si id pas trouvé -> j'ajoute dans la map
-// si id trouvé -> update
-// si pas mentionné erase -> probablement autre fonction
+#include <thread>
+#include <chrono>
 
 void Game::launch_getter(std::size_t id, NmpClient::SpriteInfo &sp)
 {
@@ -22,23 +19,39 @@ void Game::launch_getter(std::size_t id, NmpClient::SpriteInfo &sp)
 
 void Game::handler_packets()
 {
-    auto data = m_client.get_data();
-    if (!data.has_value())
-    {
+    if (!m_client.has_value()) {
         return;
     }
+
+    auto data = m_client->get_data();
+    if (!data.has_value()) {
+        return;
+    }
+
     auto p = data.value();
-    if (p.getOpCode() != NmpClient::EVENT::SPRITE)
-    {
+    if (p.getOpCode() == NmpClient::EVENT::EOI) {
         std::cout << "END OF FRAME" << std::endl;
         std::cout << "count before: " << _spriteMng.getSpriteCount() << std::endl;
         _spriteMng.eraseOldSprite(_containerEndFrameId);
         std::cout << "count after: " << _spriteMng.getSpriteCount() << std::endl;
         return;
+    } else if (p.getOpCode() == NmpClient::EVENT::INFO) {
+        int newLife = p.getLife();
+        int newScore = p.getScore();
+        std::cout << "LIFE: " << newLife << std::endl;
+        std::cout << "SCORE: " << newScore << std::endl;
+        m_life.updateLife(newLife);
+        m_score.updateScore(newScore);
+    } else if (p.getOpCode() == NmpClient::EVENT::JOIN) {
+        _spriteMng.eraseAll();
+        if (m_client.has_value()) {
+            m_client->_id = p.getId();
+            std::cout << "new id" << p.getId() << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        }
     }
     auto spriteInf = p.getSpriteInfo();
-   _containerEndFrameId.insert(spriteInf.idClient);
-    //std::cout << "id sprite: " << spriteInf.id << std::endl;
+    _containerEndFrameId.insert(spriteInf.idClient);
     launch_getter(spriteInf.id, spriteInf);
 }
 
@@ -56,6 +69,86 @@ void Game::get_player(NmpClient::SpriteInfo &sp)
     else
     {
         auto sprite = std::make_shared<Sprite>("../../client/config/player.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies5(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy5.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies4(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy4.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies3(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy3.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_ennemies2(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy2.json");
         sprite.get()->setPosition(vecPos);
         _spriteMng.addSprite(sprite, sp.idClient);
     }
@@ -97,6 +190,10 @@ void Game::get_shoots(NmpClient::SpriteInfo &sp)
     {
         auto sprite = std::make_shared<Sprite>("../../client/config/shoot.json");
         sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
         _spriteMng.addSprite(sprite, sp.idClient);
     }
     handler_packets();
@@ -104,17 +201,15 @@ void Game::get_shoots(NmpClient::SpriteInfo &sp)
 
 void Game::run()
 {
-    // std::queue<NmpClient::Packet> queuePacket;
-
     while (m_window.isOpen())
     {
         float deltaTime = m_clock.restart().asSeconds();
         std::cout << "BEGIN LOOP\n";
         handleEvents();
-        // std::cout << "JE SORS DE RENDER" << std::endl;
-        // std::cout << "JE SORS DE HANDLEEVENTS" << std::endl;
 
-        handler_packets();
+        if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby) {
+            handler_packets();
+        }
 
         update(deltaTime);
         render(deltaTime);

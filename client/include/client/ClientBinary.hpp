@@ -20,7 +20,7 @@ namespace NmpBinary
          * @param packet The packet to be serialized.
          * @param buffer The buffer where the serialized data will be stored.
          */
-        void serialize(NmpClient::Packet &packet, std::vector<uint32_t> &buffer);
+        void serialize(NmpClient::Packet &packet, std::vector<int> &buffer);
 
         /**
          * @brief Deserializes the given buffer into a packet.
@@ -28,24 +28,24 @@ namespace NmpBinary
          * @param buffer The buffer containing the serialized data.
          * @return NmpClient::Packet The deserialized packet.
          */
-        NmpClient::Packet deserialize(std::vector<uint32_t> &buffer);
+        NmpClient::Packet deserialize(std::vector<int> &buffer);
 
         /**
          * @brief Clears the given buffer.
          *
          * @param buffer The buffer to be cleared.
          */
-        void clearBuffer(std::vector<uint32_t> &buffer);
+        void clearBuffer(std::vector<int> &buffer);
 
         /**
          * @brief Prints the contents of the given buffer.
          *
          * @param buffer The buffer to be printed.
          */
-        void printBuffer(std::vector<uint32_t> &buffer);
+        void printBuffer(std::vector<int> &buffer);
 
     private:
         std::vector<std::string> getAction(std::string &action);
-        uint8_t getOctets(uint32_t &code, unsigned int octets);
+        uint getOctets(int &code, unsigned int octets);
     };
 }

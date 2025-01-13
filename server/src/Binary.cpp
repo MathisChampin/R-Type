@@ -16,16 +16,16 @@ namespace NmpBinary
         return buffAction;
     }
 
-    uint8_t Binary::getOctets(uint32_t &code, unsigned int octets)
+    uint Binary::getOctets(int &code, unsigned int octets)
     {
-        uint8_t value{0};
+        uint value{0};
 
         if (octets == 0 || octets == 8 || octets == 16 || octets == 24)
             value = (code >> 0) & 0xF;
         return value;
     }
 
-    void Binary::serialize(NmpServer::Packet &packet, std::vector<uint32_t> &buffer)
+    void Binary::serialize(NmpServer::Packet &packet, std::vector<int> &buffer)
     {
         NmpServer::EVENT opcode = packet.getOpCode();
         std::size_t id = packet.getId();
@@ -33,29 +33,34 @@ namespace NmpBinary
         int y = packet.getY();
         
         if (opcode == NmpServer::EVENT::MOVE) {
-            buffer.push_back(static_cast<uint32_t>(opcode));
-            buffer.push_back(static_cast<uint32_t>(x));
-            buffer.push_back(static_cast<uint32_t>(y));
+            buffer.push_back(static_cast<int>(opcode));
+            buffer.push_back(static_cast<int>(x));
+            buffer.push_back(static_cast<int>(y));
         }
         if (opcode == NmpServer::EVENT::SPRITE) {
-            buffer.push_back(static_cast<uint32_t>(opcode));
+            buffer.push_back(static_cast<int>(opcode));
             NmpServer::SpriteInfo sprite = packet.getSpriteInfo();
-            buffer.push_back(static_cast<uint32_t>(sprite.idClient));
-            buffer.push_back(static_cast<uint32_t>(sprite.id));
-            buffer.push_back(static_cast<uint32_t>(sprite.x));
-            buffer.push_back(static_cast<uint32_t>(sprite.y));
-            buffer.push_back(static_cast<uint32_t>(sprite.sizeX));
-            buffer.push_back(static_cast<uint32_t>(sprite.sizeY));
+            buffer.push_back(static_cast<int>(sprite.idClient));
+            buffer.push_back(static_cast<int>(sprite.id));
+            buffer.push_back(static_cast<int>(sprite.x));
+            buffer.push_back(static_cast<int>(sprite.y));
+            buffer.push_back(static_cast<int>(sprite.sizeX));
+            buffer.push_back(static_cast<int>(sprite.sizeY));
         } else if (opcode == NmpServer::EVENT::JOIN) { 
-            std::cout << "send id: " << id << std::endl;
-            buffer.push_back(static_cast<uint32_t>(opcode));
-            buffer.push_back(static_cast<uint32_t>(id));
+            buffer.push_back(static_cast<int>(opcode));
+            buffer.push_back(static_cast<int>(id));
         } else if (opcode == NmpServer::EVENT::EOI) {
-            buffer.push_back(static_cast<uint32_t>(opcode));
+            buffer.push_back(static_cast<int>(opcode));
+        } else if (opcode == NmpServer::EVENT::INFO) {
+            int life = packet.getLife();
+            int score = packet.getScore();
+            buffer.push_back(static_cast<int>(opcode));
+            buffer.push_back(static_cast<int>(life));
+            buffer.push_back(static_cast<int>(score));
         }
     }
 
-    NmpServer::Packet Binary::deserialize(std::vector<uint32_t> &buffer)
+    NmpServer::Packet Binary::deserialize(std::vector<int> &buffer)
     {
         std::size_t id = static_cast<std::size_t>(buffer[0]);
         std::cout << "id server deserialize: " << id << std::endl;
@@ -71,12 +76,12 @@ namespace NmpBinary
         return NmpServer::Packet(id, event);
     }
 
-    void Binary::clearBuffer(std::vector<uint32_t> &buffer)
+    void Binary::clearBuffer(std::vector<int> &buffer)
     {
         buffer.clear();
     }
 
-    void Binary::printBuffer(std::vector<uint32_t> &buffer)
+    void Binary::printBuffer(std::vector<int> &buffer)
     {
         for (auto elem : buffer) {
             std::cout << "bufferSerialize: " << elem << std::endl;

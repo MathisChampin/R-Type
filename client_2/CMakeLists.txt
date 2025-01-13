@@ -15,14 +15,32 @@ endif()
 add_executable(r_type_client_2 ${CLIENT_SOURCES_2} ${CLIENT_HEADERS_2})
 
 target_include_directories(r_type_client_2 PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_BINARY_DIR}/include
+    ${CMAKE_SOURCE_DIR}/client_2/include
     ${CMAKE_SOURCE_DIR}/_deps/sfml-src/include
 )
 
+set(ECS_DIR ${CMAKE_SOURCE_DIR}/ECS)
+if(EXISTS ${ECS_DIR})
+    add_subdirectory(${ECS_DIR} ${CMAKE_BINARY_DIR}/ecs_build_2)
+
+    target_include_directories(r_type_client_2 PRIVATE
+        ${ECS_DIR}/include
+        ${ECS_DIR}/include/component
+        ${ECS_DIR}/include/system
+    )
+    target_link_libraries(r_type_client_2 PRIVATE r_type_ecs)
+else()
+    message(FATAL_ERROR "ECS directory not found at ${ECS_DIR}")
+endif()
+
 if(UNIX)
     target_link_libraries(r_type_client_2
-        PRIVATE sfml-system sfml-window sfml-graphics sfml-audio pthread
+        PRIVATE
+        sfml-system
+        sfml-window
+        sfml-graphics
+        sfml-audio
+        pthread
     )
 elseif(MSVC)
     set(SFML_LIB_DIR "${CMAKE_SOURCE_DIR}/_deps/sfml-build/lib/Debug")
@@ -65,13 +83,11 @@ add_custom_command(
     COMMENT "Copie des assets dans le répertoire binaire"
 )
 
-target_compile_definitions(r_type_client_2 PRIVATE ASIO_STANDALONE)
-
-foreach(header ${CLIENT_HEADERS})
-    file(COPY ${header} DESTINATION ${CMAKE_BINARY_DIR}/include)
-endforeach()
-
 add_custom_command(
     TARGET r_type_client_2 PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/include/
 )
+
+foreach(header ${CLIENT_HEADERS_2})
+    file(COPY ${header} DESTINATION ${CMAKE_BINARY_DIR}/include)
+endforeach()

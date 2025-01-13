@@ -17,35 +17,35 @@ namespace NmpBinary
         return buffAction;
     }
 
-    uint8_t Binary::getOctets(uint32_t &code, unsigned int octets)
+    uint Binary::getOctets(int &code, unsigned int octets)
     {
-        uint8_t value{0};
+        uint value{0};
 
         if (octets == 0 || octets == 8 || octets == 16 || octets == 24)
             value = (code >> 0) & 0xF;
         return value;
     }
 
-    void Binary::serialize(NmpClient::Packet &packet, std::vector<uint32_t> &buffer)
+    void Binary::serialize(NmpClient::Packet &packet, std::vector<int> &buffer)
     {
         NmpClient::EVENT opcode = packet.getOpCode();
         std::size_t id = packet.getId();
 
         std::cout << "id serialize: " << id << std::endl;
         std::cout << static_cast<int>(opcode) << std::endl;
-        buffer.push_back(static_cast<uint32_t>(id));
-        buffer.push_back(static_cast<uint32_t>(opcode));
+        buffer.push_back(static_cast<int>(id));
+        buffer.push_back(static_cast<int>(opcode));
 
         if (opcode == NmpClient::EVENT::MOVE)
         {
             NmpClient::DIRECTION direction = packet.getArg().value();
             std::cout << static_cast<int>(direction) << std::endl;
 
-            buffer.push_back(static_cast<uint32_t>(direction));
+            buffer.push_back(static_cast<int>(direction));
         }
     }
 
-    NmpClient::Packet Binary::deserialize(std::vector<uint32_t> &buffer)
+    NmpClient::Packet Binary::deserialize(std::vector<int> &buffer)
     {
         NmpClient::EVENT event = static_cast<NmpClient::EVENT>(buffer[0]);
 
@@ -69,19 +69,25 @@ namespace NmpBinary
         else if (event == NmpClient::EVENT::JOIN)
         {
             std::size_t id = static_cast<std::size_t>(buffer[1]);
-            std::cout << "id deserialize: " << id << std::endl;
             return NmpClient::Packet(id, event);
-        } else if (event == NmpClient::EVENT::EOI)
+        } 
+        else if (event == NmpClient::EVENT::EOI) {
             return NmpClient::Packet(NmpClient::EVENT::EOI);
-        return NmpClient::Packet(event, 0, 0);
+        } 
+        else if (event == NmpClient::EVENT::INFO) {
+            int life = static_cast<int>(buffer[1]);
+            int score = static_cast<int>(buffer[2]);
+            return NmpClient::Packet(NmpClient::EVENT::INFO, life, score);
+        }
+        return NmpClient::Packet(event, 0,0);
     }
 
-    void Binary::clearBuffer(std::vector<uint32_t> &buffer)
+    void Binary::clearBuffer(std::vector<int> &buffer)
     {
         buffer.clear();
     }
 
-    void Binary::printBuffer(std::vector<uint32_t> &buffer)
+    void Binary::printBuffer(std::vector<int> &buffer)
     {
         for (auto elem : buffer)
         {

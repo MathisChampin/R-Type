@@ -1,3 +1,4 @@
+// Game.cpp
 #include "../include/Game.hpp"
 #include <iostream>
 #include <algorithm>
@@ -10,12 +11,33 @@ Game::Game()
       m_optionsMenu(m_window),
       m_menuBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.1f}}),
       m_playingBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.2f}}),
-      m_players(m_client)
+      m_client(std::nullopt),
+      m_players(std::nullopt),
+      m_SoundManager()
 {
     initializeWindow();
     initializeFont();
     initializeMenuOptions();
     initializeIpAddressText();
+
+    if (!m_SoundManager.loadMusic("background", "./assets/music/background.mp3"))
+    {
+        std::cerr << "Erreur : Impossible de charger la musique." << std::endl;
+    }
+    else
+    {
+        if (!m_SoundManager.playMusic("background", true))
+        {
+            std::cerr << "Erreur : La musique n'a pas pu être jouée." << std::endl;
+        }
+        else
+        {
+            std::cout << "Musique en lecture." << std::endl;
+        }
+    }
+
+    m_life.initialize("./assets/life/hearts.png", 5, 15.f);
+    m_score.initialize(m_font, 30, sf::Vector2f(20, 60));
 }
 
 Game::~Game()
@@ -51,26 +73,33 @@ void Game::initializeMenuOptions()
     m_menuBackground = ParallaxBackground(m_window.getSize(), menuLayers);
     m_playingBackground = ParallaxBackground(m_window.getSize(), playingLayers);
 
-    // Ajout des options du menu
-    m_menu.addOption("Jouer", [this]() {
-        std::cout << "Démarrage du jeu..." << std::endl;
-        m_currentState = GameState::Playing;
-    });
+    m_menu.addOption("Jouer", [this]()
+                     {
+                         std::cout << "Démarrage du jeu..." << std::endl;
+                         initializeGameComponents();
+                         m_currentState = GameState::Playing; });
 
-    m_menu.addOption("Créer un lobby", [this]() {
-        std::cout << "Création du lobby..." << std::endl;
-        m_currentState = GameState::PlayingInLobby;
-    });
+    m_menu.addOption("Créer un lobby", [this]()
+                     {
+                         std::cout << "Création du lobby..." << std::endl;
+                         initializeGameComponents();
+                         m_currentState = GameState::PlayingInLobby; });
 
-    m_menu.addOption("Options", [this]() {
-        std::cout << "Ouverture des options..." << std::endl;
-        m_currentState = GameState::Options;
-    });
+    m_menu.addOption("Options", [this]()
+                     {
+                         std::cout << "Ouverture des options..." << std::endl;
+                         m_currentState = GameState::Options; });
 
-    m_menu.addOption("Quitter", [this]() {
-        std::cout << "Fermeture du jeu..." << std::endl;
-        m_window.close();
-    });
+    m_menu.addOption("Quitter", [this]()
+                     {
+                         std::cout << "Fermeture du jeu..." << std::endl;
+                         m_window.close(); });
+}
+
+void Game::initializeGameComponents()
+{
+    m_client.emplace();  // Initialize client
+    m_players.emplace(*m_client);  // Initialize player with reference to client
 }
 
 void Game::initializeIpAddressText()
@@ -108,6 +137,13 @@ void Game::processInput(sf::Event &event)
     {
         if (event.key.code == sf::Keyboard::Escape)
         {
+            if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
+            {
+                // Reset game components when returning to menu
+                m_client = std::nullopt;
+                m_players = std::nullopt;
+            }
+            
             if (m_currentState != GameState::Menu)
             {
                 m_currentState = GameState::Menu;
@@ -119,7 +155,6 @@ void Game::processInput(sf::Event &event)
         }
     }
 
-    // Gestion des événements en fonction de l'état
     if (m_currentState == GameState::Menu)
     {
         m_menu.handleEvent(event);
@@ -137,10 +172,13 @@ void Game::update(float deltaTime)
         m_menuBackground.update(deltaTime);
         m_menu.update();
     }
-    else if (m_currentState == GameState::Playing)
+    else if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
     {
-        m_players.handleInput();
-        m_players.sendQueuedMovements();
+        if (m_players.has_value())
+        {
+            m_players->handleInput();
+            m_players->sendQueuedMovements();
+        }
         m_playingBackground.update(deltaTime);
     }
     else if (m_currentState == GameState::Options)
@@ -161,10 +199,12 @@ void Game::render(float deltaTime)
         m_window.draw(m_ipText);
         m_window.draw(m_ipField);
     }
-    else if (m_currentState == GameState::Playing)
+    else if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
     {
         m_playingBackground.render(m_window);
-        _spriteMng.drawAll(m_window, sf::seconds(deltaTime));     
+        _spriteMng.drawAll(m_window, sf::seconds(deltaTime));
+        m_life.render(m_window);
+        m_score.render(m_window);
     }
     else if (m_currentState == GameState::Options)
     {
