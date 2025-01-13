@@ -7,26 +7,6 @@
 #include <iostream>
 #include <map>
 
-int check_position_x(int posx, int input)
-{
-    posx += input;
-    if (posx >= 1870)
-        posx = -30;
-    if (posx <= -30)
-        posx = 1870;
-    return posx;
-}
-
-int check_position_y(int posy, int input)
-{
-    posy += input;
-    if (posy >= 1100)
-        posy = -30;
-    if (posy <= -30)
-        posy = 1100;
-    return posy;
-}
-
 int move_player_x(component::controllable::Key key, int velx, int posx)
 {
     if (key == component::controllable::Left) {
