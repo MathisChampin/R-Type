@@ -125,7 +125,7 @@ namespace NmpServer
                 Packet packet(EVENT::SPRITE, sprite);
                 broadcast(packet);
             }
-            if (st._stateKey == component::state::stateKey::Alive && 
+            if ((st._stateKey == component::state::stateKey::Alive || st._stateKey == component::state::stateKey::Lose) &&
                 (att._type == component::attribute::Player1 || 
                  att._type == component::attribute::Player2 || 
                  att._type == component::attribute::Player3 || 
