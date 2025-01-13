@@ -28,7 +28,7 @@ namespace NmpClient
          * @param x The x-coordinate associated with the packet.
          * @param y The y-coordinate associated with the packet.
          */
-        Packet(EVENT event, int x, int y);
+        // Packet(EVENT event, int x, int y);
 
         /**
          * @brief Constructs a Packet object.
@@ -44,7 +44,7 @@ namespace NmpClient
          * @param event The event associated with the packet.
          * @param elem the info to print score or life.
          */
-        Packet(EVENT event, int elem);
+        Packet(EVENT event, int life, int score);
 
         bool checkPacket() override;
         EVENT getOpCode() override;
@@ -54,7 +54,8 @@ namespace NmpClient
 
         int getX() const;
         int getY() const;
-        int getElem() const;
+        int getLife() const;
+        int getScore() const;
 
     private:
         EVENT _opCode;
@@ -63,6 +64,7 @@ namespace NmpClient
         std::size_t _id;
         int _x{0};
         int _y{0};
-        int _elem{0};
+        int _life{0};
+        int _score{0};
     };
 }

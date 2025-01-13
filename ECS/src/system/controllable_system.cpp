@@ -7,36 +7,34 @@
 #include <iostream>
 #include <map>
 
-int check_position_x(int posx, int input)
+int move_player_x(component::controllable::Key key, int velx, int posx)
 {
-    posx += input;
-    if (posx >= 1870)
-        posx = 1870;
-    if (posx <= 30)
-        posx = 30;
+    if (key == component::controllable::Left) {
+        posx -= velx;
+        if (posx <= -30)
+            posx = 1870;
+    }
+    if (key == component::controllable::Right) {
+        posx += velx;
+        if (posx >= 1870)
+            posx = -30;
+    }
     return posx;
 }
 
-int check_position_y(int posy, int input)
+int move_player_y(component::controllable::Key key, int vely, int posy)
 {
-    posy += input;
-    if (posy >= 1030)
-        posy = 1030;
-    if (posy <= 20)
-        posy = 20;
-    return posy;
-}
-
-void move_player(component::controllable::Key key, int velx, int vely, int posx, int posy)
-{
-    if (key == component::controllable::Down)
+    if (key == component::controllable::Down) {
         posy += vely;
-    if (key == component::controllable::Up)
+        if (posy >= 1100)
+            posy = -30;
+    }
+    if (key == component::controllable::Up) {
         posy -= vely;
-    if (key == component::controllable::Left)
-        posx -= velx;
-    if (key == component::controllable::Right)
-        posx -= velx;
+        if (posy <= -30)
+            posy = 1100;
+    }
+    return posy;
 }
 
 void System::control_system_p1(registry& reg)
@@ -58,7 +56,8 @@ void System::control_system_p1(registry& reg)
                attributes[i]._type = component::attribute::Clear;
             }
 
-            move_player(ctl.active_key, vel.x, vel.y, pos.x, pos.y);
+            pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
+            pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
     }
 }
@@ -82,7 +81,8 @@ void System::control_system_p2(registry& reg)
                attributes[i]._type = component::attribute::Clear;
             }
 
-            move_player(ctl.active_key, vel.x, vel.y, pos.x, pos.y);
+            pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
+            pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
     }
 }
@@ -106,7 +106,8 @@ void System::control_system_p3(registry& reg)
                attributes[i]._type = component::attribute::Clear;
             }
 
-            move_player(ctl.active_key, vel.x, vel.y, pos.x, pos.y);
+            pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
+            pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
     }
 }
@@ -130,7 +131,8 @@ void System::control_system_p4(registry& reg)
                attributes[i]._type = component::attribute::Clear;
             }
 
-            move_player(ctl.active_key, vel.x, vel.y, pos.x, pos.y);
+            pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
+            pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
     }
 }

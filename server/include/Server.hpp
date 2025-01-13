@@ -21,11 +21,13 @@ namespace NmpServer {
             void run() override;
             void get_data() override;
             void send_data(Packet &packet, asio::ip::udp::endpoint enpoint) override;
-            void extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec) override;
+            void extract_bytes(std::size_t &bytes, std::vector<int> &vec) override;
             void broadcast(Packet &packet) override;
             asio::ip::udp::endpoint getLastEndpoint() const;
-            void sendScore(int i, sparse_array<component::life> &lifes, sparse_array<component::attribute> &attributes);
-            void sendScores(int i, sparse_array<component::score> &scores, sparse_array<component::attribute> &attributes);
+            void sendScoreLife(int i);
+            void sendScore(int i);
+            void sendScores(int i);
+
 
             std::vector<asio::ip::udp::endpoint> _vecPlayer;
         private:
@@ -33,11 +35,12 @@ namespace NmpServer {
             void threaEvalInput();
             void threadSystem();
             void threadShootEnnemies();
-            void send_entity(registry &);
+            void send_entity();
             void notifyShoot();
             bool check_level(registry &);
+            void copyEcs();
 
-            uint32_t getId(component::attribute &att);
+            int getId(component::attribute &att);
 
             std::atomic<bool> _running;
             bool _shootReady;
@@ -53,12 +56,20 @@ namespace NmpServer {
             asio::ip::udp::endpoint _remote_endpoint;
             asio::ip::udp::endpoint _copy_endpoint;
 
-            std::vector<uint32_t> _bufferSerialize;
-            std::array<uint32_t, 256> _bufferAsio;
+            std::vector<int> _bufferSerialize;
+            std::array<int, 256> _bufferAsio;
             std::queue<Packet> _queueInput;
 
             NmpBinary::Binary _binary;
             ProtocoleHandler _ptp;
             Parser _parser;
+
+            sparse_array<component::position> _positions;
+            sparse_array<component::state> _states;
+            sparse_array<component::size> _sizes;
+            sparse_array<component::attribute> _attributes;
+            sparse_array<component::life> _lifes;
+            sparse_array<component::score> _scores;
+            registry _ecs;
     };
 }

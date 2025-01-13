@@ -52,15 +52,19 @@ bool is_enemy(const component::attribute &attribute)
     }
 }
 
-void handle_collision_with_player(size_t i, size_t j,
+void handle_collision_with_player(size_t i, size_t shoot_id, size_t j,
     sparse_array<component::life> &lifes,
     sparse_array<component::state> &states,
-    const sparse_array<component::attribute> &attributes)
+    const sparse_array<component::attribute> &attributes,
+    registry &reg)
 {
     auto &life = lifes[j];
     auto &state = states[j];
     auto &state_shoot = states[i];
+    Entity tmp = reg.get_entity(shoot_id);
 
+    if (is_player(attributes[tmp.get_id()]))
+        return;
     if (attributes[i]._type == component::attribute::Shoot5) {
         if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
             life.life -= 2;
@@ -173,7 +177,7 @@ void System::collision_system(registry &reg)
             if (!check_collision(positions, sizes, i, j))
                 continue;
             if (is_player(attributes[j])) {
-                handle_collision_with_player(i, j, lifes, states, attributes);
+                handle_collision_with_player(i, shoot_id.id, j, lifes, states, attributes, reg);
             } else if (is_enemy(attributes[j])) {
                         handle_collision_with_enemy(i, shoot_id.id, j, scores, states, attributes, reg);
             }

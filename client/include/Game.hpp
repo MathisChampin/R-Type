@@ -108,6 +108,10 @@ private:
         {5, [this](NmpClient::SpriteInfo &sp) { get_ennemies3(sp); }},
         {6, [this](NmpClient::SpriteInfo &sp) { get_ennemies4(sp); }},
         {7, [this](NmpClient::SpriteInfo &sp) { get_ennemies5(sp); }},
+        {8, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {9, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {10, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+
     };
 
     Life m_life;
