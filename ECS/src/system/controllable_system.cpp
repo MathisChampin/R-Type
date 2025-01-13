@@ -29,19 +29,31 @@ int check_position_y(int posy, int input)
 
 int move_player_x(component::controllable::Key key, int velx, int posx)
 {
-    if (key == component::controllable::Left)
+    if (key == component::controllable::Left) {
         posx -= velx;
-    if (key == component::controllable::Right)
+        if (posx <= -30)
+            posx = 1870;
+    }
+    if (key == component::controllable::Right) {
         posx += velx;
+        if (posx >= 1870)
+            posx = -30;
+    }
     return posx;
 }
 
 int move_player_y(component::controllable::Key key, int vely, int posy)
 {
-    if (key == component::controllable::Down)
+    if (key == component::controllable::Down) {
         posy += vely;
-    if (key == component::controllable::Up)
+        if (posy >= 1100)
+            posy = -30;
+    }
+    if (key == component::controllable::Up) {
         posy -= vely;
+        if (posy <= -30)
+            posy = 1100;
+    }
     return posy;
 }
 
