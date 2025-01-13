@@ -53,9 +53,9 @@ namespace NmpServer
 
     }
 
-    uint32_t Server::getId(component::attribute &att)
+    int Server::getId(component::attribute &att)
     {
-        uint32_t id = 0;
+        int id = 0;
 
         if (att._type == component::attribute::Player1 ||
             att._type == component::attribute::Player2 ||
@@ -262,7 +262,7 @@ namespace NmpServer
 
     void Server::get_data() 
     {
-        std::vector<uint32_t> rawData;
+        std::vector<int> rawData;
         std::error_code ignored_error;
 
         _socketRead.non_blocking(true);
@@ -293,10 +293,10 @@ namespace NmpServer
     }
 
 
-    void Server::extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec)
+    void Server::extract_bytes(std::size_t &bytes, std::vector<int> &vec)
     {
-        for (std::size_t i = 0; i < bytes / sizeof(uint32_t); i++) {
-            uint32_t val = _bufferAsio[i];
+        for (std::size_t i = 0; i < bytes / sizeof(int); i++) {
+            int val = _bufferAsio[i];
             vec.push_back(val);
         }
 

@@ -21,7 +21,7 @@ namespace NmpServer {
             void run() override;
             void get_data() override;
             void send_data(Packet &packet, asio::ip::udp::endpoint enpoint) override;
-            void extract_bytes(std::size_t &bytes, std::vector<uint32_t> &vec) override;
+            void extract_bytes(std::size_t &bytes, std::vector<int> &vec) override;
             void broadcast(Packet &packet) override;
             asio::ip::udp::endpoint getLastEndpoint() const;
             void sendScoreLife(int i);
@@ -40,7 +40,7 @@ namespace NmpServer {
             bool check_level(registry &);
             void copyEcs();
 
-            uint32_t getId(component::attribute &att);
+            int getId(component::attribute &att);
 
             std::atomic<bool> _running;
             bool _shootReady;
@@ -56,8 +56,8 @@ namespace NmpServer {
             asio::ip::udp::endpoint _remote_endpoint;
             asio::ip::udp::endpoint _copy_endpoint;
 
-            std::vector<uint32_t> _bufferSerialize;
-            std::array<uint32_t, 256> _bufferAsio;
+            std::vector<int> _bufferSerialize;
+            std::array<int, 256> _bufferAsio;
             std::queue<Packet> _queueInput;
 
             NmpBinary::Binary _binary;

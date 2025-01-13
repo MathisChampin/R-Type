@@ -6,13 +6,13 @@
         "delaySpawn": 0
     },
     {
-        "type": 1,
+        "type": 2,
         "posX": 1200,
         "posY": 900,
         "delaySpawn": 0
     },
     {
-        "type": 1,
+        "type": 3,
         "posX": 1500,
         "posY": 1000,
         "delaySpawn": 5
@@ -24,7 +24,7 @@
         "delaySpawn": 3
     },
     {
-        "type": 1,
+        "type": 4,
         "posX": 1400,
         "posY": 700,
         "delaySpawn": 4
@@ -36,7 +36,7 @@
         "delaySpawn": 2
     },
     {
-        "type": 1,
+        "type": 5,
         "posX": 1600,
         "posY": 900,
         "delaySpawn": 1
@@ -54,7 +54,7 @@
         "delaySpawn": 1
     },
     {
-        "type": 1,
+        "type": 3,
         "posX": 1800,
         "posY": 900,
         "delaySpawn": 1
