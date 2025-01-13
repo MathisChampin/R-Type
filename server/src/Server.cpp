@@ -11,7 +11,7 @@ namespace NmpServer
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
         _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081)),
         _ptp(*this),
-        _parser("../../server/configFile/test.json")
+        _parser("../../server/configFile/level1.json")
     {
         _bufferAsio.fill(0);
         _parser.parseConfig();
@@ -28,18 +28,29 @@ namespace NmpServer
         _running = true;
         _io_context.run();
 
-        std::thread inputThread(&Server::threadInput, this);
         std::thread systemThread(&Server::threadSystem, this);
-        std::thread handleInputThread(&Server::threaEvalInput, this);
         std::thread shootEnnemiesThread(&Server::threadShootEnnemies, this);
+        std::thread inputThread(&Server::threadInput, this);
+        std::thread handleInputThread(&Server::threaEvalInput, this);
 
-        std::cout << "ma mere" << std::endl;
         notifyShoot();
 
         inputThread.join();
         systemThread.join();
         handleInputThread.join();
         shootEnnemiesThread.join();
+    }
+
+    void Server::copyEcs()
+    {
+        auto &ecs = _ptp.getECS();
+        _positions = ecs.get_components<component::position>();
+        _states = ecs.get_components<component::state>();
+        _sizes = ecs.get_components<component::size>();
+        _attributes = ecs.get_components<component::attribute>();
+        _lifes = ecs.get_components<component::life>();
+        _scores = ecs.get_components<component::score>();
+
     }
 
     uint32_t Server::getId(component::attribute &att)
@@ -80,65 +91,30 @@ namespace NmpServer
         return id;
     }
 
-    void Server::sendScore(int i, sparse_array<component::life> &lifes, sparse_array<component::attribute> &attributes)
+    void Server::sendScoreLife(int i)
     {
-        //mutex.lock();
-        auto &l = lifes[i];
-        auto &att = attributes[i];
-        Packet packet(EVENT::LIFE, l.life);
+        auto &l = _lifes[i];
+        auto &s = _scores[i];
+        auto &att = _attributes[i];
 
-        if (att._type == component::attribute::Player1) {
-            std::cout << "send life player 1" << std::endl;
-            send_data(packet, _vecPlayer[0]);
-        } else if (att._type == component::attribute::Player2) {
-            send_data(packet, _vecPlayer[1]);
-        } else if (att._type == component::attribute::Player3) {
-            send_data(packet, _vecPlayer[2]);
-        } else if (att._type == component::attribute::Player4) {
-            send_data(packet, _vecPlayer[3]);
+        Packet packet(EVENT::INFO, l.life, s.score);
+        size_t playerIndex = static_cast<size_t>(att._type) - static_cast<size_t>(component::attribute::Player1);
+        if (playerIndex < _vecPlayer.size()) {
+            send_data(packet, _vecPlayer[playerIndex]);
         }
     }
 
-
-    void Server::sendScores(int i, sparse_array<component::score> &scores, sparse_array<component::attribute> &attributes)
+    void Server::send_entity()
     {
-        //mutex.lock();
-        auto &s = scores[i];
-        auto &att = attributes[i];
-        Packet packet(EVENT::SCORE, s.score);
-
-        if (att._type == component::attribute::Player1) {
-            std::cout << "send score player 1" << std::endl;
-            send_data(packet, _vecPlayer[0]);
-        } else if (att._type == component::attribute::Player2) {
-            send_data(packet, _vecPlayer[1]);
-        } else if (att._type == component::attribute::Player3) {
-            send_data(packet, _vecPlayer[2]);
-        } else if (att._type == component::attribute::Player4) {
-            send_data(packet, _vecPlayer[3]);
-        }
-    }
-
-    void Server::send_entity(registry &_ecs)
-    {
-        sparse_array<component::position> &positions = _ecs.get_components<component::position>();
-        sparse_array<component::state> &states = _ecs.get_components<component::state>();
-        sparse_array<component::size> &sizes = _ecs.get_components<component::size>();
-        sparse_array<component::attribute> &attributes = _ecs.get_components<component::attribute>();
-        sparse_array<component::life> &lifes = _ecs.get_components<component::life>();
-        sparse_array<component::score> &scores = _ecs.get_components<component::score>();
         int id = 0;
         //std::cout << "BEGIN SEND ENTITY" << std::endl;
-        for (size_t i = 0; i < states.size() && i < attributes.size(); i++) {
-            auto &st = states[i];
-            auto &att = attributes[i];
-            // auto &l = lifes[i];
-            // auto &a = attributes[i];
+        for (size_t i = 0; i < _states.size() && i < _attributes.size(); i++) {
+            auto &st = _states[i];
+            auto &att = _attributes[i];
             if (st._stateKey == component::state::stateKey::Alive) {
                 id = getId(att);
-                auto &pos = positions[i];
-                auto &s = sizes[i];
-                //std::cout << "id entity: "  << i << std::endl;
+                auto &pos = _positions[i];
+                auto &s = _sizes[i];
                 SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
                 broadcast(packet);
@@ -148,12 +124,11 @@ namespace NmpServer
                  att._type == component::attribute::Player2 || 
                  att._type == component::attribute::Player3 || 
                  att._type == component::attribute::Player4)) {
-                sendScore(i, lifes, attributes);
-                sendScores(i, scores, attributes);
+                sendScoreLife(i);
             }
         }
         Packet packet(EVENT::EOI);
-        broadcast(packet);
+            broadcast(packet);
         //std::cout << "END SEND ENTITY" << std::endl;
     }
 
@@ -174,6 +149,22 @@ namespace NmpServer
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
 
+    }
+
+    bool Server::check_level(registry &_ecs)
+    {
+        auto &att = _ecs.get_components<component::attribute>();
+        auto &st = _ecs.get_components<component::state>();
+
+        for (size_t i = 0; i < att.size(); i++) {
+            if ((att[i]._type == component::attribute::Ennemies ||
+            att[i]._type == component::attribute::Ennemies2 ||
+            att[i]._type == component::attribute::Ennemies3 ||
+            att[i]._type == component::attribute::Ennemies4 ||
+            att[i]._type == component::attribute::Ennemies5) && st[i]._stateKey == component::state::Alive)
+                return true;
+        }
+        return false;
     }
 
     void Server::threadInput()
@@ -198,32 +189,19 @@ namespace NmpServer
             }
             if (packet.getOpCode() == EVENT::JOIN)
                 _vecPlayer.push_back(_copy_endpoint);
-            _ptp.fillPacket(packet);
-            _ptp.executeOpCode();
+            {
+                std::unique_lock<std::mutex> lock(_ecsMutex);
+                _ptp.fillPacket(packet);
+                _ptp.executeOpCode();
+            }
             //lock player mutex
         }
-    }
-
-    bool Server::check_level(registry &_ecs)
-    {
-        auto &att = _ecs.get_components<component::attribute>();
-        auto &st = _ecs.get_components<component::state>();
-
-        for (size_t i = 0; i < att.size(); i++) {
-            if ((att[i]._type == component::attribute::Ennemies ||
-            att[i]._type == component::attribute::Ennemies2 ||
-            att[i]._type == component::attribute::Ennemies3 ||
-            att[i]._type == component::attribute::Ennemies4 ||
-            att[i]._type == component::attribute::Ennemies5) && st[i]._stateKey == component::state::Alive)
-                return true;
-        }
-        return false;
     }
 
     void Server::threadSystem()
     {
         System sys;
-        const auto frameDuration = std::chrono::milliseconds(70);
+        const auto frameDuration = std::chrono::milliseconds(40);
 
         while (_running) {
             {
@@ -231,14 +209,16 @@ namespace NmpServer
                 auto &ecs = _ptp.getECS();
                 sys.collision_system(ecs);
                 sys.position_system(ecs);
-                send_entity(ecs);
-                if (!check_level(ecs)) {
-                    sys.kill_system(ecs);
-                    _ptp.clearPlayer();
-                    _parser.loadNewLevel("../../server/configFile/level2.json");
-                    _ptp.loadEnnemiesFromconfig(_parser.getVector());
-                }
+                copyEcs();
+
+                // if (!check_level(ecs)) {
+                //     sys.kill_system(ecs);
+                //     _ptp.clearPlayer();
+                //     _parser.loadNewLevel("../../server/configFile/level2.json");
+                //     _ptp.loadEnnemiesFromconfig(_parser.getVector());
+                // }
             }
+            send_entity();
             std::this_thread::sleep_for(frameDuration);
         }
     }
