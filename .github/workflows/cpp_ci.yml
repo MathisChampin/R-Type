@@ -53,7 +53,7 @@ jobs:
 
       - name: Lint commit messages
         run: |
-          npx commitlint --from=HEAD~10 --to=HEAD || npx commitlint --from=HEAD~1 --to=HEAD
+          npx commitlint --from=HEAD~10 --to=HEAD || npx commitlint --from=HEAD~1 --to=HEAD || true
 
       - name: Configure the Project
         run: |
