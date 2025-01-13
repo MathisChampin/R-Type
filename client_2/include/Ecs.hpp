@@ -37,7 +37,7 @@ class GameECS {
             Entity player = m_ecs.spawn_entity();
     
             m_ecs.add_component(player, component::position{100, 750});
-            m_ecs.add_component(player, component::velocity{5, 15});
+            m_ecs.add_component(player, component::velocity{10, 10});
             m_ecs.add_component(player, component::size{240, 160});
             m_ecs.add_component(player, component::attribute{component::attribute::Player1});
             m_ecs.add_component(player, component::life{3});
