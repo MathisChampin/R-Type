@@ -11,19 +11,19 @@ int check_position_x(int posx, int input)
 {
     posx += input;
     if (posx >= 1870)
+        posx = -30;
+    if (posx <= -30)
         posx = 1870;
-    if (posx <= 30)
-        posx = 30;
     return posx;
 }
 
 int check_position_y(int posy, int input)
 {
     posy += input;
-    if (posy >= 1030)
-        posy = 1030;
-    if (posy <= 20)
-        posy = 20;
+    if (posy >= 1100)
+        posy = -30;
+    if (posy <= -30)
+        posy = 1100;
     return posy;
 }
 
