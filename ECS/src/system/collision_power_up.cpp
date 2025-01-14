@@ -143,7 +143,7 @@ void System::collision_power_up(registry &reg)
                 continue;
 
             if (check_collision_power_up(positions, sizes, i, j)) {
-                if (attributes[j]._type == component::attribute::PowerUpLife)
+                if (attributes[j]._type == component::attribute::PowerUpLife && states[j]._stateKey == component::state::Alive)
                     restore_life(attributes, reg, i, life);
                 //if (attributes[j]._type == component::attribute::PowerUpMove)
                 //    use_power_up_move(attributes, reg, i);
