@@ -1,5 +1,5 @@
 {
-    "type": "shoot",
+    "type": "shoot3Enemy",
     "texture": "assets/bullet/ennemies/tir_ennemi_3_1.png",
     "texture2": "assets/bullet/ennemies/tir_ennemi_3_2.png",
     "texture3": "assets/bullet/ennemies/tir_ennemi_3_3.png",

@@ -21,7 +21,12 @@ namespace NmpClient
         RIGHT = 2,
         UP = 3,
         DOWN = 4,
-        SHOOT = 5
+        SHOOT = 5,
+        SHOOT1 = 6,
+        SHOOT2 = 7,
+        SHOOT3 = 8,
+        SHOOT4 = 9,
+        SHOOT5 = 10
     };
 
     struct SpriteInfo
