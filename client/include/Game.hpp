@@ -65,6 +65,7 @@ private:
     void get_ennemies5(NmpClient::SpriteInfo &sp);
     void get_shoots(NmpClient::SpriteInfo &sp);
     void get_shoots2(NmpClient::SpriteInfo &sp);
+    void get_shoots3(NmpClient::SpriteInfo &sp);
 
     void handler_packets();
     void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
@@ -110,7 +111,7 @@ private:
         {6, [this](NmpClient::SpriteInfo &sp) { get_ennemies5(sp); }},
         {7, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
         {8, [this](NmpClient::SpriteInfo &sp) { get_shoots2(sp); }},
-        {9, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {9, [this](NmpClient::SpriteInfo &sp) { get_shoots3(sp); }},
         {10, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
 
     };
