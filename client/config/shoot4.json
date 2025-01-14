@@ -1,0 +1,14 @@
+{
+    "type": "shoot",
+    "texture": "assets/bullet/ennemies/tir_ennemi_3_1.png",
+    "texture2": "assets/bullet/ennemies/tir_ennemi_3_2.png",
+    "texture3": "assets/bullet/ennemies/tir_ennemi_3_3.png",
+    "texture4": "assets/bullet/ennemies/tir_ennemi_3_4.png",
+    "texture5": "assets/bullet/ennemies/tir_ennemi_3_5.png",
+    "texture6": "assets/bullet/ennemies/tir_ennemi_3_6.png",
+    "texture7": "assets/bullet/ennemies/tir_ennemi_3_7.png",
+    "texture8": "assets/bullet/ennemies/tir_ennemi_3_8.png",
+    "texture9": "assets/bullet/ennemies/tir_ennemi_3_9.png",
+    "position": { "x": 800, "y": 400 },
+    "size": { "width": 150, "height": 150 }
+}
