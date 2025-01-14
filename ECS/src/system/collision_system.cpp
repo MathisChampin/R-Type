@@ -169,7 +169,12 @@ void System::collision_system(registry &reg)
         attributes[i]._type != component::attribute::Shoot2 &&
         attributes[i]._type != component::attribute::Shoot3 &&
         attributes[i]._type != component::attribute::Shoot5 &&
-        attributes[i]._type != component::attribute::Shoot6)
+        attributes[i]._type != component::attribute::Shoot6 && 
+        attributes[i]._type != component::attribute::Shoot7 &&
+        attributes[i]._type != component::attribute::Shoot8 &&
+        attributes[i]._type != component::attribute::Shoot9 &&
+        attributes[i]._type != component::attribute::Shoot10 &&
+        attributes[i]._type != component::attribute::Shoot1)
             continue;
         auto &shoot_id = idPlayers[i];
         for (size_t j = 0; j < attributes.size(); j++) {

@@ -74,6 +74,7 @@ void position_shoot(
 
     switch (att._type) {
         case component::attribute::Shoot:
+        case component::attribute::Shoot1:
         case component::attribute::Shoot2:
             pos.x += vel.x;
             if (pos.x <= -30 || pos.x >= 1930) {
@@ -82,6 +83,7 @@ void position_shoot(
             break;
 
         case component::attribute::Shoot3:
+        case component::attribute::Shoot7:
             pos.x += vel.x;
             pos.y += vel.y;
             if (pos.y <= 0) {
@@ -96,6 +98,7 @@ void position_shoot(
             }
             break;
         case component::attribute::Shoot4:
+        case component::attribute::Shoot8:
             pos.x += vel.x;
             pos.y += vel.y;
             if (pos.y >= 900) {
@@ -108,6 +111,7 @@ void position_shoot(
             }
             break;
         case component::attribute::Shoot5:
+        case component::attribute::Shoot9:
             pos.x += vel.x;
             pos.y += vel.y;
             if (pos.y <= 0) {
@@ -129,6 +133,7 @@ void position_shoot(
             }
             break;
         case component::attribute::Shoot6:
+        case component::attribute::Shoot10:
             pos.x += vel.x;
             pos.y += vel.y;
             if (pos.y <= 0) {
