@@ -20,10 +20,15 @@ void LobbyServerTCP::acceptConnection() {
     auto socket = std::make_shared<asio::ip::tcp::socket>(acceptor_.get_executor());
     acceptor_.async_accept(*socket, [this, socket](std::error_code ec) {
         if (!ec) {
-            std::cout << "New client connected!" << std::endl;
+            auto remoteEndpoint = socket->remote_endpoint();
+            auto clientIP = remoteEndpoint.address().to_string();
+            auto clientPort = remoteEndpoint.port();
+
+            std::cout << "New client connected from IP: " << clientIP << " on port: " << clientPort << std::endl;
+
             handleClient(socket);
         }
-        acceptConnection(); 
+        acceptConnection();
     });
 }
 
@@ -109,6 +114,13 @@ std::string LobbyServerTCP::processRequest(const std::string& request, const std
         return joinLobby(lobbyId, playerId);
     } else if (command == "LEAVE_LOBBY") {
         return leaveLobby(playerId);
+    } else if (command == "SEND_MESSAGE") {
+        std::string message;
+        std::getline(sstream, message); 
+        message = message.substr(1);
+        return sendMessage(playerId, message);
+    } else if (command == "GET_CHAT_HISTORY") {
+        return getChatHistory(playerId);
     } else {
         return "ERROR: Unknown command\n";
     }
@@ -130,7 +142,7 @@ std::string LobbyServerTCP::createLobby(const std::string& lobbyId) {
     if (lobbies_.find(lobbyId) != lobbies_.end()) {
         return "ERROR: Lobby already exists.";
     }
-    lobbies_[lobbyId] = Lobby{lobbyId, {}};
+    lobbies_[lobbyId] = Lobby{lobbyId, {}, {}};
     return "Lobby created with ID: " + lobbyId;
 }
 
@@ -169,4 +181,56 @@ bool LobbyServerTCP::isPlayerInLobby(const std::string& playerId) const {
         }
     }
     return false;
+}
+
+std::string LobbyServerTCP::sendMessage(const std::string& playerId, const std::string& message) {
+    std::string lobbyId = "";
+    for (const auto& [lid, lobby] : lobbies_) {
+        if (std::find(lobby.players.begin(), lobby.players.end(), playerId) != lobby.players.end()) {
+            lobbyId = lid;
+            break;
+        }
+    }
+
+    if (lobbyId.empty()) {
+        return "ERROR: You are not in any lobby.\n";
+    }
+
+    std::string fullMessage = playerId + ": " + message;
+    lobbies_[lobbyId].chatHistory.push_back(fullMessage);
+
+    for (const auto& player : lobbies_[lobbyId].players) {
+        for (auto const& [socket, id] : clientPlayerIds_) {
+            if (id == player) {
+                asio::async_write(*socket, asio::buffer(fullMessage + "\n"), [](std::error_code ec, std::size_t) {
+                    if (ec) {
+                        std::cerr << "Error sending message to player: " << ec.message() << std::endl;
+                    }
+                });
+            }
+        }
+    }
+
+    return "";
+}
+
+std::string LobbyServerTCP::getChatHistory(const std::string& playerId) {
+    std::string lobbyId = "";
+    for (const auto& [lid, lobby] : lobbies_) {
+        if (std::find(lobby.players.begin(), lobby.players.end(), playerId) != lobby.players.end()) {
+            lobbyId = lid;
+            break;
+        }
+    }
+
+    if (lobbyId.empty()) {
+        return "ERROR: You are not in any lobby.\n";
+    }
+
+    std::string chatHistoryStr = "Chat History:\n";
+    for (const auto& message : lobbies_[lobbyId].chatHistory) {
+        chatHistoryStr += message + "\n";
+    }
+
+    return chatHistoryStr;
 }
