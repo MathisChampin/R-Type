@@ -4,14 +4,11 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include "TextureManager.hpp"
-// #include "Game.hpp"
 #include <iostream>
 #include "../Type.hpp"
 
-class Sprite
-{
+class Sprite {
 public:
-
     Sprite(const std::string &configPath)
     {
         loadFromConfig(configPath);
@@ -27,24 +24,32 @@ public:
         position.y = config["position"]["y"];
         size.x = config["size"]["width"];
         size.y = config["size"]["height"];
+
         if (config["type"] == "player")
         {
             m_type = Type::Player;
+            animationSpeed = 10.0f;
         }
         else if (config["type"] == "enemy")
         {
             m_type = Type::Enemy;
+            animationSpeed = 10.0f;
         }
         else if (config["type"] == "shoot")
         {
             m_type = Type::Bullet;
+            animationSpeed = 10.0f;
         }
         else if (config["type"] == "explosions")
         {
             m_type = Type::Explosions;
+            animationSpeed = 1.0f;
+            frameDelay = 0.05f;
+            isAnimationComplete = false;
         }
 
-        if (config["type"] == "player" || config["type"] == "enemy" || config["type"] == "shoot" || config["type"] == "explosions")
+        if (config["type"] == "player" || config["type"] == "enemy" || 
+            config["type"] == "shoot" || config["type"] == "explosions")
         {
             for (int i = 1; i <= 5; ++i)
             {
@@ -60,7 +65,6 @@ public:
             {
                 currentTextureIndex = 0;
                 sprite.setTexture(*m_textures[currentTextureIndex]);
-                animationSpeed = 10.0f;
             }
         }
         else
@@ -80,19 +84,50 @@ public:
         {
             animationTimer += deltaTime;
 
-            if (animationTimer.asSeconds() >= 1.0f / animationSpeed)
+            if (m_type == Type::Explosions)
             {
-                currentTextureIndex = (currentTextureIndex + 1) % m_textures.size();
-                sprite.setTexture(*m_textures[currentTextureIndex]);
-                updateSpriteScale();
-                animationTimer = sf::Time::Zero;
+                if (animationTimer.asSeconds() >= frameDelay)
+                {
+                    if (currentTextureIndex < m_textures.size() - 1)
+                    {
+                        currentTextureIndex++;
+                        sprite.setTexture(*m_textures[currentTextureIndex]);
+                        updateSpriteScale();
+                        animationTimer = sf::Time::Zero;
+                    }
+                    else
+                    {
+                        if (!isAnimationComplete)
+                        {
+                            isAnimationComplete = true;
+                            endDelay = sf::Time::Zero;
+                        }
+                        else if (endDelay.asSeconds() < 1.0f)
+                        {
+                            endDelay += deltaTime;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (animationTimer.asSeconds() >= 1.0f / animationSpeed)
+                {
+                    currentTextureIndex = (currentTextureIndex + 1) % m_textures.size();
+                    sprite.setTexture(*m_textures[currentTextureIndex]);
+                    updateSpriteScale();
+                    animationTimer = sf::Time::Zero;
+                }
             }
         }
     }
 
     void draw(sf::RenderWindow &window)
     {
-        window.draw(sprite);
+        if (m_type != Type::Explosions || (m_type == Type::Explosions && !isAnimationComplete))
+        {
+            window.draw(sprite);
+        }
     }
 
     void setPosition(const sf::Vector2f &pos)
@@ -121,6 +156,11 @@ public:
         return m_type;
     }
 
+    bool hasFinishedAnimation() const
+    {
+        return m_type == Type::Explosions && isAnimationComplete && endDelay.asSeconds() >= 1.0f;
+    }
+
 private:
     void updateSpriteScale()
     {
@@ -141,5 +181,8 @@ private:
 
     size_t currentTextureIndex = 0;
     float animationSpeed = 0.0f;
+    float frameDelay = 0.0f;
     sf::Time animationTimer;
+    sf::Time endDelay;
+    bool isAnimationComplete = false;
 };
