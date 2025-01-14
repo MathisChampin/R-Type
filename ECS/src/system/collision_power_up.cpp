@@ -8,6 +8,7 @@
 #include "idPlayer.hpp"
 #include "velocity.hpp"
 #include <iostream>
+#include <chrono>
 
 bool check_collision_power_up(sparse_array<component::position> &positions,
     sparse_array<component::size> &sizes,
@@ -23,6 +24,50 @@ bool check_collision_power_up(sparse_array<component::position> &positions,
     bool collision_y = (pos1.y < pos2.y + size2.y) && (pos1.y + size1.y > pos2.y);
 
     return collision_x && collision_y;
+}
+
+void restore_life(sparse_array<component::attribute> &att, registry &reg, size_t i, sparse_array<component::life> &life)
+{
+    System sys;
+
+    if (life[i].life < 3) {
+        if (att[i]._type == component::attribute::Player1)
+            sys.power_up_life_p1(reg);
+        if (att[i]._type == component::attribute::Player2)
+            sys.power_up_life_p2(reg);
+        if (att[i]._type == component::attribute::Player3)
+            sys.power_up_life_p3(reg);
+        if (att[i]._type == component::attribute::Player4)
+            sys.power_up_life_p4(reg);    
+    }
+}
+
+void reset_power_up_move(sparse_array<component::attribute> &att, registry &reg)
+{
+    System sys;
+    for (size_t i = 0; i < att.size(); i++) {
+        if (att[i]._type == component::attribute::Player1)
+            sys.reset_velocity_p1(reg);
+        if (att[i]._type == component::attribute::Player2)
+            sys.reset_velocity_p2(reg);
+        if (att[i]._type == component::attribute::Player3)
+            sys.reset_velocity_p3(reg);
+        if (att[i]._type == component::attribute::Player4)
+            sys.reset_velocity_p4(reg);
+    }
+}
+
+void use_power_up_move(sparse_array<component::attribute> &att, registry &reg, size_t i)
+{
+    System sys;
+    if (att[i]._type == component::attribute::Player1)
+        sys.power_up_velocity_p1(reg);
+    if (att[i]._type == component::attribute::Player2)
+        sys.power_up_velocity_p2(reg);
+    if (att[i]._type == component::attribute::Player3)
+        sys.power_up_velocity_p3(reg);
+    if (att[i]._type == component::attribute::Player4)
+        sys.power_up_velocity_p4(reg);
 }
 
 bool is_Player(const component::attribute &attribute)
@@ -41,20 +86,29 @@ bool is_Player(const component::attribute &attribute)
 bool is_powerup(const component::attribute &attribute)
 {
     if (attribute._type == component::attribute::PowerUpMove ||
-    attribute._type == component::attribute::PowerUpShoot ||
     attribute._type == component::attribute::PowerUpLife)
         return true;
     return false;
 }
 
-
-bool System::collision_power_up(registry &reg)
+void System::collision_power_up(registry &reg)
 {
     auto &positions = reg.get_components<component::position>();
     auto &sizes = reg.get_components<component::size>();
     auto &attributes = reg.get_components<component::attribute>();
     auto &states = reg.get_components<component::state>();
+    auto &life = reg.get_components<component::life>();
+    static std::unordered_map<size_t, std::chrono::steady_clock::time_point> activePowerUps;
+    auto currentTime = std::chrono::steady_clock::now();
 
+    for (auto it = activePowerUps.begin(); it != activePowerUps.end();) {
+            if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - it->second).count() >= 5) {
+                reset_power_up_move(attributes, reg);
+                it = activePowerUps.erase(it);
+            } else {
+                ++it;
+            }
+        }
     for (size_t i = 0; i < attributes.size(); i++) {
         if (!is_Player(attributes[i]))
             continue;
@@ -64,10 +118,16 @@ bool System::collision_power_up(registry &reg)
                 continue;
 
             if (check_collision_power_up(positions, sizes, i, j)) {
+                if (attributes[j]._type == component::attribute::PowerUpLife && states[j]._stateKey == component::state::Alive)
+                    restore_life(attributes, reg, i, life);
+                if (attributes[j]._type == component::attribute::PowerUpMove && states[j]._stateKey == component::state::Alive) {
+                    if (activePowerUps.find(i) == activePowerUps.end()) {
+                        use_power_up_move(attributes, reg, i);
+                        activePowerUps[i] = currentTime;
+                    }
+                }
                 states[j]._stateKey = component::state::Dead;
-                return true;
             }
         }
     }
-    return false;
 }

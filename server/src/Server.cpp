@@ -104,10 +104,6 @@ namespace NmpServer
             std::cout << "je t'envoie un power up move" << std::endl;
             id = 12;
         }
-        if (att._type == component::attribute::PowerUpShoot) {
-            std::cout << "je t'envoie un power up shoot" << std::endl;
-            id = 13;
-        }
         return id;
     }
 
@@ -217,9 +213,9 @@ namespace NmpServer
                 sys.collision_system(ecs);
                 sys.position_system(ecs);
                 sys.shoot_system_ennemies(ecs);
-
                 sys.lose_system(ecs);
-                //sys.spawn_power_up_life(ecs);
+                sys.spawn_power_up_life(ecs);
+                sys.collision_power_up(ecs);
                 copyEcs();
 
                 // if (!check_level(ecs)) {
