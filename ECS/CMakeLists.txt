@@ -31,6 +31,7 @@ set(SOURCES
     ${SRC_SYSTEM}/collision_power_up.cpp
 	${SRC_SYSTEM}/velocity_power_up_move.cpp
 	${SRC_SYSTEM}/velocity_power_up_shoot.cpp
+	${SRC_SYSTEM}/create_power_up.cpp
 )
 
 set(MAIN_SOURCES
@@ -49,7 +50,10 @@ set(TEST_SOURCES
     ${TEST_SYS}/testsCollision.cpp
     ${TEST_SYS}/testsLevel.cpp
     ${TEST_SYS}/testsShoot.cpp
-    ${TEST_SYS}/testsKill.cpp
+    ${TEST_SYS}/testsCollisionPowerUpLife.cpp
+    ${TEST_SYS}/testsCollisionPowerUpMove.cpp
+    ${TEST_SYS}/testsCollisionPowerUpShoot.cpp
+    ${TEST_SYS}/testsSpawnPowerUp.cpp
 )
 endif()
 

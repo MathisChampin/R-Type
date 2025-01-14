@@ -38,6 +38,8 @@ class System {
         void kill_system(registry &reg);
         void win_system(registry &reg);
         void lose_system(registry &reg);
+        void spawn_power_up(registry &reg);
+        void spawn_power_up_life(registry &reg);
 };
 
 #endif /* SYSTEM_HPP_ */
