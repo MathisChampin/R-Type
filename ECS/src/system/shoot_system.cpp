@@ -166,8 +166,8 @@ void System::shoot_system_ennemies(registry &reg)
         }
         lastSpawnTime4 = currentTime;
     }
-    //if (duration_cast<seconds>(currentTime - lastSpawnTime5).count() >= 15) {
-    //    spawn_power_up(reg);
-    //    lastSpawnTime5 = currentTime;
-    //}
+    if (duration_cast<seconds>(currentTime - lastSpawnTime5).count() >= 15) {
+        spawn_power_up(reg);
+        lastSpawnTime5 = currentTime;
+    }
 }
