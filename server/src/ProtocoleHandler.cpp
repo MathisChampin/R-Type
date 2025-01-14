@@ -195,7 +195,7 @@ namespace NmpServer
         _ecs.add_component<component::state>(player, {component::state::Alive});
         _ecs.add_component<component::velocity>(player, {10, 10});
         _ecs.add_component<component::idPlayer>(player, {player.get_id()});
-        _ecs.add_component<component::shoot_type>(player, {component::attribute::Shoot6});
+        _ecs.add_component<component::shoot_type>(player, {component::attribute::Shoot});
         //_refServer.get()._vecPlayer.push_back(std::make_pair(player, lastEndpoint));
         _vecPlayer.push_back(std::make_pair(player, lastEndpoint));  
     }
