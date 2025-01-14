@@ -92,7 +92,7 @@ namespace NmpServer
             std::cout << "je t'envoie un shoot" << std::endl;
             id = 9;
         }
-        if (att._type == component::attribute::Shoot5) {
+        if (att._type == component::attribute::Shoot4) {
             std::cout << "je t'envoie un shoot" << std::endl;
             id = 10;
         }
@@ -103,6 +103,34 @@ namespace NmpServer
         if (att._type == component::attribute::PowerUpMove) {
             std::cout << "je t'envoie un power up move" << std::endl;
             id = 12;
+        }
+        if (att._type == component::attribute::Shoot5) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 13;
+        }
+        if (att._type == component::attribute::Shoot6) {
+            std::cout << "je t'envoie un shoot 6" << std::endl;
+            id = 14;
+        }
+        if (att._type == component::attribute::Shoot7) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 15;
+        }
+        if (att._type == component::attribute::Shoot8) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 16;
+        }
+        if (att._type == component::attribute::Shoot9) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 17;
+        }
+        if (att._type == component::attribute::Shoot10) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 18;
+        }
+        if (att._type == component::attribute::Shoot1) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 19;
         }
         return id;
     }
@@ -137,6 +165,9 @@ namespace NmpServer
                 id = getId(att);
                 auto &pos = _positions[i];
                 auto &s = _sizes[i];
+                if (att._type == component::attribute::Shoot6) {
+                    std::cout << "server envoie pos x = " << pos.x << " & y = " << pos.y << std::endl;
+                }
                 SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
                 broadcast(packet);
@@ -216,6 +247,7 @@ namespace NmpServer
                 sys.lose_system(ecs);
                 sys.spawn_power_up_life(ecs);
                 sys.collision_power_up(ecs);
+                sys.level_system(ecs);
                 copyEcs();
 
                 // if (!check_level(ecs)) {

@@ -104,19 +104,19 @@ void handle_collision_with_enemy(size_t i, size_t shoot_id, size_t idEnnemy,
 
         switch (attributes[idEnnemy]._type) {
             case component::attribute::Ennemies2:
-                score_increment = 20;
+                score_increment = 100;
                 break;
             case component::attribute::Ennemies:
-                score_increment = 10;
+                score_increment = 100;
                 break;
             case component::attribute::Ennemies3:
-                score_increment = 30;
+                score_increment = 100;
                 break;
             case component::attribute::Ennemies4:
-                score_increment = 40;
+                score_increment = 100;
                 break;
             case component::attribute::Ennemies5:
-                score_increment = 50;
+                score_increment = 100;
                 break;
             default:
                 break;
@@ -168,7 +168,13 @@ void System::collision_system(registry &reg)
         if (attributes[i]._type != component::attribute::Shoot &&
         attributes[i]._type != component::attribute::Shoot2 &&
         attributes[i]._type != component::attribute::Shoot3 &&
-        attributes[i]._type != component::attribute::Shoot5)
+        attributes[i]._type != component::attribute::Shoot5 &&
+        attributes[i]._type != component::attribute::Shoot6 && 
+        attributes[i]._type != component::attribute::Shoot7 &&
+        attributes[i]._type != component::attribute::Shoot8 &&
+        attributes[i]._type != component::attribute::Shoot9 &&
+        attributes[i]._type != component::attribute::Shoot10 &&
+        attributes[i]._type != component::attribute::Shoot1)
             continue;
         auto &shoot_id = idPlayers[i];
         for (size_t j = 0; j < attributes.size(); j++) {

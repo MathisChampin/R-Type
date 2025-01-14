@@ -19,7 +19,12 @@ namespace NmpServer
         RIGHT = 2,
         UP = 3,
         DOWN = 4,
-        SHOOT = 5
+        SHOOT = 5,
+        Key1 = 6,
+        Key2 = 7,
+        Key3 = 8,
+        Key4 = 9,
+        Key5 = 10,
     };
 
     struct SpriteInfo {

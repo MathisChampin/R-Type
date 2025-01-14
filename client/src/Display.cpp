@@ -188,7 +188,32 @@ void Game::get_shoots(NmpClient::SpriteInfo &sp)
     }
     else
     {
-        auto sprite = std::make_shared<Sprite>("../../client/config/shoot.json");
+        auto sprite = std::make_shared<Sprite>("../../client/config/player/shoot1.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_shoots6(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    std::cout << "position shoot 6 x = " << sp.x << "y = " << sp.y << std::endl;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/player/shoot5.json");
         sprite.get()->setPosition(vecPos);
         if (GameState::Playing == m_currentState){
             m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
@@ -212,7 +237,7 @@ void Game::get_shoots2(NmpClient::SpriteInfo &sp)
     }
     else
     {
-        auto sprite = std::make_shared<Sprite>("../../client/config/shoot2.json");
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy/shoot2.json");
         sprite.get()->setPosition(vecPos);
         if (GameState::Playing == m_currentState){
             m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
@@ -236,7 +261,126 @@ void Game::get_shoots3(NmpClient::SpriteInfo &sp)
     }
     else
     {
-        auto sprite = std::make_shared<Sprite>("../../client/config/shoot3.json");
+        auto sprite = std::make_shared<Sprite>("../../client/config/player/shoot2.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_shoots7(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy/shoot2.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+void Game::get_shoots8(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy/shoot3.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_shoots9(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy/shoot4.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_shoots11(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy/shoot1.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_shoots10(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/enemy/shoot5.json");
         sprite.get()->setPosition(vecPos);
         if (GameState::Playing == m_currentState){
             m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
@@ -260,7 +404,31 @@ void Game::get_shoots4(NmpClient::SpriteInfo &sp)
     }
     else
     {
-        auto sprite = std::make_shared<Sprite>("../../client/config/shoot4.json");
+        auto sprite = std::make_shared<Sprite>("../../client/config/player/shoot3.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_shoots5(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/player/shoot4.json");
         sprite.get()->setPosition(vecPos);
         if (GameState::Playing == m_currentState){
             m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
