@@ -42,25 +42,10 @@ void restore_life(sparse_array<component::attribute> &att, registry &reg, size_t
     }
 }
 
-void use_power_up_move(sparse_array<component::attribute> &att, registry &reg, size_t i)
+void reset_power_up_move(sparse_array<component::attribute> &att, registry &reg)
 {
     System sys;
-    static std::unordered_map<size_t, std::chrono::steady_clock::time_point> playerPowerUpTimers;
-    auto currentTime = std::chrono::steady_clock::now();
-
-    if (playerPowerUpTimers.find(i) == playerPowerUpTimers.end()) {
-        if (att[i]._type == component::attribute::Player1)
-            sys.power_up_velocity_p1(reg);
-        if (att[i]._type == component::attribute::Player2)
-            sys.power_up_velocity_p2(reg);
-        if (att[i]._type == component::attribute::Player3)
-            sys.power_up_velocity_p3(reg);
-        if (att[i]._type == component::attribute::Player4)
-            sys.power_up_velocity_p4(reg);
-        playerPowerUpTimers[i] = currentTime;
-    }
-
-    if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - playerPowerUpTimers[i]).count() >= 5) {
+    for (size_t i = 0; i < att.size(); i++) {
         if (att[i]._type == component::attribute::Player1)
             sys.reset_velocity_p1(reg);
         if (att[i]._type == component::attribute::Player2)
@@ -69,39 +54,20 @@ void use_power_up_move(sparse_array<component::attribute> &att, registry &reg, s
             sys.reset_velocity_p3(reg);
         if (att[i]._type == component::attribute::Player4)
             sys.reset_velocity_p4(reg);
-        playerPowerUpTimers.erase(i);
     }
 }
 
-void use_power_up_shoot(sparse_array<component::attribute> &att, registry &reg, size_t i)
+void use_power_up_move(sparse_array<component::attribute> &att, registry &reg, size_t i)
 {
     System sys;
-    static std::unordered_map<size_t, std::chrono::steady_clock::time_point> playerPowerUpTimers;
-    auto currentTime = std::chrono::steady_clock::now();
-
-    if (playerPowerUpTimers.find(i) == playerPowerUpTimers.end()) {
-        if (att[i]._type == component::attribute::Player1)
-            sys.update_shoot_velocity_p1(reg);
-        if (att[i]._type == component::attribute::Player2)
-            sys.update_shoot_velocity_p2(reg);
-        if (att[i]._type == component::attribute::Player3)
-            sys.update_shoot_velocity_p3(reg);
-        if (att[i]._type == component::attribute::Player4)
-            sys.update_shoot_velocity_p4(reg);
-        playerPowerUpTimers[i] = currentTime;
-    }
-
-    if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - playerPowerUpTimers[i]).count() >= 5) {
-        if (att[i]._type == component::attribute::Player1)
-            sys.reset_shoot_velocity_p1(reg);
-        if (att[i]._type == component::attribute::Player2)
-            sys.reset_shoot_velocity_p2(reg);
-        if (att[i]._type == component::attribute::Player3)
-            sys.reset_shoot_velocity_p3(reg);
-        if (att[i]._type == component::attribute::Player4)
-            sys.reset_shoot_velocity_p4(reg);
-        playerPowerUpTimers.erase(i);
-    }
+    if (att[i]._type == component::attribute::Player1)
+        sys.power_up_velocity_p1(reg);
+    if (att[i]._type == component::attribute::Player2)
+        sys.power_up_velocity_p2(reg);
+    if (att[i]._type == component::attribute::Player3)
+        sys.power_up_velocity_p3(reg);
+    if (att[i]._type == component::attribute::Player4)
+        sys.power_up_velocity_p4(reg);
 }
 
 bool is_Player(const component::attribute &attribute)
@@ -120,7 +86,6 @@ bool is_Player(const component::attribute &attribute)
 bool is_powerup(const component::attribute &attribute)
 {
     if (attribute._type == component::attribute::PowerUpMove ||
-    attribute._type == component::attribute::PowerUpShoot ||
     attribute._type == component::attribute::PowerUpLife)
         return true;
     return false;
@@ -133,7 +98,17 @@ void System::collision_power_up(registry &reg)
     auto &attributes = reg.get_components<component::attribute>();
     auto &states = reg.get_components<component::state>();
     auto &life = reg.get_components<component::life>();
+    static std::unordered_map<size_t, std::chrono::steady_clock::time_point> activePowerUps;
+    auto currentTime = std::chrono::steady_clock::now();
 
+    for (auto it = activePowerUps.begin(); it != activePowerUps.end();) {
+            if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - it->second).count() >= 5) {
+                reset_power_up_move(attributes, reg);
+                it = activePowerUps.erase(it);
+            } else {
+                ++it;
+            }
+        }
     for (size_t i = 0; i < attributes.size(); i++) {
         if (!is_Player(attributes[i]))
             continue;
@@ -145,10 +120,12 @@ void System::collision_power_up(registry &reg)
             if (check_collision_power_up(positions, sizes, i, j)) {
                 if (attributes[j]._type == component::attribute::PowerUpLife && states[j]._stateKey == component::state::Alive)
                     restore_life(attributes, reg, i, life);
-                if (attributes[j]._type == component::attribute::PowerUpMove && states[j]._stateKey == component::state::Alive)
-                    use_power_up_move(attributes, reg, i);
-                //if (attributes[j]._type == component::attribute::PowerUpShoot)
-                //    use_power_up_shoot(attributes, reg, i);
+                if (attributes[j]._type == component::attribute::PowerUpMove && states[j]._stateKey == component::state::Alive) {
+                    if (activePowerUps.find(i) == activePowerUps.end()) {
+                        use_power_up_move(attributes, reg, i);
+                        activePowerUps[i] = currentTime;
+                    }
+                }
                 states[j]._stateKey = component::state::Dead;
             }
         }

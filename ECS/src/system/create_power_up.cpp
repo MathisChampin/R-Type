@@ -4,6 +4,7 @@
 #include "size.hpp"
 #include "position.hpp"
 #include "idPlayer.hpp"
+#include "controllable.hpp"
 #include <chrono>
 #include <ctime>
 #include <random>
@@ -23,6 +24,7 @@ void create_power_up(component::attribute::entityType type, registry &reg)
     reg.add_component<component::state>(powerUp, {component::state::Alive});
     reg.add_component<component::position>(powerUp, {randomX, randomY});
     reg.add_component<component::size>(powerUp, {50, 50});
+    reg.add_component<component::controllable>(powerUp, {component::controllable::NoKey});
 }
 
 void create_power_up_life(component::attribute::entityType type, registry &reg, int posx, int posy, size_t idPlayer)
@@ -42,19 +44,13 @@ void create_power_up_life(component::attribute::entityType type, registry &reg, 
     reg.add_component<component::position>(powerUp, {posx, posy});
     reg.add_component<component::size>(powerUp, {50, 50});
     reg.add_component<component::idPlayer>(powerUp, {idPlayer});
+    reg.add_component<component::controllable>(powerUp, {component::controllable::NoKey});
+
 }
 
 void System::spawn_power_up(registry &reg)
 {
-    using namespace std::chrono;
-    static auto lastSpawnTime = steady_clock::now();
-    auto currentTime = steady_clock::now();
-
-    if (duration_cast<seconds>(currentTime - lastSpawnTime).count() >= 10) {
-        create_power_up(component::attribute::entityType::PowerUpMove, reg);
-        //create_power_up(component::attribute::entityType::PowerUpShoot, reg);
-        lastSpawnTime = currentTime;
-    }
+    create_power_up(component::attribute::entityType::PowerUpMove, reg);
 }
 
 void System::spawn_power_up_life(registry &reg)

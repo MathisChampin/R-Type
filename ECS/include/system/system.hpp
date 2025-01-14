@@ -20,14 +20,6 @@ class System {
         void reset_velocity_p3(registry &reg);
         void reset_velocity_p4(registry &reg);
         void collision_power_up(registry &reg);
-        void update_shoot_velocity_p1(registry &reg);
-        void update_shoot_velocity_p2(registry &reg);
-        void update_shoot_velocity_p3(registry &reg);
-        void update_shoot_velocity_p4(registry &reg);
-        void reset_shoot_velocity_p1(registry &reg);
-        void reset_shoot_velocity_p2(registry &reg);
-        void reset_shoot_velocity_p3(registry &reg);
-        void reset_shoot_velocity_p4(registry &reg);
         void level_system(registry &reg);
         void power_up_life_p1(registry &reg);
         void power_up_life_p2(registry &reg);

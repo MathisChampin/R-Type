@@ -19,7 +19,6 @@ namespace component {
             Shoot5,
             Clear,
             PowerUpMove,
-            PowerUpShoot,
             PowerUpLife,
             None
         };
