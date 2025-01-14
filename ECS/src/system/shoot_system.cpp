@@ -6,6 +6,7 @@
 #include "idPlayer.hpp"
 #include "state.hpp"
 #include "size.hpp"
+#include <chrono>
 
 void create_shoot(Entity entity, registry &reg)
 {
@@ -110,25 +111,63 @@ void System::shoot_system_ennemies(registry &reg)
     auto &attribute = reg.get_components<component::attribute>();
     auto &state = reg.get_components<component::state>();
 
-    for (size_t i = 0; i < attribute.size(); i++) {
-        auto &att = attribute[i];
-        auto &st = state[i];
-        if (att._type == component::attribute::Ennemies && st._stateKey == component::state::stateKey::Alive) {
-            Entity ennemies = reg.get_entity(i);
-            create_shoot_ennemie(ennemies, reg);
-        }
-        if (att._type == component::attribute::Ennemies2 && st._stateKey == component::state::stateKey::Alive) {
-            Entity ennemies = reg.get_entity(i);
-            create_shoot_ennemie2(ennemies, reg);
-            std::cout  << "je creer shoot for ennemi 2" << std::endl;
-        }
-        if ((att._type == component::attribute::Ennemies3 || att._type == component::attribute::Ennemies4) && st._stateKey == component::state::stateKey::Alive) {
-            Entity ennemies = reg.get_entity(i);
-            create_shoot_ennemie34(ennemies, reg);
-        }
-        if (att._type == component::attribute::Ennemies5 && st._stateKey == component::state::stateKey::Alive) {
-            Entity ennemies = reg.get_entity(i);
-            create_shoot_ennemie5(ennemies, reg);
+
+    using namespace std::chrono;
+    static auto lastSpawnTime1 = steady_clock::now();
+    static auto lastSpawnTime2 = steady_clock::now();
+    static auto lastSpawnTime3 = steady_clock::now();
+    static auto lastSpawnTime4 = steady_clock::now();
+    //static auto lastSpawnTime5 = steady_clock::now();
+    auto currentTime = steady_clock::now();
+
+    if (duration_cast<seconds>(currentTime - lastSpawnTime1).count() >= 2) {
+        for (size_t i = 0; i < attribute.size(); i++) {
+            auto &att = attribute[i];
+            auto &st = state[i];
+            if (att._type == component::attribute::Ennemies && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie(ennemies, reg);
+            }
+        lastSpawnTime1 = currentTime;
+
         }
     }
+    if (duration_cast<seconds>(currentTime - lastSpawnTime2).count() >= 4) {
+        for (size_t i = 0; i < attribute.size(); i++) {
+            auto &att = attribute[i];
+            auto &st = state[i];
+            if (att._type == component::attribute::Ennemies2 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie2(ennemies, reg);
+                std::cout  << "je creer shoot for ennemi 2" << std::endl;
+            }
+        }
+        lastSpawnTime2 = currentTime;
+    }
+    if (duration_cast<seconds>(currentTime - lastSpawnTime3).count() >= 8) {
+        for (size_t i = 0; i < attribute.size(); i++) {
+            auto &att = attribute[i];
+            auto &st = state[i];
+            if ((att._type == component::attribute::Ennemies3 || att._type == component::attribute::Ennemies4) && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie34(ennemies, reg);
+            }
+        }
+        lastSpawnTime3 = currentTime;
+    }
+    if (duration_cast<seconds>(currentTime - lastSpawnTime4).count() >= 12) {
+        for (size_t i = 0; i < attribute.size(); i++) {
+            auto &att = attribute[i];
+            auto &st = state[i];
+            if (att._type == component::attribute::Ennemies5 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie5(ennemies, reg);
+            }
+        }
+        lastSpawnTime4 = currentTime;
+    }
+    //if (duration_cast<seconds>(currentTime - lastSpawnTime5).count() >= 15) {
+    //    spawn_power_up(reg);
+    //    lastSpawnTime5 = currentTime;
+    //}
 }

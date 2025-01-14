@@ -29,16 +29,12 @@ namespace NmpServer
         _io_context.run();
 
         std::thread systemThread(&Server::threadSystem, this);
-        std::thread shootEnnemiesThread(&Server::threadShootEnnemies, this);
         std::thread inputThread(&Server::threadInput, this);
         std::thread handleInputThread(&Server::threaEvalInput, this);
-
-        notifyShoot();
 
         inputThread.join();
         systemThread.join();
         handleInputThread.join();
-        shootEnnemiesThread.join();
     }
 
     void Server::copyEcs()
@@ -100,6 +96,18 @@ namespace NmpServer
             std::cout << "je t'envoie un shoot" << std::endl;
             id = 10;
         }
+        if (att._type == component::attribute::PowerUpLife) {
+            std::cout << "je t'envoie un power up life" << std::endl;
+            id = 11;
+        }
+        if (att._type == component::attribute::PowerUpMove) {
+            std::cout << "je t'envoie un power up move" << std::endl;
+            id = 12;
+        }
+        if (att._type == component::attribute::PowerUpShoot) {
+            std::cout << "je t'envoie un power up shoot" << std::endl;
+            id = 13;
+        }
         return id;
     }
 
@@ -148,25 +156,6 @@ namespace NmpServer
         Packet packet(EVENT::EOI);
             broadcast(packet);
         //std::cout << "END SEND ENTITY" << std::endl;
-    }
-
-    void Server::notifyShoot()
-    {
-        ClockManager clock;
-        _shootReady = false;
-
-        clock.start();
-        while (1) {
-            //std::cout << "time elapsed: " << clock.elapsedSeconds() << std::endl;
-            if (clock.elapsedSeconds() >= 5.0) {
-                //std::cout << "Notify shoot" << std::endl;
-                _shootReady = true;
-                _cvShoot.notify_one();
-                clock.start();
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));
-        }
-
     }
 
     bool Server::check_level(registry &_ecs)
@@ -227,7 +216,10 @@ namespace NmpServer
                 auto &ecs = _ptp.getECS();
                 sys.collision_system(ecs);
                 sys.position_system(ecs);
+                sys.shoot_system_ennemies(ecs);
+
                 sys.lose_system(ecs);
+                //sys.spawn_power_up_life(ecs);
                 copyEcs();
 
                 // if (!check_level(ecs)) {
@@ -239,20 +231,6 @@ namespace NmpServer
             }
             send_entity();
             std::this_thread::sleep_for(frameDuration);
-        }
-    }
-
-    void Server::threadShootEnnemies()
-    {
-        System sys;
-
-        while (true) {
-            std::unique_lock<std::mutex> lock(_ecsMutex);
-            _cvShoot.wait(lock, [this] { return _shootReady; });
-            auto &ecs = _ptp.getECS();
-            sys.shoot_system_ennemies(ecs);
-            _shootReady = false;
-            //std::cout << "has shoot" << std::endl;
         }
     }
 
