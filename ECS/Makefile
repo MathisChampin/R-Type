@@ -15,7 +15,6 @@ SRC =   $(SRC_SYSTEM)controllable_system.cpp \
 		$(SRC_SYSTEM)lose_system.cpp		\
 		$(SRC_SYSTEM)collision_power_up.cpp	\
 		$(SRC_SYSTEM)velocity_power_up_move.cpp	\
-		$(SRC_SYSTEM)velocity_power_up_shoot.cpp	\
 		$(SRC_SYSTEM)life_power_up_life.cpp	\
 		$(SRC_SYSTEM)create_power_up.cpp	\
 
@@ -28,7 +27,6 @@ SRC_TEST =  tests/system/testsPosition.cpp \
 			tests/system/testsWin.cpp		\
 			tests/system/testsLose.cpp		\
 			tests/system/testsCollisionPowerUpMove.cpp	\
-			tests/system/testsCollisionPowerUpShoot.cpp	\
 			tests/system/testsCollisionPowerUpLife.cpp	\
 			tests/system/testsSpawnPowerUp.cpp			\
 

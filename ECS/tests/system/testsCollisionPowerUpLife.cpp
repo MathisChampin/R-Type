@@ -11,6 +11,7 @@
 Test(system, collision_system_player_powerup_detects_life_collision) {
     registry reg;
     System sys;
+    auto &states = reg.get_components<component::state>();
 
     Entity player = reg.spawn_entity();
     reg.add_component<component::position>(player, {10, 10});
@@ -24,13 +25,14 @@ Test(system, collision_system_player_powerup_detects_life_collision) {
     reg.add_component<component::attribute>(powerUp, {component::attribute::PowerUpLife});
     reg.add_component<component::state>(powerUp, {component::state::stateKey::Alive});
 
-    bool result = sys.collision_power_up(reg);
-    cr_assert(result, "Expected collision_system_player_powerup to return true for collision");
+    sys.collision_power_up(reg);
+    cr_assert_eq(states[powerUp.get_id()]._stateKey, 0);
 }
 
 Test(system, collision_system_player_powerup_no_collision_life) {
     registry reg;
     System sys;
+    auto &states = reg.get_components<component::state>();
 
     Entity player = reg.spawn_entity();
     reg.add_component<component::position>(player, {0, 0});
@@ -44,8 +46,8 @@ Test(system, collision_system_player_powerup_no_collision_life) {
     reg.add_component<component::attribute>(powerUp, {component::attribute::PowerUpLife});
     reg.add_component<component::state>(powerUp, {component::state::stateKey::Alive});
 
-    bool result = sys.collision_power_up(reg);
-    cr_assert_not(result, "Expected collision_system_player_powerup to return false for no collision");
+    sys.collision_power_up(reg);
+    cr_assert_eq(states[powerUp.get_id()]._stateKey, 1);
 }
 
 Test(system, life_player1) {

@@ -111,13 +111,12 @@ void System::shoot_system_ennemies(registry &reg)
     auto &attribute = reg.get_components<component::attribute>();
     auto &state = reg.get_components<component::state>();
 
-
     using namespace std::chrono;
     static auto lastSpawnTime1 = steady_clock::now();
     static auto lastSpawnTime2 = steady_clock::now();
     static auto lastSpawnTime3 = steady_clock::now();
     static auto lastSpawnTime4 = steady_clock::now();
-    //static auto lastSpawnTime5 = steady_clock::now();
+    static auto lastSpawnTime5 = steady_clock::now();
     auto currentTime = steady_clock::now();
 
     if (duration_cast<seconds>(currentTime - lastSpawnTime1).count() >= 2) {
@@ -166,8 +165,8 @@ void System::shoot_system_ennemies(registry &reg)
         }
         lastSpawnTime4 = currentTime;
     }
-    //if (duration_cast<seconds>(currentTime - lastSpawnTime5).count() >= 15) {
-    //    spawn_power_up(reg);
-    //    lastSpawnTime5 = currentTime;
-    //}
+    if (duration_cast<seconds>(currentTime - lastSpawnTime5).count() >= 15) {
+        spawn_power_up(reg);
+        lastSpawnTime5 = currentTime;
+    }
 }
