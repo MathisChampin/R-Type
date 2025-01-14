@@ -199,6 +199,78 @@ void Game::get_shoots(NmpClient::SpriteInfo &sp)
     handler_packets();
 }
 
+void Game::get_shoots2(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/shoot2.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_shoots3(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/shoot3.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_shoots4(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "\thandle shoots: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/shoot4.json");
+        sprite.get()->setPosition(vecPos);
+        if (GameState::Playing == m_currentState){
+            m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
+            m_SoundManager.playSound("shoot");
+        }
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
 void Game::run()
 {
     while (m_window.isOpen())
