@@ -28,8 +28,9 @@ set(SOURCES
     ${SRC_SYSTEM}/kill_system.cpp
     ${SRC_SYSTEM}/lose_system.cpp
     ${SRC_SYSTEM}/win_system.cpp
-    ${SRC_SYSTEM}/collision_power_up_move_system.cpp
-    ${SRC_SYSTEM}/collision_power_up_shoot_system.cpp
+    ${SRC_SYSTEM}/collision_power_up.cpp
+	${SRC_SYSTEM}/velocity_power_up_move.cpp
+	${SRC_SYSTEM}/velocity_power_up_shoot.cpp
 )
 
 set(MAIN_SOURCES
