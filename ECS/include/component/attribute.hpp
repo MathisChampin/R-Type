@@ -20,6 +20,7 @@ namespace component {
             Clear,
             PowerUpMove,
             PowerUpShoot,
+            PowerUpLife,
             None
         };
         entityType _type;

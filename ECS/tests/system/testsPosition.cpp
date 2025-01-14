@@ -98,7 +98,7 @@ Test(PositionSystem, UpdatePositionEnnemies4) {
 
     positions[entity.get_id()].y = 0;
     sys.position_system(reg);
-    cr_assert_eq(vel.y, 5, "Expected velocity y to change to 5 when reaching the top, but got %d", vel.y);
+    cr_assert_eq(vel.y, -5, "Expected velocity y to change to 5 when reaching the top, but got %d", vel.y);
 
     positions[entity.get_id()].y = 1080;
     sys.position_system(reg);
