@@ -23,7 +23,7 @@ Test(system, collision_system_player_powerup_detects_collision) {
     reg.add_component<component::attribute>(powerUp, {component::attribute::PowerUpMove});
     reg.add_component<component::state>(powerUp, {component::state::stateKey::Alive});
 
-    bool result = sys.collision_power_up_move(reg);
+    bool result = sys.collision_power_up(reg);
     cr_assert(result, "Expected collision_system_player_powerup to return true for collision");
 }
 
@@ -43,7 +43,7 @@ Test(system, collision_system_player_powerup_no_collision) {
     reg.add_component<component::attribute>(powerUp, {component::attribute::PowerUpMove});
     reg.add_component<component::state>(powerUp, {component::state::stateKey::Alive});
 
-    bool result = sys.collision_power_up_move(reg);
+    bool result = sys.collision_power_up(reg);
     cr_assert_not(result, "Expected collision_system_player_powerup to return false for no collision");
 }
 
