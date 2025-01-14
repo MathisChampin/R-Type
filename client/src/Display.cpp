@@ -271,6 +271,46 @@ void Game::get_shoots4(NmpClient::SpriteInfo &sp)
     handler_packets();
 }
 
+void Game::get_powerup_life(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/powerup_life.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
+void Game::get_powerup_move(NmpClient::SpriteInfo &sp)
+{
+    std::cout << "handle ennemies: " << sp.idClient << std::endl;
+    sf::Vector2f vecPos;
+    vecPos.x = sp.x;
+    vecPos.y = sp.y;
+    auto sprite = _spriteMng.getSprite(sp.idClient);
+    if (sprite != nullptr)
+    {
+        sprite.get()->setPosition(vecPos);
+    }
+    else
+    {
+        auto sprite = std::make_shared<Sprite>("../../client/config/powerup_move.json");
+        sprite.get()->setPosition(vecPos);
+        _spriteMng.addSprite(sprite, sp.idClient);
+    }
+    handler_packets();
+}
+
 void Game::run()
 {
     while (m_window.isOpen())

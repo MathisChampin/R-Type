@@ -67,6 +67,8 @@ private:
     void get_shoots2(NmpClient::SpriteInfo &sp);
     void get_shoots3(NmpClient::SpriteInfo &sp);
     void get_shoots4(NmpClient::SpriteInfo &sp);
+    void get_powerup_life(NmpClient::SpriteInfo &sp);
+    void get_powerup_move(NmpClient::SpriteInfo &sp);
 
     void handler_packets();
     void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
@@ -114,7 +116,8 @@ private:
         {8, [this](NmpClient::SpriteInfo &sp) { get_shoots2(sp); }},
         {9, [this](NmpClient::SpriteInfo &sp) { get_shoots3(sp); }},
         {10, [this](NmpClient::SpriteInfo &sp) { get_shoots4(sp); }},
-
+        {11, [this](NmpClient::SpriteInfo &sp) { get_powerup_life(sp); }},
+        {12, [this](NmpClient::SpriteInfo &sp) { get_powerup_move(sp); }},
     };
 
     Life m_life;
