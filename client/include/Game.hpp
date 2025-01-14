@@ -20,15 +20,20 @@
 #include "Life.hpp"
 #include "Score.hpp"
 #include "SoundManager.hpp"
+#include "CustomMenu.hpp"
+#include "Type.hpp"
 
-enum class GameState {
+enum class GameState
+{
     Menu,
     Playing,
     Options,
-    PlayingInLobby
+    PlayingInLobby,
+    Custom
 };
 
-class Game {
+class Game
+{
 public:
     Game();
     ~Game();
@@ -56,7 +61,7 @@ private:
     // Game loop methods
     void update(float deltaTime);
     void render(float deltaTime);
- 
+
     void get_player(NmpClient::SpriteInfo &sp);
     void get_ennemies(NmpClient::SpriteInfo &sp);
     void get_ennemies2(NmpClient::SpriteInfo &sp);
@@ -79,12 +84,15 @@ private:
     OptionsMenu m_optionsMenu;
     ParallaxBackground m_menuBackground;
     ParallaxBackground m_playingBackground;
+    ParallaxBackground m_customBackground;
     std::optional<NmpClient::Client> m_client;
     std::optional<Player> m_players;
 
     // Vectors to store players and enemies
     std::vector<Enemy> m_enemies;
     std::vector<Shoot> m_shoots;
+
+    CustomMenu m_CustomMenu;
 
     // UI elements
     sf::String m_ipAddress;
@@ -101,16 +109,26 @@ private:
     std::unordered_set<std::size_t> _containerEndFrameId;
     std::queue<NmpClient::Packet> _queuePacket;
     std::map<std::size_t, std::function<void(NmpClient::SpriteInfo &sp)>> _mapHandlerPacket{
-        {1, [this](NmpClient::SpriteInfo &sp) { get_player(sp); }},
-        {2, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
-        {3, [this](NmpClient::SpriteInfo &sp) { get_ennemies(sp); }},
-        {4, [this](NmpClient::SpriteInfo &sp) { get_ennemies2(sp); }},
-        {5, [this](NmpClient::SpriteInfo &sp) { get_ennemies3(sp); }},
-        {6, [this](NmpClient::SpriteInfo &sp) { get_ennemies4(sp); }},
-        {7, [this](NmpClient::SpriteInfo &sp) { get_ennemies5(sp); }},
-        {8, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
-        {9, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
-        {10, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {1, [this](NmpClient::SpriteInfo &sp)
+         { get_player(sp); }},
+        {2, [this](NmpClient::SpriteInfo &sp)
+         { get_shoots(sp); }},
+        {3, [this](NmpClient::SpriteInfo &sp)
+         { get_ennemies(sp); }},
+        {4, [this](NmpClient::SpriteInfo &sp)
+         { get_ennemies2(sp); }},
+        {5, [this](NmpClient::SpriteInfo &sp)
+         { get_ennemies3(sp); }},
+        {6, [this](NmpClient::SpriteInfo &sp)
+         { get_ennemies4(sp); }},
+        {7, [this](NmpClient::SpriteInfo &sp)
+         { get_ennemies5(sp); }},
+        {8, [this](NmpClient::SpriteInfo &sp)
+         { get_shoots(sp); }},
+        {9, [this](NmpClient::SpriteInfo &sp)
+         { get_shoots(sp); }},
+        {10, [this](NmpClient::SpriteInfo &sp)
+         { get_shoots(sp); }},
 
     };
 

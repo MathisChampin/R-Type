@@ -19,32 +19,41 @@ void Game::launch_getter(std::size_t id, NmpClient::SpriteInfo &sp)
 
 void Game::handler_packets()
 {
-    if (!m_client.has_value()) {
+    if (!m_client.has_value())
+    {
         return;
     }
 
     auto data = m_client->get_data();
-    if (!data.has_value()) {
+    if (!data.has_value())
+    {
         return;
     }
 
     auto p = data.value();
-    if (p.getOpCode() == NmpClient::EVENT::EOI) {
+    if (p.getOpCode() == NmpClient::EVENT::EOI)
+    {
         std::cout << "END OF FRAME" << std::endl;
         std::cout << "count before: " << _spriteMng.getSpriteCount() << std::endl;
+        
         _spriteMng.eraseOldSprite(_containerEndFrameId);
         std::cout << "count after: " << _spriteMng.getSpriteCount() << std::endl;
         return;
-    } else if (p.getOpCode() == NmpClient::EVENT::INFO) {
+    }
+    else if (p.getOpCode() == NmpClient::EVENT::INFO)
+    {
         int newLife = p.getLife();
         int newScore = p.getScore();
         std::cout << "LIFE: " << newLife << std::endl;
         std::cout << "SCORE: " << newScore << std::endl;
         m_life.updateLife(newLife);
         m_score.updateScore(newScore);
-    } else if (p.getOpCode() == NmpClient::EVENT::JOIN) {
+    }
+    else if (p.getOpCode() == NmpClient::EVENT::JOIN)
+    {
         _spriteMng.eraseAll();
-        if (m_client.has_value()) {
+        if (m_client.has_value())
+        {
             m_client->_id = p.getId();
             std::cout << "new id" << p.getId() << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -68,7 +77,27 @@ void Game::get_player(NmpClient::SpriteInfo &sp)
     }
     else
     {
-        auto sprite = std::make_shared<Sprite>("../../client/config/player.json");
+        std::shared_ptr<Sprite> sprite;
+        if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN1)
+        {
+            sprite = std::make_shared<Sprite>("../../client/config/player.json");
+        }
+        else if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN2)
+        {
+            sprite = std::make_shared<Sprite>("../../client/config/player2.json");
+        }
+        else if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN3)
+        {
+            sprite = std::make_shared<Sprite>("../../client/config/player3.json");
+        }
+        else if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN4)
+        {
+            sprite = std::make_shared<Sprite>("../../client/config/player4.json");
+        }
+        else if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN5)
+        {
+            sprite = std::make_shared<Sprite>("../../client/config/player5.json");
+        }
         sprite.get()->setPosition(vecPos);
         _spriteMng.addSprite(sprite, sp.idClient);
     }
@@ -190,7 +219,8 @@ void Game::get_shoots(NmpClient::SpriteInfo &sp)
     {
         auto sprite = std::make_shared<Sprite>("../../client/config/shoot.json");
         sprite.get()->setPosition(vecPos);
-        if (GameState::Playing == m_currentState){
+        if (GameState::Playing == m_currentState)
+        {
             m_SoundManager.loadSound("shoot", "./assets/sound/Blaster.mp3");
             m_SoundManager.playSound("shoot");
         }
@@ -207,12 +237,13 @@ void Game::run()
         std::cout << "BEGIN LOOP\n";
         handleEvents();
 
-        if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby) {
+        if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
+        {
             handler_packets();
         }
 
         update(deltaTime);
         render(deltaTime);
-        std::cout << "END LOOP" <<std::endl;
+        std::cout << "END LOOP" << std::endl;
     }
 }

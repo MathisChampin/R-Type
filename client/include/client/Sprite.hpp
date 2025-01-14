@@ -4,9 +4,14 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include "TextureManager.hpp"
+// #include "Game.hpp"
+#include <iostream>
+#include "../Type.hpp"
 
-class Sprite {
+class Sprite
+{
 public:
+
     Sprite(const std::string &configPath)
     {
         loadFromConfig(configPath);
@@ -22,8 +27,24 @@ public:
         position.y = config["position"]["y"];
         size.x = config["size"]["width"];
         size.y = config["size"]["height"];
+        if (config["type"] == "player")
+        {
+            m_type = Type::Player;
+        }
+        else if (config["type"] == "enemy")
+        {
+            m_type = Type::Enemy;
+        }
+        else if (config["type"] == "shoot")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "explosions")
+        {
+            m_type = Type::Explosions;
+        }
 
-        if (config["type"] == "player" || config["type"] == "enemy" || config["type"] == "shoot")
+        if (config["type"] == "player" || config["type"] == "enemy" || config["type"] == "shoot" || config["type"] == "explosions")
         {
             for (int i = 1; i <= 5; ++i)
             {
@@ -39,7 +60,7 @@ public:
             {
                 currentTextureIndex = 0;
                 sprite.setTexture(*m_textures[currentTextureIndex]);
-                animationSpeed = 10.0f; 
+                animationSpeed = 10.0f;
             }
         }
         else
@@ -55,10 +76,10 @@ public:
 
     void update(sf::Time deltaTime)
     {
-        if (m_textures.size() > 1)  
+        if (m_textures.size() > 1)
         {
             animationTimer += deltaTime;
-            
+
             if (animationTimer.asSeconds() >= 1.0f / animationSpeed)
             {
                 currentTextureIndex = (currentTextureIndex + 1) % m_textures.size();
@@ -95,6 +116,11 @@ public:
         animationSpeed = framesPerSecond;
     }
 
+    Type getType() const
+    {
+        return m_type;
+    }
+
 private:
     void updateSpriteScale()
     {
@@ -103,8 +129,7 @@ private:
             auto currentTexture = m_textures[currentTextureIndex];
             sprite.setScale(
                 size.x / currentTexture->getSize().x,
-                size.y / currentTexture->getSize().y
-            );
+                size.y / currentTexture->getSize().y);
         }
     }
 
@@ -112,8 +137,9 @@ private:
     std::vector<std::shared_ptr<sf::Texture>> m_textures;
     sf::Vector2f position;
     sf::Vector2f size;
+    Type m_type;
 
     size_t currentTextureIndex = 0;
-    float animationSpeed = 0.0f;  
+    float animationSpeed = 0.0f;
     sf::Time animationTimer;
 };

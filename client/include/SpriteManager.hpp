@@ -1,11 +1,12 @@
 #pragma once
-
 #include "../include/client/Sprite.hpp"
+// #include "Game.hpp"
 #include <unordered_set>
 #include <algorithm>
 #include <vector>
 #include <memory>
 #include <map>
+#include "Type.hpp"
 
 class SpriteManager
 {
@@ -54,6 +55,9 @@ public:
             for (auto it = _mapSprite.begin(); it != _mapSprite.end(); ) {
                 std::cout << "test: " << it->first << std::endl;
                 if (container.find(it->first) == container.end()) {
+                    if (it->second.get()->getType() != Type::Bullet){
+                        death_animation(it->second.get()->getPosition());
+                    }
                     it = _mapSprite.erase(it);
                 } else {
                     ++it;
@@ -62,12 +66,22 @@ public:
             container.clear();
         }
 
+        void death_animation(sf::Vector2f pos)
+        {
+            auto sprite = std::make_shared<Sprite>("../../client/config/explosion.json");
+            sprite.get()->setPosition(pos);
+            _mapSprite.insert(std::make_pair(_mapSprite.size(), sprite));
+        }
+
         void eraseAll()
         {
             _mapSprite.clear();
         }
 
+        
+
 
     private:
         std::map<std::size_t, std::shared_ptr<Sprite>> _mapSprite;
+
 };

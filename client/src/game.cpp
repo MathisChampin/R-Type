@@ -11,8 +11,10 @@ Game::Game()
       m_optionsMenu(m_window),
       m_menuBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.1f}}),
       m_playingBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.2f}}),
+      m_customBackground(m_window.getSize(), {{"./assets/backgrounds/space_dust.png", 0.2f}}),
       m_client(std::nullopt),
       m_players(std::nullopt),
+      m_CustomMenu(m_window),
       m_SoundManager()
 {
     initializeWindow();
@@ -72,6 +74,7 @@ void Game::initializeMenuOptions()
     };
     m_menuBackground = ParallaxBackground(m_window.getSize(), menuLayers);
     m_playingBackground = ParallaxBackground(m_window.getSize(), playingLayers);
+    m_customBackground = ParallaxBackground(m_window.getSize(), playingLayers);
 
     m_menu.addOption("Jouer", [this]()
                      {
@@ -90,10 +93,16 @@ void Game::initializeMenuOptions()
                          std::cout << "Ouverture des options..." << std::endl;
                          m_currentState = GameState::Options; });
 
+    m_menu.addOption("Los Santos Custom", [this]()
+                     {
+                            std::cout << "Custom..." << std::endl;
+                            m_currentState = GameState::Custom; });
+
     m_menu.addOption("Quitter", [this]()
                      {
                          std::cout << "Fermeture du jeu..." << std::endl;
                          m_window.close(); });
+    
 }
 
 void Game::initializeGameComponents()
@@ -163,6 +172,10 @@ void Game::processInput(sf::Event &event)
     {
         m_optionsMenu.handleEvent(event);
     }
+    else if (m_currentState == GameState::Custom)
+    {
+        m_CustomMenu.handleEvent(event);
+    }
 }
 
 void Game::update(float deltaTime)
@@ -185,6 +198,11 @@ void Game::update(float deltaTime)
     {
         m_menuBackground.update(deltaTime);
         m_optionsMenu.update();
+    }
+    else if (m_currentState == GameState::Custom)
+    {
+        m_customBackground.update(deltaTime);
+        m_CustomMenu.update();
     }
 }
 
@@ -211,6 +229,10 @@ void Game::render(float deltaTime)
         m_menuBackground.render(m_window);
         m_optionsMenu.render();
     }
-
+    else if (m_currentState == GameState::Custom)
+    {
+        m_customBackground.render(m_window);
+        m_CustomMenu.render();
+    }
     m_window.display();
 }
