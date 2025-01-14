@@ -64,28 +64,28 @@ namespace NmpServer
             id = 1;
             //std::cout << "je t'envoie un player" << std::endl;
             }
-        if (att._type == component::attribute::Shoot) {
-            std::cout << "je t'envoie un shoot" << std::endl;
-            id = 2;
-        }
         if (att._type == component::attribute::Ennemies) {
-            id = 3;
+            id = 2;
             std::cout << "je t'envoie un ennemie" << std::endl;
         }
         if (att._type == component::attribute::Ennemies2) {
             std::cout << "je t'envoie un ennemis 2" << std::endl;
-            id = 4;
+            id = 3;
         }
         if (att._type == component::attribute::Ennemies3) {
             std::cout << "je t'envoie un ennemis 3" << std::endl;
-            id = 5;
+            id = 4;
         }
         if (att._type == component::attribute::Ennemies4) {
             std::cout << "je t'envoie un ennemis 4" << std::endl;
-            id = 6;
+            id = 5;
         }
         if (att._type == component::attribute::Ennemies5) {
             std::cout << "je t'envoie un ennemis 5" << std::endl;
+            id = 6;
+        }
+        if (att._type == component::attribute::Shoot) {
+            std::cout << "je t'envoie un shoot" << std::endl;
             id = 7;
         }
         if (att._type == component::attribute::Shoot2) {
