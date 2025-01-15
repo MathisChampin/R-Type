@@ -523,19 +523,18 @@ void Game::get_powerup_move(NmpClient::SpriteInfo &sp)
 
 void Game::run()
 {
-    while (m_window.isOpen())
-    {
+        std::cout << "je suis dans le while" << std::endl;
         float deltaTime = m_clock.restart().asSeconds();
         std::cout << "BEGIN LOOP\n";
         handleEvents();
 
         if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
         {
+            std::cout << "je suis dans avant le handler packet" << std::endl;
             handler_packets();
         }
 
         update(deltaTime);
         render(deltaTime);
         std::cout << "END LOOP" << std::endl;
-    }
 }
