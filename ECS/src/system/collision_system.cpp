@@ -9,21 +9,6 @@
 
 #include <iostream>
 
-bool check_collision(sparse_array<component::position> &positions,
-    sparse_array<component::size> &sizes,
-    size_t entity1,
-    size_t entity2)
-{
-    auto &pos1 = positions[entity1];
-    auto &size1 = sizes[entity1];
-    auto &pos2 = positions[entity2];
-    auto &size2 = sizes[entity2];
-
-    bool collision_x = (pos1.x < pos2.x + size2.x) && (pos1.x + size1.x > pos2.x);
-    bool collision_y = (pos1.y < pos2.y + size2.y) && (pos1.y + size1.y > pos2.y);
-
-    return collision_x && collision_y;
-}
 
 bool is_player(const component::attribute &attribute)
 {
@@ -50,6 +35,32 @@ bool is_enemy(const component::attribute &attribute)
         default:
             return false;
     }
+}
+
+bool check_collision(sparse_array<component::position> &positions,
+    sparse_array<component::size> &sizes,
+    sparse_array<component::attribute> &attributes,
+    size_t entity1,
+    size_t entity2)
+{
+    auto &pos1 = positions[entity1];
+    auto &size1 = sizes[entity1];
+    auto &pos2 = positions[entity2];
+    auto &size2 = sizes[entity2];
+
+    if (is_enemy(attributes[entity1])) {
+        size1.x = size1.x / 2;
+        size1.y = size1.x / 2;
+    }
+    if (is_enemy(attributes[entity2])) {
+        size2.x = size2.x / 2;
+        size2.y = size2.x / 2;
+    }
+    bool collision_x = (pos1.x < pos2.x + size2.x) && (pos1.x + size1.x > pos2.x);
+
+    bool collision_y = (pos1.y < pos2.y + size2.y) && (pos1.y + size1.y > pos2.y);
+
+    return collision_x && collision_y;
 }
 
 void handle_collision_with_player(size_t i, size_t shoot_id, size_t j,
@@ -187,7 +198,7 @@ void System::collision_system(registry &reg)
         for (size_t j = 0; j < attributes.size(); j++) {
             if (!should_check_collision(j, attributes, states, shoot_id))
                 continue;
-            if (!check_collision(positions, sizes, i, j))
+            if (!check_collision(positions, sizes, attributes, i, j))
                 continue;
             if (is_player(attributes[j])) {
                 handle_collision_with_player(i, shoot_id.id, j, lifes, states, attributes, reg);
