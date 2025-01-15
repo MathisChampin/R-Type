@@ -172,15 +172,14 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                 } else {
                     m_selectedButton = (m_selectedButton == -1) ? -2 : -1;
                 }
-            } else if (event.key.code == sf::Keyboard::L) {
+            } else if (event.key.code == sf::Keyboard::Enter) {
                 m_isConnecting = false;
                 m_selectedButton = 1;
                 m_buttons[1].setFillColor(sf::Color::Cyan);
                 m_ipAddressInputBorder.setOutlineColor(sf::Color::White);
                 m_portInputBorder.setOutlineColor(sf::Color::White);
-            } else if (event.key.code == sf::Keyboard::Enter && m_isChatOpen == false) {
                 connectTcpClient(m_ipAddressInput, m_portInput);
-            }
+            } 
         } else {
             if (event.key.code == sf::Keyboard::Up) {
                 if (m_selectedButton > 0) {
