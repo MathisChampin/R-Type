@@ -1,8 +1,8 @@
 [
     {
-        "type": 1,
-        "posX": 1720,
-        "posY": 800,
+        "type": 5,
+        "posX": 1000,
+        "posY": 245,
         "delaySpawn": 0
     }
 ]
