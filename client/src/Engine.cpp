@@ -1,4 +1,3 @@
-// Engine.cpp
 #include "Engine.hpp"
 #include <iostream>
 
@@ -15,11 +14,15 @@ Engine::Engine() : m_currentState(GameState::Menu), m_animationTime(0.0f)
     m_menuBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
     m_playingBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), playingLayers);
     m_customBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), playingLayers);
+    m_infosBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
 
     // Menus
     m_menu = std::make_unique<Menu>(m_window);
     m_optionsMenu = std::make_unique<OptionsMenu>(m_window);
     m_customMenu = std::make_unique<CustomMenu>(m_window);
+
+    // Infos
+    m_infoSection = std::make_unique<Infos>(m_window, m_font);
 
     // Menu options
     setupMenuOptions();
@@ -34,8 +37,7 @@ void Engine::initializeWindow()
 
 void Engine::initializeFont()
 {
-    if (!m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf"))
-    {
+    if (!m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf")) {
         std::cerr << "Erreur : Impossible de charger la police !" << std::endl;
         throw std::runtime_error("Échec du chargement de la police");
     }
@@ -43,45 +45,119 @@ void Engine::initializeFont()
 
 void Engine::initializeSoundManager()
 {
-    if (!m_soundManager.loadMusic("background", "./assets/music/background.mp3"))
-    {
+    if (!m_soundManager.loadMusic("background", "./assets/music/background.mp3")) {
         std::cerr << "Erreur : Impossible de charger la musique." << std::endl;
-    }
-    else if (!m_soundManager.playMusic("background", true))
-    {
+    } else if (!m_soundManager.playMusic("background", true)) {
         std::cerr << "Erreur : La musique n'a pas pu être jouée." << std::endl;
     }
 }
 
 void Engine::setupMenuOptions()
 {
-    m_menu->addOption("Jouer", [this]()
-    {
+    m_menu->addOption("Jouer", [this]() {
         std::cout << "Démarrage du jeu..." << std::endl;
         m_game = std::make_unique<Game>(m_window, m_customMenu.get()->getSelectedSkin(), m_font, *m_playingBackground, m_soundManager);
         m_currentState = GameState::Playing;
     });
 
-    m_menu->addOption("Créer un lobby", [this]()
-    {
+    m_menu->addOption("Créer un lobby", [this]() {
         std::cout << "Création du lobby..." << std::endl;
         m_currentState = GameState::PlayingInLobby;
     });
 
-    m_menu->addOption("Options", [this]()
-    {
+    m_menu->addOption("Options", [this]() {
         std::cout << "Ouverture des options..." << std::endl;
         m_currentState = GameState::Options;
     });
 
-    m_menu->addOption("Los Santos Custom", [this]()
-    {
-        std::cout << "Custom..." << std::endl;
-        m_currentState = GameState::Custom;
+    m_menu->addOption("Infos", [this]() {
+        std::cout << "Infos..." << std::endl;
+        m_currentState = GameState::Infos;
+    
+        // Player Section
+        m_infoSection->addText("Player", sf::Color::White, 30, true);
+        auto playerTexture = std::make_shared<sf::Texture>();
+        if (playerTexture->loadFromFile("./assets/player/sprite_1.png")) {
+            m_infoSection->addItem(playerTexture, "Player", false, 2.0f, 2.0f);
+        }
+    
+        // Enemies Section
+        m_infoSection->addText("Enemies", sf::Color::White, 30, true);
+        auto enemyTexture1 = std::make_shared<sf::Texture>();
+        if (enemyTexture1->loadFromFile("./assets/enemy/sprite_1.png")) {
+            m_infoSection->addItem(enemyTexture1, "Enemy 1", false, 2.0f, 2.0f);
+        }
+        auto enemyTexture2 = std::make_shared<sf::Texture>();
+        if (enemyTexture2->loadFromFile("./assets/enemy/Dove_part_1_rotated.png")) {
+            m_infoSection->addItem(enemyTexture2, "Enemy 2 - Dove", false, 2.0f, 2.0f);
+        }
+        auto enemyTexture3 = std::make_shared<sf::Texture>();
+        if (enemyTexture3->loadFromFile("./assets/enemy/Ligher_part_1_rotated.png")) {
+            m_infoSection->addItem(enemyTexture3, "Enemy 3 - Ligher", false, 2.0f, 2.0f);
+        }
+        auto enemyTexture4 = std::make_shared<sf::Texture>();
+        if (enemyTexture4->loadFromFile("./assets/enemy/Lightning_part_1_rotated.png")) {
+            m_infoSection->addItem(enemyTexture4, "Enemy 4 - Lightning", false, 2.0f, 2.0f);
+        }
+    
+        // Boss Section
+        m_infoSection->addText("Boss", sf::Color::White, 30, true);
+        auto bossTexture = std::make_shared<sf::Texture>();
+        if (bossTexture->loadFromFile("./assets/boss/boss_1_1.png")) {
+            m_infoSection->addItem(bossTexture, "Boss", false, 0.5f, 0.5f);
+        }
+    
+        // Powerups Section
+        m_infoSection->addText("Powerups", sf::Color::White, 30, true);
+        auto powerupTexture1 = std::make_shared<sf::Texture>();
+        if (powerupTexture1->loadFromFile("./assets/powerup/life/powerup_life_1.png")) {
+            m_infoSection->addItem(powerupTexture1, "Power Up Life", false, 0.7f, 0.7f);
+        }
+        auto powerupTexture2 = std::make_shared<sf::Texture>();
+        if (powerupTexture2->loadFromFile("./assets/powerup/move/powerup_move_1.png")) {
+            m_infoSection->addItem(powerupTexture2, "Power Up Move", false, 0.9f, 0.9f);
+        }
+    
+        // Shoots Section
+        auto shootsTitle = std::make_shared<sf::Text>();
+        shootsTitle->setString("Shoots");
+        shootsTitle->setFont(m_font);
+        shootsTitle->setCharacterSize(30);
+        shootsTitle->setFillColor(sf::Color::White);
+        shootsTitle->setStyle(sf::Text::Bold);
+
+        sf::Vector2u windowSize = m_window.getSize();
+        float titleX = windowSize.x - shootsTitle->getGlobalBounds().width - 50.0f;
+        float titleY = 50.0f;
+        shootsTitle->setPosition(titleX, titleY);
+
+        m_infoSection->addCustomText(shootsTitle);
+
+        float shootYOffset = -700.0f;
+
+        auto shootTexture1 = std::make_shared<sf::Texture>();
+        if (shootTexture1->loadFromFile("./assets/lettre_a.png")) {
+            m_infoSection->addItem(shootTexture1, "Shoot of level 1", true, 0.1f, 0.1f, shootYOffset);
+        }
+        auto shootTexture2 = std::make_shared<sf::Texture>();
+        if (shootTexture2->loadFromFile("./assets/lettre_z.png")) {
+            m_infoSection->addItem(shootTexture2, "Shoot of level 3", true, 0.1f, 0.1f, shootYOffset);
+        }
+        auto shootTexture3 = std::make_shared<sf::Texture>();
+        if (shootTexture3->loadFromFile("./assets/lettre_e.png")) {
+            m_infoSection->addItem(shootTexture3, "Shoot of level 4", true, 0.1f, 0.1f, shootYOffset);
+        }
+        auto shootTexture4 = std::make_shared<sf::Texture>();
+        if (shootTexture4->loadFromFile("./assets/lettre_r.png")) {
+            m_infoSection->addItem(shootTexture4, "Shoot of level 5", true, 0.1f, 0.1f, shootYOffset);
+        }
+        auto shootTexture5 = std::make_shared<sf::Texture>();
+        if (shootTexture5->loadFromFile("./assets/lettre_t.png")) {
+            m_infoSection->addItem(shootTexture5, "Shoot of level 6", true, 0.1f, 0.1f, shootYOffset);
+        }
     });
 
-    m_menu->addOption("Quitter", [this]()
-    {
+    m_menu->addOption("Quitter", [this]() {
         std::cout << "Fermeture du jeu..." << std::endl;
         m_window.close();
     });
@@ -90,27 +166,23 @@ void Engine::setupMenuOptions()
 void Engine::handleEvents()
 {
     sf::Event event;
-    while (m_window.pollEvent(event))
-    {
-        if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
-        {
-            if (m_currentState == GameState::Custom || m_currentState == GameState::Options)
-            {
+    while (m_window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
+            if (m_currentState == GameState::Custom || m_currentState == GameState::Options) {
                 m_currentState = GameState::Menu;
-            }
-            else
-            {
+            } else {
                 m_window.close();
             }
         }
 
-        switch (m_currentState)
-        {
+        switch (m_currentState) {
         case GameState::Menu:
             m_menu->handleEvent(event);
             break;
         case GameState::Options:
             m_optionsMenu->handleEvent(event);
+            break;
+        case GameState::Infos:
             break;
         case GameState::Custom:
             m_customMenu->handleEvent(event);
@@ -129,8 +201,7 @@ void Engine::handleEvents()
 
 void Engine::update(float deltaTime)
 {
-    switch (m_currentState)
-    {
+    switch (m_currentState) {
     case GameState::Menu:
         m_menuBackground->update(deltaTime);
         m_menu->update();
@@ -139,15 +210,17 @@ void Engine::update(float deltaTime)
         m_menuBackground->update(deltaTime);
         m_optionsMenu->update();
         break;
+    case GameState::Infos:
+        m_infosBackground->update(deltaTime);
+        break;
     case GameState::Custom:
         m_customBackground->update(deltaTime);
         m_customMenu->update();
         break;
     case GameState::Playing:
         if (m_game.get()->AnimationLevel()) {
-            std::cout << "Passage à AnimationLevel" << std::endl;
             m_currentState = GameState::AnimationLevel;
-            m_animationTime = 0.0f; // Réinitialise le temps écoulé
+            m_animationTime = 0.0f;
         } else {
             m_playingBackground->update(deltaTime);
             m_game.get()->update(deltaTime);
@@ -156,7 +229,6 @@ void Engine::update(float deltaTime)
     case GameState::AnimationLevel:
         m_animationTime += deltaTime;
         if (m_animationTime >= 3.0f) {
-            std::cout << "Fin de l'animation, retour au jeu" << std::endl;
             m_currentState = GameState::Playing;
         }
         break;
@@ -207,8 +279,6 @@ void renderAnimationLevel(sf::RenderWindow& window, sf::Font& font, int level, c
     window.draw(messageText);
 }
 
-
-
 void Engine::render(float deltaTime)
 {
     m_window.clear();
@@ -224,7 +294,10 @@ void Engine::render(float deltaTime)
         m_menuBackground->render(m_window);
         m_optionsMenu->render();
         break;
-
+    case GameState::Infos:
+        m_infosBackground->render(m_window);
+        m_infoSection->render();
+        break;
     case GameState::Custom:
         m_customBackground->render(m_window);
         m_customMenu->render();

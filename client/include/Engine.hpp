@@ -11,7 +11,7 @@
 // #include "SoundManager.hpp"
 #include "ParallaxBackground.hpp"
 #include "State.hpp"
-
+#include "Infos.hpp"
 //class Game;
 class Engine
 {
@@ -37,15 +37,17 @@ private:
     std::unique_ptr<CustomMenu> m_customMenu;
     SoundManager m_soundManager;
     std::unique_ptr<Game> m_game;
+    std::unique_ptr<Infos> m_infoSection;
 
     std::unique_ptr<ParallaxBackground> m_menuBackground;
+    std::unique_ptr<ParallaxBackground> m_infosBackground;
     std::unique_ptr<ParallaxBackground> m_playingBackground;
     std::unique_ptr<ParallaxBackground> m_customBackground;
 
     GameState m_currentState;
     sf::Clock m_clock;
     int level;
-    float m_animationTime; // Temps écoulé pendant l'animation
+    float m_animationTime;
 };
 
 #endif // ENGINE_HPP
