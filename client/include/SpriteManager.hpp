@@ -6,9 +6,14 @@
 #include <memory>
 #include <map>
 #include "Type.hpp"
+#include "../include/DeathAnimation.hpp"
 
 class SpriteManager {
 public:
+    SpriteManager() {
+        m_deathAnimation.initialize("../../client/assets/explosions/", 7, 20.f); // Configure as needed
+    }
+
     void addSprite(const std::shared_ptr<Sprite> &sprite, std::size_t id)
     {
         _mapSprite[id] = sprite;
@@ -19,19 +24,21 @@ public:
         auto it = _mapSprite.find(id);
         if (it != _mapSprite.end())
         {
+            m_deathAnimation.triggerAnimation(id % 10);
             _mapSprite.erase(it);
         }
     }
 
     void drawAll(sf::RenderWindow &window, sf::Time deltaTime)
     {
-        deltaTime = deltaTime;
-
         for (const auto &[id, sprite] : _mapSprite)
         {
             sprite->update(deltaTime);
             sprite->draw(window);
         }
+
+        m_deathAnimation.update(deltaTime.asSeconds());
+        m_deathAnimation.render(window);
     }
 
     std::shared_ptr<Sprite> getSprite(std::size_t id) const
@@ -54,8 +61,10 @@ public:
         {
             if (container.find(it->first) == container.end())
             {
-                if (it->second->getType() != Type::Bullet)
+                if (it->second->getType() == Type::Enemy || it->second->getType() == Type::Player)
                 {
+                    m_deathAnimation.triggerAnimation(it->first % 10);
+                    m_deathAnimation.setAnimationPosition(it->second->getPosition());
                     it = _mapSprite.erase(it);
                 }
                 else
@@ -88,4 +97,5 @@ private:
     }
 
     std::map<std::size_t, std::shared_ptr<Sprite>> _mapSprite;
+    DeathAnimation m_deathAnimation;
 };
