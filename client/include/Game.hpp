@@ -36,8 +36,10 @@ public:
     void handleEvents();
     void update(float deltaTime);
     void render(float deltaTime);
-    void setPaused(bool isPaused); 
     bool AnimationLevel();
+    int getLevel() const {
+        return m_level.getLevel();
+    }
     void handler_packets();
 
 private:
@@ -136,7 +138,7 @@ private:
     Life m_life;
     Score m_score;
     Level m_level;
-    bool m_isPaused = false; // Indique si le jeu est en pause
+    int m_previousLevel;
 };
 
 #endif // GAME_HPP

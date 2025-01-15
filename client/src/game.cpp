@@ -12,16 +12,12 @@ Game::Game(std::string ip, sf::RenderWindow &window, SkinType skinType, sf::Font
       m_players(m_client),
       m_currentState(GameState::Playing),
       m_font(font),                    
-      m_SoundManager(soundManager)                  
+      m_SoundManager(soundManager),
+      m_previousLevel(0)                 
 {
     m_life.initialize("./assets/life/hearts.png", 5, 15.f);
     m_score.initialize(m_font, 30, sf::Vector2f(20, 60));
     m_level.initialize(m_font, 30, sf::Vector2f(0, 60));
-}
-
-void Game::setPaused(bool isPaused)
-{
-    m_isPaused = isPaused;
 }
 
 Game::~Game()
@@ -49,9 +45,6 @@ void Game::processInput(sf::Event &event)
 
 void Game::update(float deltaTime)
 {
-    if (m_isPaused) {
-        return;
-    }   
     if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
     {
         m_players.handleInput();
@@ -62,19 +55,20 @@ void Game::update(float deltaTime)
 
 bool Game::AnimationLevel()
 {
-    if (m_level.checkLevel()) {
-        std::cout << "jai changer le state" << std::endl;
+    int currentLevel = m_level.getLevel();
+    
+    if (currentLevel != m_previousLevel && (currentLevel == 3 || currentLevel == 4 || currentLevel == 5 || currentLevel == 6)) {
+        m_previousLevel = currentLevel;
+        std::cout << "Changement de niveau détecté : " << currentLevel << std::endl;
         return true;
     }
-    return false;
+
+    return false; // Pas de changement ou niveau non concerné
 }
 
 void Game::render(float deltaTime)
 {
     //m_window.clear();
-    if (m_isPaused) {
-        return; // Ne rien dessiner si le jeu est en pause
-    }
     if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
     {
         m_playingBackground.render(m_window);

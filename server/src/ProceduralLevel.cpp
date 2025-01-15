@@ -16,8 +16,8 @@ namespace NmpServer
 
         for (int i = 0; i < nbEnnemies; ++i) {
             _type = createRandValue(4, 1, true);
-            _posX = createRandValue(1800, 100, true);
-            _posY = createRandValue(1000, 100, true); 
+            _posX = createRandValue(900, 100, true);
+            _posY = createRandValue(800, 100, true); 
             int delaySpawn = createRandValue(5, 0, true); 
 
             level.push_back({

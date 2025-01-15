@@ -52,8 +52,7 @@ void System::control_system_p1(registry& reg) {
             auto &pos = positions[i];
             auto &vel = velocity[i];
             auto &type = shootTypes[i];
-
-            auto &lvl = level[i]; 
+            auto &lvl = level[i];
 
             if (lvl._levelKey >= component::level::Level6) {
                 if (ctl.active_key == component::controllable::Shoot5)
@@ -111,7 +110,6 @@ void System::control_system_p2(registry& reg)
             auto &vel = velocity[i];
             auto &type = shootTypes[i];
             auto &lvl = level[i]; 
-
 
             if (lvl._levelKey >= component::level::Level6) {
                 if (ctl.active_key == component::controllable::Shoot5)

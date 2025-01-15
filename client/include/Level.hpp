@@ -17,6 +17,10 @@ public:
             return true;
         return false;
     }
+    int getLevel() const
+    {
+        return m_currentLevel;
+    }
     void render(sf::RenderWindow &window);
 
 private:
