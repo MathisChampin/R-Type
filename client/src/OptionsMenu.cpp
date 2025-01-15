@@ -144,7 +144,7 @@ void OptionsMenu::setupButtons()
 
 void OptionsMenu::handleEvent(const sf::Event &event)
 {
-       if (event.type == sf::Event::KeyPressed) {
+    if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::W) {
             m_isChatOpen = !m_isChatOpen;
             if (m_isChatOpen) {
@@ -161,9 +161,9 @@ void OptionsMenu::handleEvent(const sf::Event &event)
             }
         }
 
-        if (m_isConnecting) { 
+        if (m_isConnecting) {
             if (event.key.code == sf::Keyboard::Up) {
-                m_selectedButton = (m_selectedButton == -1) ? -2 : -1; 
+                m_selectedButton = (m_selectedButton == -1) ? -2 : -1;
             } else if (event.key.code == sf::Keyboard::Down) {
                 m_selectedButton = (m_selectedButton == -1) ? -2 : -1;
             } else if (event.key.code == sf::Keyboard::Tab) {
@@ -174,11 +174,11 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                 }
             } else if (event.key.code == sf::Keyboard::L) {
                 m_isConnecting = false;
-                m_selectedButton = 1; 
-                m_buttons[1].setFillColor(sf::Color::Cyan); 
-                m_ipAddressInputBorder.setOutlineColor(sf::Color::White); 
-                m_portInputBorder.setOutlineColor(sf::Color::White); 
-            } else if (event.key.code == sf::Keyboard::Enter &&  m_isChatOpen == false) {
+                m_selectedButton = 1;
+                m_buttons[1].setFillColor(sf::Color::Cyan);
+                m_ipAddressInputBorder.setOutlineColor(sf::Color::White);
+                m_portInputBorder.setOutlineColor(sf::Color::White);
+            } else if (event.key.code == sf::Keyboard::Enter && m_isChatOpen == false) {
                 connectTcpClient(m_ipAddressInput, m_portInput);
             }
         } else {
@@ -194,12 +194,12 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                     m_selectedButton++;
                     m_buttons[m_selectedButton].setFillColor(sf::Color::Cyan);
                 }
-            } else if (event.key.code == sf::Keyboard::Enter &&  m_isChatOpen == false) {
-                if (m_selectedButton == 0) { 
+            } else if (event.key.code == sf::Keyboard::Enter && m_isChatOpen == false) {
+                if (m_selectedButton == 0) {
                     m_isConnecting = true;
-                    m_selectedButton = -1; 
-                    m_ipAddressInputBorder.setOutlineColor(sf::Color::Cyan); 
-                    m_buttons[0].setFillColor(sf::Color::White); 
+                    m_selectedButton = -1;
+                    m_ipAddressInputBorder.setOutlineColor(sf::Color::Cyan);
+                    m_buttons[0].setFillColor(sf::Color::White);
                 } else if (m_selectedButton >= 1 && m_selectedButton <= 4 && m_tcpClient.has_value()) {
                     switch (m_selectedButton) {
                         case 1: createLobby(); break;
@@ -213,7 +213,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
     }
 
     if (event.type == sf::Event::TextEntered) {
-         if (m_isConnecting) {
+        if (m_isConnecting) {
             if (m_selectedButton == -1) {
                 if (event.text.unicode < 128) {
                     char enteredChar = static_cast<char>(event.text.unicode);
@@ -224,7 +224,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                     }
                     m_ipAddressText.setString("Adresse IP : " + m_ipAddressInput);
                 }
-            } else if (m_selectedButton == -2) { 
+            } else if (m_selectedButton == -2) {
                 if (event.text.unicode < 128) {
                     char enteredChar = static_cast<char>(event.text.unicode);
                     if (enteredChar == '\b' && !m_portInput.empty()) {
@@ -235,7 +235,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                     m_portText.setString("Port : " + m_portInput);
                 }
             }
-         } else if (m_isChatOpen) {
+        } else if (m_isChatOpen) {
             if (event.text.unicode < 128) {
                 char enteredChar = static_cast<char>(event.text.unicode);
                 if (enteredChar == '\b' && !m_chatInputString.empty()) {
@@ -254,6 +254,22 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                     m_lobbyNameInput += enteredChar;
                 }
                 m_lobbyNameText.setString("Nom du lobby : " + m_lobbyNameInput);
+            }
+        }
+    }
+
+    if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+            for (size_t i = 0; i < m_buttons.size(); ++i) {
+                if (m_buttons[i].getGlobalBounds().contains(mousePos)) {
+                    if (m_selectedButton != -1) {
+                        m_buttons[m_selectedButton].setFillColor(sf::Color::White);
+                    }
+                    m_selectedButton = static_cast<int>(i);
+                    m_buttons[m_selectedButton].setFillColor(sf::Color::Cyan);
+                    break;
+                }
             }
         }
     }
