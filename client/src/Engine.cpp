@@ -2,7 +2,7 @@
 #include "Engine.hpp"
 #include <iostream>
 
-Engine::Engine() : m_currentState(GameState::Menu)
+Engine::Engine() : m_currentState(GameState::Menu), m_animationTime(0.0f)
 {
     initializeWindow();
     initializeFont();
@@ -121,7 +121,6 @@ void Engine::handleEvents()
         case GameState::PlayingInLobby:
             break;
         case GameState::AnimationLevel:
-            break;
         default:
             break;
         }
@@ -147,19 +146,67 @@ void Engine::update(float deltaTime)
     case GameState::Playing:
         if (m_game.get()->AnimationLevel()) {
             std::cout << "Passage à AnimationLevel" << std::endl;
-            m_game.get()->setPaused(true); // Met le jeu en pause
             m_currentState = GameState::AnimationLevel;
+            m_animationTime = 0.0f; // Réinitialise le temps écoulé
         } else {
             m_playingBackground->update(deltaTime);
             m_game.get()->update(deltaTime);
         }
         break;
     case GameState::AnimationLevel:
+        m_animationTime += deltaTime;
+        if (m_animationTime >= 3.0f) {
+            std::cout << "Fin de l'animation, retour au jeu" << std::endl;
+            m_currentState = GameState::Playing;
+        }
         break;
     default:
         break;
     }
 }
+
+void renderAnimationLevel(sf::RenderWindow& window, sf::Font& font, int level, const std::string& spriteFilePath, const std::string& message)
+{
+    window.clear(sf::Color::Black);
+
+    sf::Vector2u windowSize = window.getSize();
+
+    sf::Text levelText;
+    levelText.setFont(font);
+    levelText.setString("Level " + std::to_string(level));
+    levelText.setCharacterSize(50);
+    levelText.setFillColor(sf::Color::White);
+    
+    sf::FloatRect levelBounds = levelText.getLocalBounds();
+    levelText.setOrigin(levelBounds.width / 2, levelBounds.height / 2);
+    levelText.setPosition(windowSize.x / 2, 50);
+
+    sf::Texture texture;
+    if (!texture.loadFromFile(spriteFilePath)) {
+        std::cerr << "Erreur : Impossible de charger la texture depuis " << spriteFilePath << std::endl;
+        return;
+    }
+
+    sf::Sprite sprite(texture);
+    sf::FloatRect spriteBounds = sprite.getLocalBounds();
+    sprite.setOrigin(spriteBounds.width / 2, spriteBounds.height / 2);
+    sprite.setPosition(windowSize.x / 4, windowSize.y / 2);
+    sprite.setScale(2.0f, 2.0f);
+
+    sf::Text messageText;
+    messageText.setFont(font);
+    messageText.setString(message);
+    messageText.setCharacterSize(30);
+    messageText.setFillColor(sf::Color::White);
+    
+    sf::FloatRect messageBounds = messageText.getLocalBounds();
+    messageText.setOrigin(messageBounds.width / 2, messageBounds.height / 2);
+    messageText.setPosition((windowSize.x / 4) * 3, windowSize.y / 2);
+    window.draw(levelText);
+    window.draw(sprite);
+    window.draw(messageText);
+}
+
 
 
 void Engine::render(float deltaTime)
@@ -195,20 +242,28 @@ void Engine::render(float deltaTime)
 
     case GameState::AnimationLevel:
     {
-        std::cout << "je suis dans le render de animation level" << std::endl;
-        // Bloc pour encapsuler l'utilisation de sf::Text
-        m_window.clear(sf::Color::Black);
+        int currentLevel = m_game.get()->getLevel();
+        std::string spritePath;
+        std::string message;
 
-        sf::Text animationText;
-        animationText.setFont(m_font);
-        animationText.setString("Animation en cours...");
-        animationText.setCharacterSize(50);
-        animationText.setFillColor(sf::Color::White);
-        animationText.setPosition(100, 100);
-
-        m_window.draw(animationText);
-        std::cout << "je sors du render d'animation" << std::endl;
-        break; // Assurez-vous que le break reste dans ce bloc
+        switch (currentLevel)
+        {
+        case 3:
+            renderAnimationLevel(m_window, m_font, m_game.get()->getLevel(), "./assets/bullet/player/tir_player_2_1.png", "Key Z too unlock");
+            break;
+        case 4:
+            renderAnimationLevel(m_window, m_font, m_game.get()->getLevel(), "./assets/bullet/player/tir_player_3_1.png", "Key E too unlock");
+            break;
+        case 5:
+            renderAnimationLevel(m_window, m_font, m_game.get()->getLevel(), "./assets/bullet/player/tir_player_4_1.png", "Key R too unlock");
+            break;
+        case 6:
+            renderAnimationLevel(m_window, m_font, m_game.get()->getLevel(), "./assets/bullet/player/tir_player_5_1.png", "Key T too unlock");
+            break;
+        default:
+            break;
+        }
+        break;
     }
 
     default:

@@ -224,19 +224,19 @@ void handle_collision_with_enemy(size_t i, size_t shoot_id, size_t idEnnemy,
 
         switch (attributes[idEnnemy]._type) {
             case component::attribute::Ennemies2:
-                score_increment = 100;
+                score_increment = 10;
                 break;
             case component::attribute::Ennemies:
-                score_increment = 100;
+                score_increment = 20;
                 break;
             case component::attribute::Ennemies3:
-                score_increment = 100;
+                score_increment = 30;
                 break;
             case component::attribute::Ennemies4:
-                score_increment = 100;
+                score_increment = 40;
                 break;
             case component::attribute::Ennemies5:
-                score_increment = 100;
+                score_increment = 50;
                 break;
             default:
                 break;

@@ -14,7 +14,7 @@ namespace NmpServer
         _parser("../../server/configFile/level1.json")
     {
         _bufferAsio.fill(0);
-        _prodLevel.generateLevel(2);
+        _prodLevel.generateLevel(8);
         _parser.parseConfig();
         _ptp.loadEnnemiesFromconfig(_parser.getVector());
     }
@@ -175,7 +175,7 @@ namespace NmpServer
                 (att._type == component::attribute::Player1 || 
                  att._type == component::attribute::Player2 || 
                  att._type == component::attribute::Player3 || 
-                 att._type == component::attribute::Player4)) {
+                 att._type == component::attribute::Player4 )) {
                 sendScoreLife(i);
             }
         }
@@ -257,15 +257,13 @@ namespace NmpServer
             {
                 std::lock_guard<std::mutex> lock(_ecsMutex);
                 auto &ecs = _ptp.getECS();
-                if (!check_level_player(ecs)) {
-                    sys.collision_system(ecs);
-                    sys.position_system(ecs);
-                    sys.shoot_system_ennemies(ecs);
-                    sys.lose_system(ecs);
-                    sys.spawn_power_up_life(ecs);
-                    sys.collision_power_up(ecs);
-                    sys.level_system(ecs);
-                }
+                sys.collision_system(ecs);
+                sys.position_system(ecs);
+                sys.shoot_system_ennemies(ecs);
+                sys.lose_system(ecs);
+                sys.spawn_power_up_life(ecs);
+                sys.collision_power_up(ecs);
+                sys.level_system(ecs);
                 copyEcs();
 
                 if (!check_level(ecs)) {
