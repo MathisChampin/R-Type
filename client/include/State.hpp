@@ -8,7 +8,8 @@ enum class GameState
     Options,
     PlayingInLobby,
     Custom,
-    AnimationLevel
+    AnimationLevel,
+    Infos,
 };
 
 #endif // STATE_HPP
