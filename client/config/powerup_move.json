@@ -1,0 +1,11 @@
+{
+    "type": "powerup_move",
+    "texture": "assets/powerup/move/powerup_move_1.png",
+    "texture2": "assets/powerup/move/powerup_move_2.png",
+    "texture3": "assets/powerup/move/powerup_move_3.png",
+    "texture4": "assets/powerup/move/powerup_move_4.png",
+    "texture5": "assets/powerup/move/powerup_move_5.png",
+    "texture6": "assets/powerup/move/powerup_move_6.png",
+    "position": { "x": 800, "y": 400 },
+    "size": { "width": 47, "height": 47 }
+}

@@ -12,51 +12,21 @@
         "delaySpawn": 0
     },
     {
-        "type": 3,
+        "type": 2,
         "posX": 1500,
         "posY": 1000,
         "delaySpawn": 5
     },
     {
-        "type": 1,
-        "posX": 1330,
+        "type": 2,
+        "posX": 1220,
         "posY": 800,
-        "delaySpawn": 3
-    },
-    {
-        "type": 4,
-        "posX": 1400,
-        "posY": 700,
-        "delaySpawn": 4
-    },
-    {
-        "type": 1,
-        "posX": 1600,
-        "posY": 950,
         "delaySpawn": 2
     },
     {
-        "type": 5,
-        "posX": 1600,
-        "posY": 900,
-        "delaySpawn": 1
-    },
-    {
-        "type": 1,
-        "posX": 1670,
-        "posY": 900,
-        "delaySpawn": 1
-    },
-    {
-        "type": 1,
-        "posX": 1900,
-        "posY": 900,
-        "delaySpawn": 1
-    },
-    {
-        "type": 3,
-        "posX": 1800,
-        "posY": 900,
-        "delaySpawn": 1
+        "type": 2,
+        "posX": 1400,
+        "posY": 700,
+        "delaySpawn": 4
     }
 ]

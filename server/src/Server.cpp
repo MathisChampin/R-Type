@@ -11,7 +11,7 @@ namespace NmpServer
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
         _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081)),
         _ptp(*this),
-        _parser("../../server/configFile/level2.json")
+        _parser("../../server/configFile/level4.json")
     {
         _bufferAsio.fill(0);
         _parser.parseConfig();
@@ -29,16 +29,12 @@ namespace NmpServer
         _io_context.run();
 
         std::thread systemThread(&Server::threadSystem, this);
-        std::thread shootEnnemiesThread(&Server::threadShootEnnemies, this);
         std::thread inputThread(&Server::threadInput, this);
         std::thread handleInputThread(&Server::threaEvalInput, this);
-
-        notifyShoot();
 
         inputThread.join();
         systemThread.join();
         handleInputThread.join();
-        shootEnnemiesThread.join();
     }
 
     void Server::copyEcs()
@@ -64,28 +60,28 @@ namespace NmpServer
             id = 1;
             //std::cout << "je t'envoie un player" << std::endl;
             }
-        if (att._type == component::attribute::Shoot) {
-            std::cout << "je t'envoie un shoot" << std::endl;
-            id = 2;
-        }
         if (att._type == component::attribute::Ennemies) {
-            id = 3;
+            id = 2;
             std::cout << "je t'envoie un ennemie" << std::endl;
         }
         if (att._type == component::attribute::Ennemies2) {
             std::cout << "je t'envoie un ennemis 2" << std::endl;
-            id = 4;
+            id = 3;
         }
         if (att._type == component::attribute::Ennemies3) {
             std::cout << "je t'envoie un ennemis 3" << std::endl;
-            id = 5;
+            id = 4;
         }
         if (att._type == component::attribute::Ennemies4) {
             std::cout << "je t'envoie un ennemis 4" << std::endl;
-            id = 6;
+            id = 5;
         }
         if (att._type == component::attribute::Ennemies5) {
             std::cout << "je t'envoie un ennemis 5" << std::endl;
+            id = 6;
+        }
+        if (att._type == component::attribute::Shoot) {
+            std::cout << "je t'envoie un shoot" << std::endl;
             id = 7;
         }
         if (att._type == component::attribute::Shoot2) {
@@ -96,9 +92,45 @@ namespace NmpServer
             std::cout << "je t'envoie un shoot" << std::endl;
             id = 9;
         }
-        if (att._type == component::attribute::Shoot5) {
+        if (att._type == component::attribute::Shoot4) {
             std::cout << "je t'envoie un shoot" << std::endl;
             id = 10;
+        }
+        if (att._type == component::attribute::PowerUpLife) {
+            std::cout << "je t'envoie un power up life" << std::endl;
+            id = 11;
+        }
+        if (att._type == component::attribute::PowerUpMove) {
+            std::cout << "je t'envoie un power up move" << std::endl;
+            id = 12;
+        }
+        if (att._type == component::attribute::Shoot5) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 13;
+        }
+        if (att._type == component::attribute::Shoot6) {
+            std::cout << "je t'envoie un shoot 6" << std::endl;
+            id = 14;
+        }
+        if (att._type == component::attribute::Shoot7) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 15;
+        }
+        if (att._type == component::attribute::Shoot8) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 16;
+        }
+        if (att._type == component::attribute::Shoot9) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 17;
+        }
+        if (att._type == component::attribute::Shoot10) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 18;
+        }
+        if (att._type == component::attribute::Shoot1) {
+            std::cout << "je t'envoie un shoot 2" << std::endl;
+            id = 19;
         }
         return id;
     }
@@ -148,25 +180,6 @@ namespace NmpServer
         Packet packet(EVENT::EOI);
             broadcast(packet);
         //std::cout << "END SEND ENTITY" << std::endl;
-    }
-
-    void Server::notifyShoot()
-    {
-        ClockManager clock;
-        _shootReady = false;
-
-        clock.start();
-        while (1) {
-            //std::cout << "time elapsed: " << clock.elapsedSeconds() << std::endl;
-            if (clock.elapsedSeconds() >= 5.0) {
-                //std::cout << "Notify shoot" << std::endl;
-                _shootReady = true;
-                _cvShoot.notify_one();
-                clock.start();
-            }
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));
-        }
-
     }
 
     bool Server::check_level(registry &_ecs)
@@ -227,7 +240,11 @@ namespace NmpServer
                 auto &ecs = _ptp.getECS();
                 sys.collision_system(ecs);
                 sys.position_system(ecs);
+                sys.shoot_system_ennemies(ecs);
                 sys.lose_system(ecs);
+                sys.spawn_power_up_life(ecs);
+                sys.collision_power_up(ecs);
+                sys.level_system(ecs);
                 copyEcs();
 
                 // if (!check_level(ecs)) {
@@ -239,20 +256,6 @@ namespace NmpServer
             }
             send_entity();
             std::this_thread::sleep_for(frameDuration);
-        }
-    }
-
-    void Server::threadShootEnnemies()
-    {
-        System sys;
-
-        while (true) {
-            std::unique_lock<std::mutex> lock(_ecsMutex);
-            _cvShoot.wait(lock, [this] { return _shootReady; });
-            auto &ecs = _ptp.getECS();
-            sys.shoot_system_ennemies(ecs);
-            _shootReady = false;
-            //std::cout << "has shoot" << std::endl;
         }
     }
 

@@ -28,13 +28,16 @@ set(SOURCES
     ${SRC_SYSTEM}/kill_system.cpp
     ${SRC_SYSTEM}/lose_system.cpp
     ${SRC_SYSTEM}/win_system.cpp
-    ${SRC_SYSTEM}/collision_power_up_move_system.cpp
-    ${SRC_SYSTEM}/collision_power_up_shoot_system.cpp
+    ${SRC_SYSTEM}/collision_power_up.cpp
+	${SRC_SYSTEM}/velocity_power_up_move.cpp
+    ${SRC_SYSTEM}/life_power_up_life.cpp
+	${SRC_SYSTEM}/create_power_up.cpp
 )
 
 set(MAIN_SOURCES
     ${SRC_DIR}/main.cpp  
 )
+
 if(UNIX)
 set(TEST_SOURCES
     ${TEST_DIR}/testsEntity.cpp
@@ -48,7 +51,9 @@ set(TEST_SOURCES
     ${TEST_SYS}/testsCollision.cpp
     ${TEST_SYS}/testsLevel.cpp
     ${TEST_SYS}/testsShoot.cpp
-    ${TEST_SYS}/testsKill.cpp
+    ${TEST_SYS}/testsCollisionPowerUpLife.cpp
+    ${TEST_SYS}/testsCollisionPowerUpMove.cpp
+    ${TEST_SYS}/testsSpawnPowerUp.cpp
 )
 endif()
 

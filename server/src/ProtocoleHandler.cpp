@@ -1,6 +1,7 @@
 #include "ProtocolHandler.hpp"
 #include "Server.hpp"
 #include "idPlayer.hpp"
+#include "shoot_type.hpp"
 
 namespace NmpServer
 {
@@ -62,6 +63,7 @@ namespace NmpServer
         if (foundEndpoint.has_value()) {
             if (att._type == component::attribute::Player1) {
                 _ecs.emplace_component<component::controllable>(player, control);
+                std::cout << "le controle est = " << control << std::endl;
                 sys.control_system_p1(_ecs);
             }
             if (att._type == component::attribute::Player2) {
@@ -115,6 +117,21 @@ namespace NmpServer
         } else if ((direction == DIRECTION::SHOOT)) {
             auto control = component::controllable::Shoot;
             updateMoveEcs(player, control, position, att);
+        } else if ((direction == DIRECTION::Key1)) {
+            auto control = component::controllable::Shoot1;
+            updateMoveEcs(player, control, position, att);
+        } else if ((direction == DIRECTION::Key2)) {
+            auto control = component::controllable::Shoot2;
+            updateMoveEcs(player, control, position, att);
+        } else if ((direction == DIRECTION::Key3)) {
+            auto control = component::controllable::Shoot3;
+            updateMoveEcs(player, control, position, att);
+        } else if ((direction == DIRECTION::Key4)) {
+            auto control = component::controllable::Shoot4;
+            updateMoveEcs(player, control, position, att);
+        } else if ((direction == DIRECTION::Key5)) {
+            auto control = component::controllable::Shoot5;
+            updateMoveEcs(player, control, position, att);
         } else 
             std::cout << "x " << position.x << " y " << position.y << std::endl;
             //std::cout << "NO KEY" << std::endl;
@@ -149,6 +166,9 @@ namespace NmpServer
         _ecs.register_component<component::size>();
         _ecs.register_component<component::state>();
         _ecs.register_component<component::velocity>();
+        _ecs.register_component<component::idPlayer>();
+        _ecs.register_component<component::shoot_type>();
+
     }
 
     void ProtocoleHandler::initPlayer()
@@ -175,6 +195,7 @@ namespace NmpServer
         _ecs.add_component<component::state>(player, {component::state::Alive});
         _ecs.add_component<component::velocity>(player, {10, 10});
         _ecs.add_component<component::idPlayer>(player, {player.get_id()});
+        _ecs.add_component<component::shoot_type>(player, {component::attribute::Shoot});
         //_refServer.get()._vecPlayer.push_back(std::make_pair(player, lastEndpoint));
         _vecPlayer.push_back(std::make_pair(player, lastEndpoint));  
     }
@@ -187,29 +208,38 @@ namespace NmpServer
         if (type == 1) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
             _ecs.add_component<component::velocity>(ennemies, {-2, 0});
+            _ecs.add_component<component::size>(ennemies, {50, 50});
+            _ecs.add_component<component::life>(ennemies, {1});
         }
         if (type == 2) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies2});
             _ecs.add_component<component::velocity>(ennemies, {0, -2});
+            _ecs.add_component<component::size>(ennemies, {50, 50});
+            _ecs.add_component<component::life>(ennemies, {1});
         }
         if (type == 3) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies3});
             _ecs.add_component<component::velocity>(ennemies, {-2, -2});
+            _ecs.add_component<component::size>(ennemies, {50, 50});
+            _ecs.add_component<component::life>(ennemies, {1});
         }
         if (type == 4) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies4});
+            _ecs.add_component<component::size>(ennemies, {50, 50});
             _ecs.add_component<component::velocity>(ennemies, {-2, -2});
+            _ecs.add_component<component::life>(ennemies, {1});
+
         }
         if (type == 5) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies5});
+            _ecs.add_component<component::size>(ennemies, {900, 800});
             _ecs.add_component<component::velocity>(ennemies, {0, 0});
+            _ecs.add_component<component::life>(ennemies, {10});
         }
 
         _ecs.add_component<component::level>(ennemies, {component::level::Level0});
         _ecs.add_component<component::controllable>(ennemies, {component::controllable::Key::NoKey});
-        _ecs.add_component<component::life>(ennemies, {1});
         _ecs.add_component<component::position>(ennemies, {posX, posY});
-        _ecs.add_component<component::size>(ennemies, {50, 50});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
         _ecs.add_component<component::idPlayer>(ennemies, {ennemies.get_id()});
     }

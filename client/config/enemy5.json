@@ -1,9 +1,14 @@
 {
     "type": "enemy",
-    "texture": "assets/enemy/UFO_part_1_rotated.png",
-    "texture2": "assets/enemy/UFO_part_2_rotated.png",
-    "texture3": "assets/enemy/UFO_part_3_rotated.png",
-    "texture4": "assets/enemy/UFO_part_4_rotated.png",
-    "position": { "x": 100, "y": 200 },
-    "size": { "width": 50, "height": 50 }
+    "texture": "assets/boss/boss_1_1.png",
+    "texture2": "assets/boss/boss_1_2.png",
+    "texture3": "assets/boss/boss_1_3.png",
+    "texture4": "assets/boss/boss_1_4.png",
+    "texture5": "assets/boss/boss_1_5.png",
+    "texture6": "assets/boss/boss_1_6.png",
+    "texture7": "assets/boss/boss_1_7.png",
+    "texture8": "assets/boss/boss_1_8.png",
+
+    "position": { "x": 500, "y": 500 },
+    "size": { "width": 900, "height": 800 }
 }

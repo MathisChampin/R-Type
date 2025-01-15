@@ -31,8 +31,8 @@ Test(ShootSystemTest, CreateShoot_Player) {
     cr_assert_eq(positions.size(), 2, "Le joueur et un tir doivent être présents.");
     cr_assert_eq(velocities[1].x, 15, "La vitesse X du tir du joueur devrait être 15.");
     cr_assert_eq(velocities[1].y, 0, "La vitesse Y du tir du joueur devrait être 0.");
-    cr_assert_eq(sizes[1].x, 9, "La taille X du tir devrait être 9.");
-    cr_assert_eq(sizes[1].y, 9, "La taille Y du tir devrait être 9.");
+    cr_assert_eq(sizes[1].x, 50, "La taille X du tir devrait être 50.");
+    cr_assert_eq(sizes[1].y, 50, "La taille Y du tir devrait être 50.");
     cr_assert_eq(attributes[1]._type, component::attribute::Shoot, "L'attribut devrait être 'Shoot'.");
     cr_assert_eq(idPlayers[1].id, player.get_id(), "L'ID du joueur doit être correctement associé au tir.");
 }
@@ -56,7 +56,7 @@ Test(ShootSystemTest, CreateShoot_Ennemy1) {
     cr_assert_eq(positions[1].x, 200, "La position X du tir ennemi devrait être 200.");
     cr_assert_eq(velocities[1].x, -20, "La vitesse X du tir ennemi devrait être -20.");
     cr_assert_eq(attributes[1]._type, component::attribute::Shoot, "Le type d'attribut devrait être 'Shoot'.");
-    cr_assert_eq(sizes[1].x, 9, "La taille X du tir ennemi devrait être 9.");
+    cr_assert_eq(sizes[1].x, 50, "La taille X du tir ennemi devrait être 50.");
 }
 
 Test(ShootSystemTest, CreateShoot_Ennemy2) {
@@ -86,7 +86,7 @@ Test(ShootSystemTest, CreateShoot_Ennemy34) {
     sys.shoot_system_ennemies(reg);
 
     auto &sizes = reg.get_components<component::size>();
-    cr_assert_eq(sizes[1].x, 11, "La taille X du tir ennemi3 devrait être 11.");
+    cr_assert_eq(sizes[1].x, 50, "La taille X du tir ennemi3 devrait être 50.");
 }
 
 Test(ShootSystemTest, CreateShoot_Ennemy5) {
@@ -104,8 +104,8 @@ Test(ShootSystemTest, CreateShoot_Ennemy5) {
     auto &sizes = reg.get_components<component::size>();
 
     cr_assert_eq(velocities[1].x, -40, "La vitesse X du tir ennemi5 devrait être -40.");
-    cr_assert_eq(sizes[1].x, 15, "La taille X du tir ennemi5 devrait être 15.");
-    cr_assert_eq(sizes[1].y, 15, "La taille Y du tir ennemi5 devrait être 15.");
+    cr_assert_eq(sizes[1].x, 50, "La taille X du tir ennemi5 devrait être 50.");
+    cr_assert_eq(sizes[1].y, 50, "La taille Y du tir ennemi5 devrait être 50.");
 }
 
 Test(ShootSystemTest, PlayerDoesNotShootWhenKeyNotPressed) {

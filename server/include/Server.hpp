@@ -34,9 +34,7 @@ namespace NmpServer {
             void threadInput();
             void threaEvalInput();
             void threadSystem();
-            void threadShootEnnemies();
             void send_entity();
-            void notifyShoot();
             bool check_level(registry &);
             void copyEcs();
 

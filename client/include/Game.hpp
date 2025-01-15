@@ -58,6 +58,20 @@ private:
     void get_ennemies5(NmpClient::SpriteInfo &sp);
     void get_shoots(NmpClient::SpriteInfo &sp);
 
+    void get_shoots2(NmpClient::SpriteInfo &sp);
+    void get_shoots3(NmpClient::SpriteInfo &sp);
+    void get_shoots4(NmpClient::SpriteInfo &sp);
+    void get_shoots5(NmpClient::SpriteInfo &sp);
+    void get_powerup_life(NmpClient::SpriteInfo &sp);
+    void get_powerup_move(NmpClient::SpriteInfo &sp);
+    void get_shoots6(NmpClient::SpriteInfo &sp);
+    void get_shoots7(NmpClient::SpriteInfo &sp);
+    void get_shoots8(NmpClient::SpriteInfo &sp);
+    void get_shoots9(NmpClient::SpriteInfo &sp);
+    void get_shoots10(NmpClient::SpriteInfo &sp);
+    void get_shoots11(NmpClient::SpriteInfo &sp);
+    void handler_packets();
+
     void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
     void destroy_useless_sprites();
 
@@ -94,26 +108,25 @@ private:
     std::unordered_set<std::size_t> _containerEndFrameId;
     std::queue<NmpClient::Packet> _queuePacket;
     std::map<std::size_t, std::function<void(NmpClient::SpriteInfo &sp)>> _mapHandlerPacket{
-        {1, [this](NmpClient::SpriteInfo &sp)
-         { get_player(sp); }},
-        {2, [this](NmpClient::SpriteInfo &sp)
-         { get_shoots(sp); }},
-        {3, [this](NmpClient::SpriteInfo &sp)
-         { get_ennemies(sp); }},
-        {4, [this](NmpClient::SpriteInfo &sp)
-         { get_ennemies2(sp); }},
-        {5, [this](NmpClient::SpriteInfo &sp)
-         { get_ennemies3(sp); }},
-        {6, [this](NmpClient::SpriteInfo &sp)
-         { get_ennemies4(sp); }},
-        {7, [this](NmpClient::SpriteInfo &sp)
-         { get_ennemies5(sp); }},
-        {8, [this](NmpClient::SpriteInfo &sp)
-         { get_shoots(sp); }},
-        {9, [this](NmpClient::SpriteInfo &sp)
-         { get_shoots(sp); }},
-        {10, [this](NmpClient::SpriteInfo &sp)
-         { get_shoots(sp); }},
+        {1, [this](NmpClient::SpriteInfo &sp) { get_player(sp); }},
+        {2, [this](NmpClient::SpriteInfo &sp) { get_ennemies(sp); }},
+        {3, [this](NmpClient::SpriteInfo &sp) { get_ennemies2(sp); }},
+        {4, [this](NmpClient::SpriteInfo &sp) { get_ennemies3(sp); }},
+        {5, [this](NmpClient::SpriteInfo &sp) { get_ennemies4(sp); }},
+        {6, [this](NmpClient::SpriteInfo &sp) { get_ennemies5(sp); }},
+        {7, [this](NmpClient::SpriteInfo &sp) { get_shoots(sp); }},
+        {8, [this](NmpClient::SpriteInfo &sp) { get_shoots2(sp); }},
+        {9, [this](NmpClient::SpriteInfo &sp) { get_shoots3(sp); }},
+        {10, [this](NmpClient::SpriteInfo &sp) { get_shoots4(sp); }},
+        {11, [this](NmpClient::SpriteInfo &sp) { get_powerup_life(sp); }},
+        {12, [this](NmpClient::SpriteInfo &sp) { get_powerup_move(sp); }},
+        {13, [this](NmpClient::SpriteInfo &sp) { get_shoots5(sp); }},
+        {14, [this](NmpClient::SpriteInfo &sp) { get_shoots6(sp); }},
+        {15, [this](NmpClient::SpriteInfo &sp) { get_shoots7(sp); }},
+        {16, [this](NmpClient::SpriteInfo &sp) { get_shoots8(sp); }},
+        {17, [this](NmpClient::SpriteInfo &sp) { get_shoots9(sp); }},
+        {18, [this](NmpClient::SpriteInfo &sp) { get_shoots10(sp); }},
+        {19, [this](NmpClient::SpriteInfo &sp) { get_shoots11(sp); }},
     };
 
     Life m_life;

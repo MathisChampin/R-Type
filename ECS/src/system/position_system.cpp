@@ -74,6 +74,7 @@ void position_shoot(
 
     switch (att._type) {
         case component::attribute::Shoot:
+        case component::attribute::Shoot1:
         case component::attribute::Shoot2:
             pos.x += vel.x;
             if (pos.x <= -30 || pos.x >= 1930) {
@@ -82,21 +83,80 @@ void position_shoot(
             break;
 
         case component::attribute::Shoot3:
-        case component::attribute::Shoot5:
-            if (pos.y + vel.y <= 0) {
-                pos.y = 0;
-                vel.y = std::abs(vel.y);
-            } else if (pos.y + vel.y >= 1080) {
-                pos.y = 1080;
-                vel.y = -std::abs(vel.y);
-            }
+        case component::attribute::Shoot7:
             pos.x += vel.x;
             pos.y += vel.y;
+            if (pos.y <= 0) {
+                if (pos.y <= 0) {
+                    pos.y = 0;
+                    vel.y = std::abs(vel.y);
+                }
+            }
+            break;
             if (pos.x <= -30 || pos.x >= 1930) {
                 s._stateKey = component::state::Dead;
             }
             break;
-
+        case component::attribute::Shoot4:
+        case component::attribute::Shoot8:
+            pos.x += vel.x;
+            pos.y += vel.y;
+            if (pos.y >= 900) {
+                pos.y = 900;
+                vel.y = -std::abs(vel.y);
+            }
+            break;
+            if (pos.x <= -30 || pos.x >= 1930) {
+                s._stateKey = component::state::Dead;
+            }
+            break;
+        case component::attribute::Shoot5:
+        case component::attribute::Shoot9:
+            pos.x += vel.x;
+            pos.y += vel.y;
+            if (pos.y <= 0) {
+                if (pos.y <= 0) {
+                    pos.y = 0;
+                    vel.y = std::abs(vel.y);
+                }
+            }
+            if (pos.y >= 900) {
+                pos.y = 900;
+                vel.y = -std::abs(vel.y);
+            }
+            if (pos.x <= -30 || pos.x >= 1930) {
+                s._stateKey = component::state::Dead;
+            }
+            break;
+            if (pos.x <= -30 || pos.x >= 1930) {
+                s._stateKey = component::state::Dead;
+            }
+            break;
+        case component::attribute::Shoot6:
+        case component::attribute::Shoot10:
+            pos.x += vel.x;
+            pos.y += vel.y;
+            if (pos.y <= 0) {
+                    pos.y = 0;
+                    vel.y = std::abs(vel.y);
+            }
+            if (pos.y >= 900) {
+                pos.y = 900;
+                vel.y = -std::abs(vel.y);
+            }
+            if (pos.x <= 0) {
+                    pos.x = 0;
+                    vel.x = std::abs(vel.y);
+            }
+            if (pos.x >= 1800) {
+                pos.x = 1800;
+                vel.x = -std::abs(vel.y);
+                }
+            break;
+            if (pos.x <= -30 || pos.x >= 1930) {
+                s._stateKey = component::state::Dead;
+            }
+            break;
         default:
             break;
     }

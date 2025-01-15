@@ -9,6 +9,11 @@ namespace component {
             Right,
             Left,
             Shoot,
+            Shoot1,
+            Shoot2,
+            Shoot3,
+            Shoot4,
+            Shoot5,
             Clear,
             NoKey,
         };

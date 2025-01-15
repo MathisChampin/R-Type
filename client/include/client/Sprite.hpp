@@ -48,8 +48,11 @@ public:
             isAnimationComplete = false;
         }
 
-        if (config["type"] == "player" || config["type"] == "enemy" || 
-            config["type"] == "shoot" || config["type"] == "explosions")
+        if (config["type"] == "player" || config["type"] == "enemy" || config["type"] == "shoot1Player" ||
+        config["type"] == "powerup_life" || config["type"] == "powerup_move" || config["type"] == "shoot4Player" ||
+        config["type"] == "shoot2Player" || config["type"] == "shoot3Player" || config["type"] == "shoot5Player" ||
+        config["type"] == "shoot2Enemy" || config["type"] == "shoot1Enemy" || config["type"] == "shoot3Enemy" ||
+        config["type"] == "shoot4Enemy" || config["type"] == "shoot5Enemy")
         {
             for (int i = 1; i <= 5; ++i)
             {
