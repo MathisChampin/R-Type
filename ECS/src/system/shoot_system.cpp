@@ -118,7 +118,7 @@ void create_shoot_ennemie(Entity entity, registry &reg, int sy)
     auto &pos = positions[entity.get_id()];
 
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot1});
-    reg.add_component<component::position>(shoot, {pos.x, pos.y - sy});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - 75 - sy});
     reg.add_component<component::velocity>(shoot, {-20, 0});
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
@@ -262,7 +262,7 @@ void System::shoot_system_ennemies(registry &reg)
             auto &s = size[i];
             if (att._type == component::attribute::Ennemies && st._stateKey == component::state::stateKey::Alive) {
                 Entity ennemies = reg.get_entity(i);
-                create_shoot_ennemie(ennemies, reg, s.y);
+                create_shoot_ennemie(ennemies, reg, 0);
             }
             if (att._type == component::attribute::Ennemies5 && st._stateKey == component::state::stateKey::Alive) {
                 Entity ennemies = reg.get_entity(i);

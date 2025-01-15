@@ -11,7 +11,7 @@ void System::win_system(registry &reg)
     for (size_t i = 0; i < levels.size() && i < states.size(); ++i) {
         auto &l = levels[i];
         auto &s = states[i];
-        if (l._levelKey == component::level::Level8)
+        if (l._levelKey == component::level::Level2)
             s._stateKey = component::state::Win;
     }
 }

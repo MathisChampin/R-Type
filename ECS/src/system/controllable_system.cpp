@@ -53,6 +53,7 @@ void System::control_system_p1(registry& reg) {
             auto &vel = velocity[i];
             auto &type = shootTypes[i];
             auto &lvl = level[i];
+            attributes[i]._type = component::attribute::Player1;
 
             if (lvl._levelKey >= component::level::Level6) {
                 if (ctl.active_key == component::controllable::Shoot5)
@@ -87,6 +88,8 @@ void System::control_system_p1(registry& reg) {
                 if (type.value == component::attribute::Shoot5)
                     shoot_system_player_4(reg, i);
             }
+            if (ctl.active_key == component::controllable::Clear)
+                attributes[i]._type = component::attribute::Clear;
             pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
             pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
@@ -147,6 +150,7 @@ void System::control_system_p2(registry& reg)
             if (ctl.active_key == component::controllable::Key::Clear) {
                 attributes[i]._type = component::attribute::Clear;
             }
+            
             pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
             pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }
