@@ -105,7 +105,7 @@ void System::control_system_p2(registry& reg)
     auto &level = reg.get_components<component::level>();
 
     for (size_t i = 0; i < attributes.size(); ++i) {
-        if (attributes[i]._type == component::attribute::Player1) {
+        if (attributes[i]._type == component::attribute::Player2) {
             auto &ctl = controllables[i];
             auto &pos = positions[i];
             auto &vel = velocity[i];
