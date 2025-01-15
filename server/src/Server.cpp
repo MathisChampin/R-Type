@@ -11,7 +11,7 @@ namespace NmpServer
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
         _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081)),
         _ptp(*this),
-        _parser("../../server/configFile/level2.json")
+        _parser("../../server/configFile/level4.json")
     {
         _bufferAsio.fill(0);
         _parser.parseConfig();
@@ -165,9 +165,6 @@ namespace NmpServer
                 id = getId(att);
                 auto &pos = _positions[i];
                 auto &s = _sizes[i];
-                if (att._type == component::attribute::Shoot6) {
-                    std::cout << "server envoie pos x = " << pos.x << " & y = " << pos.y << std::endl;
-                }
                 SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
                 broadcast(packet);

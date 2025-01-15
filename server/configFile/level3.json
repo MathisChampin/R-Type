@@ -1,30 +1,30 @@
 [
     {
-        "type": 2,
+        "type": 3,
         "posX": 1720,
         "posY": 800,
         "delaySpawn": 0
     },
     {
-        "type": 2,
+        "type": 3,
         "posX": 1200,
         "posY": 900,
         "delaySpawn": 0
     },
     {
-        "type": 2,
+        "type": 3,
         "posX": 1500,
         "posY": 1000,
         "delaySpawn": 5
     },
     {
-        "type": 2,
-        "posX": 1220,
+        "type": 3,
+        "posX": 1330,
         "posY": 800,
-        "delaySpawn": 2
+        "delaySpawn": 3
     },
     {
-        "type": 2,
+        "type": 3,
         "posX": 1400,
         "posY": 700,
         "delaySpawn": 4
