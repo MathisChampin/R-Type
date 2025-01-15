@@ -12,6 +12,7 @@ namespace NmpServer
         if (it != _mapFctOpCode.end()) {
             it->second();
         }
+            std::cout << "OK PROTOCOLE" << std::endl;
         //createEnnemies(); //en fraire un thread 
         //shootEnnemies();  //en fraire un thread
         //sys.position_system(_ecs);
@@ -127,6 +128,7 @@ namespace NmpServer
 
     void ProtocoleHandler::evalJoin()
     {
+
         Entity player;
         this->initPlayer();
         auto lastPlayer = _vecPlayer.back().first;

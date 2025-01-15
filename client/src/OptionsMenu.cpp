@@ -1,6 +1,8 @@
 #include "../include/OptionsMenu.hpp"
 #include <iostream>
 #include <cctype>
+#include "../../server/include/Server.hpp"
+#include "../../server/include/ProtocolHandler.hpp"
 
 OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     : m_window(window),
@@ -20,7 +22,7 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
       m_ipAddressInput(""),
       m_ipAddressText(),
       m_ipAddressInputBorder(),
-      m_portInput("8080"),
+      m_portInput("50000"),
       m_portText(),
       m_portInputBorder(),
       m_isChatOpen(false),
@@ -255,6 +257,29 @@ void OptionsMenu::handleEvent(const sf::Event &event)
     }
 }
 
+int OptionsMenu::start_udp() {
+    try {
+        std::thread serverThread([this]() {
+            try {
+                NmpServer::Server server;
+
+                server.run();
+            } catch (const std::exception& e) {
+                std::cerr << "Erreur lors de l'exécution du serveur : " << e.what() << std::endl;
+            }
+        });
+
+        serverThread.detach();
+
+        return 0; 
+    } catch (const std::exception& e) {
+        std::cerr << "Exception lors de la création du thread du serveur : " << e.what() << std::endl;
+        return -1; 
+    }
+}
+
+
+
 void OptionsMenu::createLobby()
 {
     if(m_tcpClient.has_value()){
@@ -272,6 +297,7 @@ void OptionsMenu::createLobby()
             } else {
                 m_lobbyListText.setString("Lobby créé avec succès.");
                 m_lobbyNameInput.clear();
+                start_udp();
             }
         } else {
             m_lobbyListText.setString("Erreur lors de la création du lobby.");
@@ -281,24 +307,37 @@ void OptionsMenu::createLobby()
     }
 }
 
-void OptionsMenu::joinLobby()
-{
-    if(m_tcpClient.has_value()){
+void OptionsMenu::joinLobby() {
+    if (m_tcpClient.has_value()) {
         if (m_lobbyNameInput.empty()) {
             m_lobbyListText.setString("Erreur: le nom du lobby est vide.");
             return;
         }
 
-        m_tcpClient.value().send("JOIN_LOBBY " + m_lobbyNameInput);
-        auto response = m_tcpClient.value().receive();
-        if (response.has_value()) {
-            std::string responseStr = response.value();
-            if (responseStr.find("ERROR:") == 0) {
-                m_lobbyListText.setString(responseStr);
+        std::string lobbyNameCopy = m_lobbyNameInput;  
+
+        m_tcpClient.value().send("JOIN_LOBBY " + lobbyNameCopy); // Use the copy
+        auto joinResponse = m_tcpClient.value().receive();
+        if (joinResponse.has_value()) {
+            std::string joinResponseStr = joinResponse.value();
+            if (joinResponseStr.find("ERROR:") == 0) {
+                m_lobbyListText.setString(joinResponseStr);
             } else {
-                m_lobbyListText.setString("Rejoint le lobby: " + m_lobbyNameInput);
-                m_lobbyNameInput.clear();
+                m_lobbyListText.setString("Rejoint le lobby: " + lobbyNameCopy); // Use the copy
                 getChatHistory();
+                m_tcpClient.value().send("GET_UDP_INFO " + lobbyNameCopy); // Use the copy BEFORE clearing
+                auto udpInfoResponse = m_tcpClient.value().receive();
+                if (udpInfoResponse.has_value()) {
+                    std::string udpInfoResponseStr = udpInfoResponse.value();
+                    if (udpInfoResponseStr.find("ERROR:") == 0) {
+                        m_lobbyListText.setString(udpInfoResponseStr);
+                    } else {
+                        m_lobbyListText.setString(udpInfoResponseStr);
+                    }
+                } else {
+                    m_lobbyListText.setString("Erreur en récupérant les informations UDP.");
+                }
+                m_lobbyNameInput.clear();
             }
         } else {
             m_lobbyListText.setString("Erreur en rejoignant le lobby.");

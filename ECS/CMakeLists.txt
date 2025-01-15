@@ -3,12 +3,14 @@ project(ECS)
 
 set(CXX g++)
 set(CMAKE_CXX_STANDARD 20)
-if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")  
-    add_definitions(-D_WIN32_WINNT=0x0601) 
-elseif(UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror") 
+
+if(UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -fPIC")
+elseif(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")
+    add_definitions(-D_WIN32_WINNT=0x0601)
 endif()
+
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(INCLUDE_COMPONENT ${INCLUDE_DIR}/component)
 set(INCLUDE_SYSTEM ${INCLUDE_DIR}/system)
@@ -29,13 +31,13 @@ set(SOURCES
     ${SRC_SYSTEM}/lose_system.cpp
     ${SRC_SYSTEM}/win_system.cpp
     ${SRC_SYSTEM}/collision_power_up.cpp
-	${SRC_SYSTEM}/velocity_power_up_move.cpp
+    ${SRC_SYSTEM}/velocity_power_up_move.cpp
     ${SRC_SYSTEM}/life_power_up_life.cpp
-	${SRC_SYSTEM}/create_power_up.cpp
+    ${SRC_SYSTEM}/create_power_up.cpp
 )
 
 set(MAIN_SOURCES
-    ${SRC_DIR}/main.cpp  
+    ${SRC_DIR}/main.cpp
 )
 
 if(UNIX)
@@ -79,7 +81,6 @@ if (NOT TARGET unit_tests)
     )
 endif()
 endif()
-
 
 if (NOT TARGET clean_all)
     add_custom_target(clean_all

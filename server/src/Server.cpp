@@ -258,13 +258,15 @@ namespace NmpServer
             bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
 
             if (bytes > 0) {
-                // std::cout << "Received data from remote endpoint: " 
-                //           << _remote_endpoint.address().to_string() << ":"
-                //           << _remote_endpoint.port() << std::endl;
+                std::cout << "Received data from remote endpoint: " 
+                          << _remote_endpoint.address().to_string() << ":"
+                          << _remote_endpoint.port() << std::endl;
 
-                // std::cout << "bytes: " << bytes << std::endl;
+                std::cout << "bytes: " << bytes << std::endl;
 
                 extract_bytes(bytes, rawData);
+                                std::cout << "afterbytes: " << bytes << std::endl;
+
                 NmpServer::Packet packet = _binary.deserialize(rawData);
 
                 std::lock_guard<std::mutex> lock(_queueMutex);

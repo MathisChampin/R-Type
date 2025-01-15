@@ -45,7 +45,7 @@ namespace NmpBinary
         }
     }
 
-    NmpClient::Packet Binary::deserialize(std::vector<int> &buffer)
+    NmpClient::Packet Binary::deserializes(std::vector<int> &buffer)
     {
         NmpClient::EVENT event = static_cast<NmpClient::EVENT>(buffer[0]);
 

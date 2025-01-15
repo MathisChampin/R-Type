@@ -31,6 +31,7 @@ private:
     // Client TCP (maintenant optionnel)
     std::optional<NmpClient::TcpClient> m_tcpClient;
 
+
     // Lobby Management
     std::vector<sf::Text> m_buttons;
     int m_selectedButton;
@@ -76,6 +77,8 @@ private:
     void sendMessage();
     void getChatHistory();
     void updateChatHistory(const std::string& chatHistory);
+    int start_udp();
+
 };
 
 #endif // OPTIONS_MENU_HPP
