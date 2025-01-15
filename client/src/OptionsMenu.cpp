@@ -84,11 +84,11 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     m_chatInput.setFont(m_font);
     m_chatInput.setCharacterSize(24);
     m_chatInput.setFillColor(sf::Color::White);
-    m_chatInput.setPosition(10, m_window.getSize().y + 80);
+    m_chatInput.setPosition(10, m_window.getSize().y - 50);
 
     // Configuration de la bordure de l'input de chat
     m_chatInputBorder.setSize(sf::Vector2f(m_window.getSize().x - 20, 40));
-    m_chatInputBorder.setPosition(10, m_window.getSize().y + 80);
+    m_chatInputBorder.setPosition(10, m_window.getSize().y - 50);
     m_chatInputBorder.setFillColor(sf::Color::Transparent);
     m_chatInputBorder.setOutlineColor(sf::Color::White);
     m_chatInputBorder.setOutlineThickness(2);
@@ -144,7 +144,7 @@ void OptionsMenu::setupButtons()
 
 void OptionsMenu::handleEvent(const sf::Event &event)
 {
-    if (event.type == sf::Event::KeyPressed) {
+       if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::W) {
             m_isChatOpen = !m_isChatOpen;
             if (m_isChatOpen) {
@@ -156,6 +156,8 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                 sendMessage();
                 m_chatInputString.clear();
                 m_chatInput.setString("");
+            } else {
+                m_isChatOpen = false;
             }
         }
 
@@ -176,7 +178,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                 m_buttons[1].setFillColor(sf::Color::Cyan); 
                 m_ipAddressInputBorder.setOutlineColor(sf::Color::White); 
                 m_portInputBorder.setOutlineColor(sf::Color::White); 
-            } else if (event.key.code == sf::Keyboard::Enter) {
+            } else if (event.key.code == sf::Keyboard::Enter &&  m_isChatOpen == false) {
                 connectTcpClient(m_ipAddressInput, m_portInput);
             }
         } else {
@@ -192,7 +194,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                     m_selectedButton++;
                     m_buttons[m_selectedButton].setFillColor(sf::Color::Cyan);
                 }
-            } else if (event.key.code == sf::Keyboard::Enter) {
+            } else if (event.key.code == sf::Keyboard::Enter &&  m_isChatOpen == false) {
                 if (m_selectedButton == 0) { 
                     m_isConnecting = true;
                     m_selectedButton = -1; 
