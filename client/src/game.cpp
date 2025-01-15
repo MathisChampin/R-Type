@@ -11,16 +11,6 @@ Game::Game(sf::RenderWindow &window, SkinType skinType, sf::Font &font, Parallax
       m_font(font),                    
       m_SoundManager(soundManager)                  
 {
-
-    if (!m_SoundManager.loadMusic("background", "./assets/music/background.mp3"))
-    {
-        std::cerr << "Erreur : Impossible de charger la musique." << std::endl;
-    }
-    else if (!m_SoundManager.playMusic("background", true))
-    {
-        std::cerr << "Erreur : La musique n'a pas pu être jouée." << std::endl;
-    }
-
     m_life.initialize("./assets/life/hearts.png", 5, 15.f);
     m_score.initialize(m_font, 30, sf::Vector2f(20, 60));
 }
