@@ -26,48 +26,60 @@ bool check_collision_power_up(sparse_array<component::position> &positions,
     return collision_x && collision_y;
 }
 
-void restore_life(sparse_array<component::attribute> &att, registry &reg, size_t i, sparse_array<component::life> &life)
+void handle_power_up_player1(size_t i, sparse_array<component::attribute> &attributes,
+    registry &reg, std::unordered_map<size_t, std::chrono::steady_clock::time_point> &activePowerUps,
+    std::chrono::steady_clock::time_point currentTime)
 {
     System sys;
 
-    if (life[i].life < 3) {
-        if (att[i]._type == component::attribute::Player1)
-            sys.power_up_life_p1(reg);
-        if (att[i]._type == component::attribute::Player2)
-            sys.power_up_life_p2(reg);
-        if (att[i]._type == component::attribute::Player3)
-            sys.power_up_life_p3(reg);
-        if (att[i]._type == component::attribute::Player4)
-            sys.power_up_life_p4(reg);    
+    if (attributes[i]._type == component::attribute::Player1) {
+        if (activePowerUps.find(i) == activePowerUps.end()) {
+            sys.power_up_velocity_p1(reg);
+            activePowerUps[i] = currentTime;
+        }
     }
 }
 
-void reset_power_up_move(sparse_array<component::attribute> &att, registry &reg)
+void handle_power_up_player2(size_t i, sparse_array<component::attribute> &attributes,
+    registry &reg, std::unordered_map<size_t, std::chrono::steady_clock::time_point> &activePowerUps,
+    std::chrono::steady_clock::time_point currentTime)
 {
     System sys;
-    for (size_t i = 0; i < att.size(); i++) {
-        if (att[i]._type == component::attribute::Player1)
-            sys.reset_velocity_p1(reg);
-        if (att[i]._type == component::attribute::Player2)
-            sys.reset_velocity_p2(reg);
-        if (att[i]._type == component::attribute::Player3)
-            sys.reset_velocity_p3(reg);
-        if (att[i]._type == component::attribute::Player4)
-            sys.reset_velocity_p4(reg);
+
+    if (attributes[i]._type == component::attribute::Player2) {
+        if (activePowerUps.find(i) == activePowerUps.end()) {
+            sys.power_up_velocity_p2(reg);
+            activePowerUps[i] = currentTime;
+        }
     }
 }
 
-void use_power_up_move(sparse_array<component::attribute> &att, registry &reg, size_t i)
+void handle_power_up_player3(size_t i, sparse_array<component::attribute> &attributes,
+    registry &reg, std::unordered_map<size_t, std::chrono::steady_clock::time_point> &activePowerUps,
+    std::chrono::steady_clock::time_point currentTime)
 {
     System sys;
-    if (att[i]._type == component::attribute::Player1)
-        sys.power_up_velocity_p1(reg);
-    if (att[i]._type == component::attribute::Player2)
-        sys.power_up_velocity_p2(reg);
-    if (att[i]._type == component::attribute::Player3)
-        sys.power_up_velocity_p3(reg);
-    if (att[i]._type == component::attribute::Player4)
-        sys.power_up_velocity_p4(reg);
+
+    if (attributes[i]._type == component::attribute::Player3) {
+        if (activePowerUps.find(i) == activePowerUps.end()) {
+            sys.power_up_velocity_p3(reg);
+            activePowerUps[i] = currentTime;
+        }
+    }
+}
+
+void handle_power_up_player4(size_t i, sparse_array<component::attribute> &attributes,
+    registry &reg, std::unordered_map<size_t, std::chrono::steady_clock::time_point> &activePowerUps,
+    std::chrono::steady_clock::time_point currentTime)
+{
+    System sys;
+
+    if (attributes[i]._type == component::attribute::Player4) {
+        if (activePowerUps.find(i) == activePowerUps.end()) {
+            sys.power_up_velocity_p4(reg);
+            activePowerUps[i] = currentTime;
+        }
+    }
 }
 
 bool is_Player(const component::attribute &attribute)
@@ -101,14 +113,31 @@ void System::collision_power_up(registry &reg)
     static std::unordered_map<size_t, std::chrono::steady_clock::time_point> activePowerUps;
     auto currentTime = std::chrono::steady_clock::now();
 
+    // Reset expired power-ups
     for (auto it = activePowerUps.begin(); it != activePowerUps.end();) {
-            if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - it->second).count() >= 5) {
-                reset_power_up_move(attributes, reg);
-                it = activePowerUps.erase(it);
-            } else {
-                ++it;
+        if (std::chrono::duration_cast<std::chrono::seconds>(currentTime - it->second).count() >= 5) {
+            switch (attributes[it->first]._type) {
+                case component::attribute::Player1:
+                    System().reset_velocity_p1(reg);
+                    break;
+                case component::attribute::Player2:
+                    System().reset_velocity_p2(reg);
+                    break;
+                case component::attribute::Player3:
+                    System().reset_velocity_p3(reg);
+                    break;
+                case component::attribute::Player4:
+                    System().reset_velocity_p4(reg);
+                    break;
+                default:
+                    break;
             }
+            it = activePowerUps.erase(it);
+        } else {
+            ++it;
         }
+    }
+
     for (size_t i = 0; i < attributes.size(); i++) {
         if (!is_Player(attributes[i]))
             continue;
@@ -118,14 +147,34 @@ void System::collision_power_up(registry &reg)
                 continue;
 
             if (check_collision_power_up(positions, sizes, i, j)) {
-                if (attributes[j]._type == component::attribute::PowerUpLife && states[j]._stateKey == component::state::Alive)
-                    restore_life(attributes, reg, i, life);
-                if (attributes[j]._type == component::attribute::PowerUpMove && states[j]._stateKey == component::state::Alive) {
-                    if (activePowerUps.find(i) == activePowerUps.end()) {
-                        use_power_up_move(attributes, reg, i);
-                        activePowerUps[i] = currentTime;
+                if (attributes[j]._type == component::attribute::PowerUpLife && states[j]._stateKey == component::state::Alive) {
+                    if (attributes[i]._type == component::attribute::Player1) {
+                        if (life[i].life < 3)
+                            power_up_life_p1(reg);
+                    } else if (attributes[i]._type == component::attribute::Player2) {
+                        if (life[i].life < 3)
+                            power_up_life_p2(reg);
+                    } else if (attributes[i]._type == component::attribute::Player3) {
+                        if (life[i].life < 3)
+                            power_up_life_p3(reg);
+                    } else if (attributes[i]._type == component::attribute::Player4) {
+                        if (life[i].life < 3)
+                            power_up_life_p4(reg);
                     }
                 }
+
+                if (attributes[j]._type == component::attribute::PowerUpMove && states[j]._stateKey == component::state::Alive) {
+                    if (attributes[i]._type == component::attribute::Player1) {
+                        handle_power_up_player1(i, attributes, reg, activePowerUps, currentTime);
+                    } else if (attributes[i]._type == component::attribute::Player2) {
+                        handle_power_up_player2(i, attributes, reg, activePowerUps, currentTime);
+                    } else if (attributes[i]._type == component::attribute::Player3) {
+                        handle_power_up_player3(i, attributes, reg, activePowerUps, currentTime);
+                    } else if (attributes[i]._type == component::attribute::Player4) {
+                        handle_power_up_player4(i, attributes, reg, activePowerUps, currentTime);
+                    }
+                }
+
                 states[j]._stateKey = component::state::Dead;
             }
         }

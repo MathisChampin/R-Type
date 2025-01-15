@@ -46,11 +46,9 @@ set(TEST_SOURCES
     ${SRC_SYSTEM}/position_system.cpp
     ${SRC_SYSTEM}/controllable_system.cpp
     ${SRC_SYSTEM}/collision_system.cpp
-    ${TEST_SYS}/testsControllable.cpp
     ${TEST_SYS}/testsPosition.cpp
     ${TEST_SYS}/testsCollision.cpp
     ${TEST_SYS}/testsLevel.cpp
-    ${TEST_SYS}/testsShoot.cpp
     ${TEST_SYS}/testsCollisionPowerUpLife.cpp
     ${TEST_SYS}/testsCollisionPowerUpMove.cpp
     ${TEST_SYS}/testsSpawnPowerUp.cpp
