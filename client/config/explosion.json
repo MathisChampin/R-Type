@@ -1,0 +1,11 @@
+{
+    "type": "explosions",
+    "texture": "assets/explosions/tnt1.png",
+    "texture2": "assets/explosions/tnt2.png",
+    "texture3": "assets/explosions/tnt3.png",
+    "texture4": "assets/explosions/tnt4.png",
+    "texture5": "assets/explosions/tnt5.png",
+    "texture6": "assets/explosions/tnt6.png",
+    "position": { "x": 0, "y": 0 },
+    "size": { "width": 100, "height": 100 }
+}

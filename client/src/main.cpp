@@ -1,12 +1,12 @@
-#include "../include/Game.hpp"
+#include "../include/Engine.hpp"
 #include <iostream>
 
 int main()
 {
     try
     {
-        Game game;
-        game.run();
+        Engine engine;
+        engine.run();
     }
     catch (const std::exception &e)
     {
