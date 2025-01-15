@@ -55,7 +55,7 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     m_ipAddressText.setString("Adresse IP : ");
     m_ipAddressText.setCharacterSize(30);
     m_ipAddressText.setFillColor(sf::Color::White);
-    m_ipAddressText.setPosition(m_window.getSize().x / 2.0f + 250, 300);
+    m_ipAddressText.setPosition(m_window.getSize().x / 2.0f - 120, 300);
 
     // // Configuration du texte pour le port
     // m_portText.setFont(m_font);
@@ -78,7 +78,7 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     m_lobbyNameText.setString("Nom du lobby : ");
     m_lobbyNameText.setCharacterSize(30);
     m_lobbyNameText.setFillColor(sf::Color::White);
-    m_lobbyNameText.setPosition(m_window.getSize().x / 2.0f + 350, 400);
+    m_lobbyNameText.setPosition(m_window.getSize().x / 2.0f - 120, 400);
 
     // Configuration de l'input de chat
     m_chatInput.setFont(m_font);
@@ -488,20 +488,20 @@ void OptionsMenu::render()
     // Animation de l'affichage du titre
     static sf::Clock clock;
     static bool shouldMove = true;
-    if (shouldMove && clock.getElapsedTime().asSeconds() > 0.31f) {
+    if (shouldMove && clock.getElapsedTime().asSeconds() > 0.00f) {
         shouldMove = false;
     }
 
     // Dessin du titre (avec animation si nécessaire)
     if (shouldMove) {
-        m_titleText.setPosition(m_titleText.getPosition().x + 50, m_titleText.getPosition().y);
+        m_titleText.setPosition(m_titleText.getPosition().x + 0, m_titleText.getPosition().y);
     }
     m_window.draw(m_titleText);
 
     // Dessin des boutons
     for (auto &button : m_buttons) {
         if (shouldMove) {
-            button.setPosition(button.getPosition().x + 50, button.getPosition().y);
+            button.setPosition(button.getPosition().x + 0, button.getPosition().y);
         }
         m_window.draw(button);
     }
