@@ -26,6 +26,7 @@ public:
     void drawAll(sf::RenderWindow &window, sf::Time deltaTime)
     {
         std::vector<std::size_t> toRemove;
+        deltaTime = deltaTime;
         
         for (const auto &[id, sprite] : _mapSprite)
         {

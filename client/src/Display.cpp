@@ -19,16 +19,8 @@ void Game::launch_getter(std::size_t id, NmpClient::SpriteInfo &sp)
 
 void Game::handler_packets()
 {
-    if (!m_client.has_value())
-    {
-        return;
-    }
-
-    auto data = m_client->get_data();
-    if (!data.has_value())
-    {
-        return;
-    }
+    auto data = m_client.get_data();
+    if (!data.has_value()) {return;}
 
     auto p = data.value();
     if (p.getOpCode() == NmpClient::EVENT::EOI)
@@ -52,12 +44,10 @@ void Game::handler_packets()
     else if (p.getOpCode() == NmpClient::EVENT::JOIN)
     {
         _spriteMng.eraseAll();
-        if (m_client.has_value())
-        {
-            m_client->_id = p.getId();
-            std::cout << "new id" << p.getId() << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        }
+        
+        m_client._id = p.getId();
+        std::cout << "new id" << p.getId() << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     auto spriteInf = p.getSpriteInfo();
     _containerEndFrameId.insert(spriteInf.idClient);
@@ -78,23 +68,23 @@ void Game::get_player(NmpClient::SpriteInfo &sp)
     else
     {
         std::shared_ptr<Sprite> sprite;
-        if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN1)
+        if (m_skinType == SkinType::SKIN1)
         {
             sprite = std::make_shared<Sprite>("../../client/config/player.json");
         }
-        else if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN2)
+        else if (m_skinType == SkinType::SKIN2)
         {
             sprite = std::make_shared<Sprite>("../../client/config/player2.json");
         }
-        else if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN3)
+        else if (m_skinType == SkinType::SKIN3)
         {
             sprite = std::make_shared<Sprite>("../../client/config/player3.json");
         }
-        else if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN4)
+        else if (m_skinType == SkinType::SKIN4)
         {
             sprite = std::make_shared<Sprite>("../../client/config/player4.json");
         }
-        else if (m_CustomMenu.getSelectedSkin() == SkinType::SKIN5)
+        else if (m_skinType == SkinType::SKIN5)
         {
             sprite = std::make_shared<Sprite>("../../client/config/player5.json");
         }

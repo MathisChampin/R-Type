@@ -1,4 +1,3 @@
-// Game.hpp
 #ifndef GAME_HPP
 #define GAME_HPP
 
@@ -8,46 +7,38 @@
 #include <memory>
 #include <queue>
 #include <map>
+#include <unordered_set>
+#include <optional>
 
-#include "Menu.hpp"
+//#include "Engine.hpp"
+#include "SoundManager.hpp"
+#include "State.hpp"
 #include "ParallaxBackground.hpp"
+#include "CustomMenu.hpp"
 #include "Player.hpp"
-#include "OptionsMenu.hpp"
-#include "client/Client.hpp"
 #include "Enemy.hpp"
 #include "Shoot.hpp"
 #include "SpriteManager.hpp"
 #include "Life.hpp"
 #include "Score.hpp"
-#include "SoundManager.hpp"
-#include "CustomMenu.hpp"
 #include "Type.hpp"
-
-enum class GameState
-{
-    Menu,
-    Playing,
-    Options,
-    PlayingInLobby,
-    Custom
-};
+#include "client/Client.hpp"
 
 class Game
 {
 public:
-    Game();
+    //Game() = default;
+    Game(sf::RenderWindow &window, SkinType skinType, sf::Font &font, ParallaxBackground &playingBackground, SoundManager &soundManager);
     ~Game();
 
     void run();
+    void handleEvents();
+    void update(float deltaTime);
+    void render(float deltaTime);
+    void handler_packets();
 
 private:
     // Initialization
-    void initializeWindow();
-    void initializeFont();
-    void initializeMenuOptions();
-    void initializeIpAddressText();
-    void initializeSoundManager();
-    void initializeGameComponents();
 
     // Network methods
     void get_player();
@@ -55,12 +46,9 @@ private:
     void get_shoots();
 
     // Event handling
-    void handleEvents();
     void processInput(sf::Event &event);
 
     // Game loop methods
-    void update(float deltaTime);
-    void render(float deltaTime);
 
     void get_player(NmpClient::SpriteInfo &sp);
     void get_ennemies(NmpClient::SpriteInfo &sp);
@@ -70,40 +58,37 @@ private:
     void get_ennemies5(NmpClient::SpriteInfo &sp);
     void get_shoots(NmpClient::SpriteInfo &sp);
 
-    void handler_packets();
     void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
-    void destroy_uselles_sprites();
+    void destroy_useless_sprites();
 
-    // Member variables
-    sf::RenderWindow m_window;
-    sf::Font m_font;
-    GameState m_currentState;
+    // Game state
+    SkinType m_skinType;    
+
+    // Window (reference)
+    sf::RenderWindow &m_window;
+
+    // Parallax background
+    ParallaxBackground m_playingBackground;
 
     // Game components
-    Menu m_menu;
-    OptionsMenu m_optionsMenu;
-    ParallaxBackground m_menuBackground;
-    ParallaxBackground m_playingBackground;
-    ParallaxBackground m_customBackground;
-    std::optional<NmpClient::Client> m_client;
-    std::optional<Player> m_players;
+    NmpClient::Client m_client;
+    Player m_players;
 
     // Vectors to store players and enemies
     std::vector<Enemy> m_enemies;
     std::vector<Shoot> m_shoots;
 
-    CustomMenu m_CustomMenu;
-
-    // UI elements
-    sf::String m_ipAddress;
-    sf::Text m_ipText;
-    sf::Text m_ipField;
-
     // Timing
     sf::Clock m_clock;
 
+    // Current state
+    GameState m_currentState;
+
+    // Font (reference)
+    sf::Font &m_font;
+
     // Sound
-    SoundManager m_SoundManager;
+    SoundManager m_SoundManager;  
 
     SpriteManager _spriteMng;
     std::unordered_set<std::size_t> _containerEndFrameId;
@@ -129,7 +114,6 @@ private:
          { get_shoots(sp); }},
         {10, [this](NmpClient::SpriteInfo &sp)
          { get_shoots(sp); }},
-
     };
 
     Life m_life;
