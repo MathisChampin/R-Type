@@ -1,5 +1,7 @@
 #include "../include/client/Client.hpp"
 #include "../include/client/ClientPacket.hpp"
+#include <chrono>
+#include <thread>
 
 namespace NmpClient
 {
@@ -18,6 +20,8 @@ namespace NmpClient
         {
             std::cout << "waiting for join response" << std::endl;
             resJoin = this->get_data();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
         }
         evalResJoin(resJoin.value());
         std::cout << "id client: " << _id << std::endl;
@@ -40,7 +44,7 @@ namespace NmpClient
                     test.push_back(val);
                 }
     
-                NmpClient::Packet packet = _binary.deserialize(test);
+                NmpClient::Packet packet = _binary.deserializes(test);
                 _bufferAsio.fill(0); 
     
                 return packet;
