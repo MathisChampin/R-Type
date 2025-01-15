@@ -11,9 +11,10 @@ namespace NmpServer
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
         _socketSend(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8081)),
         _ptp(*this),
-        _parser("../../server/configFile/level4.json")
+        _parser("../../server/configFile/level1.json")
     {
         _bufferAsio.fill(0);
+        _prodLevel.generateLevel(2);
         _parser.parseConfig();
         _ptp.loadEnnemiesFromconfig(_parser.getVector());
     }
@@ -231,9 +232,9 @@ namespace NmpServer
 
     void Server::threadSystem()
     {
+        bool noFrame{false};
         System sys;
-        const auto frameDuration = std::chrono::milliseconds(40);
-
+        auto frameDuration = std::chrono::milliseconds(40);
         while (_running) {
             {
                 std::lock_guard<std::mutex> lock(_ecsMutex);
@@ -247,14 +248,23 @@ namespace NmpServer
                 sys.level_system(ecs);
                 copyEcs();
 
-                // if (!check_level(ecs)) {
-                //     sys.kill_system(ecs);
-                //     _ptp.clearPlayer();
-                //     _parser.loadNewLevel("../../server/configFile/level2.json");
-                //     _ptp.loadEnnemiesFromconfig(_parser.getVector());
-                // }
+                if (!check_level(ecs)) {
+                    //sys.kill_system(ecs);
+                    //_ptp.clearPlayer();
+
+                    _prodLevel.generateLevel(20);
+                    _parser.loadNewLevel("../../server/configFile/level1.json");
+                    _ptp.loadEnnemiesFromconfig(_parser.getVector());
+                    noFrame = true;
+                }
             }
-            send_entity();
+            if (!noFrame) {
+                send_entity();
+            } else {
+                std::cout << "no frame" << std::endl;
+                //frameDuration = std::chrono::milliseconds(50);
+                noFrame = false;
+            }
             std::this_thread::sleep_for(frameDuration);
         }
     }

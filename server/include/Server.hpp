@@ -3,6 +3,7 @@
 #include "IServer.hpp"
 #include "Binary.hpp"
 #include "ProtocolHandler.hpp"
+#include "ProceduralLevel.hpp"
 #include "Registry.hpp"
 #include "Parser.hpp"
 #include <mutex>
@@ -61,6 +62,7 @@ namespace NmpServer {
             NmpBinary::Binary _binary;
             ProtocoleHandler _ptp;
             Parser _parser;
+            ProceduralLevel _prodLevel;
 
             sparse_array<component::position> _positions;
             sparse_array<component::state> _states;

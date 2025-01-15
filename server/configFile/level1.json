@@ -1,62 +1,122 @@
 [
     {
-        "type": 1,
-        "posX": 1720,
-        "posY": 800,
-        "delaySpawn": 0
+        "delaySpawn": 0,
+        "posX": 719,
+        "posY": 745,
+        "type": 4
     },
     {
-        "type": 1,
-        "posX": 1200,
-        "posY": 900,
-        "delaySpawn": 0
+        "delaySpawn": 3,
+        "posX": 1567,
+        "posY": 164,
+        "type": 1
     },
     {
-        "type": 1,
-        "posX": 1500,
-        "posY": 1000,
-        "delaySpawn": 5
+        "delaySpawn": 3,
+        "posX": 1104,
+        "posY": 683,
+        "type": 1
     },
     {
-        "type": 1,
-        "posX": 1330,
-        "posY": 800,
-        "delaySpawn": 3
+        "delaySpawn": 3,
+        "posX": 148,
+        "posY": 743,
+        "type": 2
     },
     {
-        "type": 1,
-        "posX": 1400,
-        "posY": 700,
-        "delaySpawn": 4
+        "delaySpawn": 0,
+        "posX": 1839,
+        "posY": 739,
+        "type": 3
     },
     {
-        "type": 1,
-        "posX": 1600,
-        "posY": 950,
-        "delaySpawn": 2
+        "delaySpawn": 2,
+        "posX": 1054,
+        "posY": 192,
+        "type": 2
     },
     {
-        "type": 1,
-        "posX": 1600,
-        "posY": 900,
-        "delaySpawn": 1
+        "delaySpawn": 1,
+        "posX": 813,
+        "posY": 492,
+        "type": 4
     },
     {
-        "type": 1,
-        "posX": 1670,
-        "posY": 900,
-        "delaySpawn": 1
+        "delaySpawn": 3,
+        "posX": 146,
+        "posY": 507,
+        "type": 2
     },
     {
-        "type": 1,
-        "posX": 1900,
-        "posY": 900,
-        "delaySpawn": 1
+        "delaySpawn": 2,
+        "posX": 105,
+        "posY": 483,
+        "type": 2
     },
     {
-        "type": 1,
-        "posX": 1800,
-        "posY": 900,
-        "delaySpawn": 1
+        "delaySpawn": 1,
+        "posX": 1899,
+        "posY": 602,
+        "type": 1
+    },
+    {
+        "delaySpawn": 0,
+        "posX": 385,
+        "posY": 676,
+        "type": 1
+    },
+    {
+        "delaySpawn": 0,
+        "posX": 519,
+        "posY": 588,
+        "type": 2
+    },
+    {
+        "delaySpawn": 4,
+        "posX": 827,
+        "posY": 1012,
+        "type": 3
+    },
+    {
+        "delaySpawn": 4,
+        "posX": 1456,
+        "posY": 556,
+        "type": 2
+    },
+    {
+        "delaySpawn": 1,
+        "posX": 1101,
+        "posY": 712,
+        "type": 3
+    },
+    {
+        "delaySpawn": 1,
+        "posX": 1320,
+        "posY": 384,
+        "type": 4
+    },
+    {
+        "delaySpawn": 1,
+        "posX": 720,
+        "posY": 230,
+        "type": 2
+    },
+    {
+        "delaySpawn": 0,
+        "posX": 332,
+        "posY": 742,
+        "type": 4
+    },
+    {
+        "delaySpawn": 4,
+        "posX": 918,
+        "posY": 260,
+        "type": 2
+    },
+    {
+        "delaySpawn": 0,
+        "posX": 1100,
+        "posY": 561,
+        "type": 3
     }
 ]
