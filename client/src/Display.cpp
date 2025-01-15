@@ -36,10 +36,13 @@ void Game::handler_packets()
     {
         int newLife = p.getLife();
         int newScore = p.getScore();
+        int newLevel = p.getLevel();
         std::cout << "LIFE: " << newLife << std::endl;
         std::cout << "SCORE: " << newScore << std::endl;
+        std::cout << "LEVEL: " << newLevel << std::endl;
         m_life.updateLife(newLife);
         m_score.updateScore(newScore);
+        m_level.updateLevel(newLevel);
     }
     else if (p.getOpCode() == NmpClient::EVENT::JOIN)
     {
@@ -60,6 +63,7 @@ void Game::get_player(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -100,6 +104,7 @@ void Game::get_ennemies5(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -120,6 +125,7 @@ void Game::get_ennemies4(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -140,6 +146,7 @@ void Game::get_ennemies3(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -160,6 +167,7 @@ void Game::get_ennemies2(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -180,6 +188,7 @@ void Game::get_ennemies(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -200,6 +209,7 @@ void Game::get_shoots(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -225,6 +235,7 @@ void Game::get_shoots6(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     std::cout << "position shoot 6 x = " << sp.x << "y = " << sp.y << std::endl;
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
@@ -250,6 +261,7 @@ void Game::get_shoots2(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -274,6 +286,7 @@ void Game::get_shoots3(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -298,6 +311,7 @@ void Game::get_shoots7(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -321,6 +335,7 @@ void Game::get_shoots8(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -345,6 +360,7 @@ void Game::get_shoots9(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -369,6 +385,7 @@ void Game::get_shoots11(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -393,6 +410,7 @@ void Game::get_shoots10(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -417,6 +435,7 @@ void Game::get_shoots4(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -441,6 +460,7 @@ void Game::get_shoots5(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -465,6 +485,7 @@ void Game::get_powerup_life(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {
@@ -485,6 +506,7 @@ void Game::get_powerup_move(NmpClient::SpriteInfo &sp)
     sf::Vector2f vecPos;
     vecPos.x = sp.x;
     vecPos.y = sp.y;
+
     auto sprite = _spriteMng.getSprite(sp.idClient);
     if (sprite != nullptr)
     {

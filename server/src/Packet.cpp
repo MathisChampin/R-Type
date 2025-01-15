@@ -26,8 +26,8 @@ namespace NmpServer
         //std::cout << "SERVER packet end of frame created" << std::endl;
     }
 
-    Packet::Packet(EVENT event, int life, int score) :
-        _opCode(event), _life(life), _score(score)
+    Packet::Packet(EVENT event, int life, int score, int level) :
+        _opCode(event), _life(life), _score(score), _level(level)
     {
         //std::cout << "CLIENT packet score or life created" << std::endl;
     }
@@ -97,6 +97,10 @@ namespace NmpServer
         return _score;
     }
 
+    int Packet::getLevel() const
+    {
+        return _level;
+    }
     Packet& Packet::operator=(const Packet &other) {
         if (this == &other)
             return *this;

@@ -23,6 +23,7 @@
 #include "Score.hpp"
 #include "Type.hpp"
 #include "client/Client.hpp"
+#include "Level.hpp"
 
 class Game
 {
@@ -131,6 +132,7 @@ private:
 
     Life m_life;
     Score m_score;
+    Level m_level;
 };
 
 #endif // GAME_HPP

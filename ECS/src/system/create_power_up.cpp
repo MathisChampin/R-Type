@@ -5,6 +5,8 @@
 #include "position.hpp"
 #include "idPlayer.hpp"
 #include "controllable.hpp"
+#include "life.hpp"
+#include "level.hpp"
 #include <chrono>
 #include <ctime>
 #include <random>
@@ -25,6 +27,8 @@ void create_power_up(component::attribute::entityType type, registry &reg)
     reg.add_component<component::position>(powerUp, {randomX, randomY});
     reg.add_component<component::size>(powerUp, {50, 50});
     reg.add_component<component::controllable>(powerUp, {component::controllable::NoKey});
+    reg.add_component<component::life>(powerUp, {1});
+    reg.add_component<component::level>(powerUp, {component::level::Level0});
 }
 
 void create_power_up_life(component::attribute::entityType type, registry &reg, int posx, int posy, size_t idPlayer)
@@ -45,7 +49,8 @@ void create_power_up_life(component::attribute::entityType type, registry &reg, 
     reg.add_component<component::size>(powerUp, {50, 50});
     reg.add_component<component::idPlayer>(powerUp, {idPlayer});
     reg.add_component<component::controllable>(powerUp, {component::controllable::NoKey});
-
+    reg.add_component<component::life>(powerUp, {1});
+    reg.add_component<component::level>(powerUp, {component::level::Level0});
 }
 
 void System::spawn_power_up(registry &reg)

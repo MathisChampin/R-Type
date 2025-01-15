@@ -54,9 +54,11 @@ namespace NmpBinary
         } else if (opcode == NmpServer::EVENT::INFO) {
             int life = packet.getLife();
             int score = packet.getScore();
+            int level = packet.getLevel();
             buffer.push_back(static_cast<int>(opcode));
             buffer.push_back(static_cast<int>(life));
             buffer.push_back(static_cast<int>(score));
+            buffer.push_back(static_cast<int>(level));
         }
     }
 

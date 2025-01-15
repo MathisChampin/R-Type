@@ -53,7 +53,7 @@ namespace NmpBinary
         {
             int x = static_cast<int>(buffer[1]);
             int y = static_cast<int>(buffer[2]);
-            return NmpClient::Packet(event, x, y);
+            return NmpClient::Packet(event, x, y, 0);
         }
         else if (event == NmpClient::EVENT::SPRITE)
         {
@@ -77,9 +77,10 @@ namespace NmpBinary
         else if (event == NmpClient::EVENT::INFO) {
             int life = static_cast<int>(buffer[1]);
             int score = static_cast<int>(buffer[2]);
-            return NmpClient::Packet(NmpClient::EVENT::INFO, life, score);
+            int level = static_cast<int>(buffer[3]);
+            return NmpClient::Packet(NmpClient::EVENT::INFO, life, score, level);
         }
-        return NmpClient::Packet(event, 0,0);
+        return NmpClient::Packet(event, 0,0,0);
     }
 
     void Binary::clearBuffer(std::vector<int> &buffer)

@@ -13,6 +13,7 @@ Game::Game(sf::RenderWindow &window, SkinType skinType, sf::Font &font, Parallax
 {
     m_life.initialize("./assets/life/hearts.png", 5, 15.f);
     m_score.initialize(m_font, 30, sf::Vector2f(20, 60));
+    m_level.initialize(m_font, 30, sf::Vector2f(0, 60));
 }
 
 Game::~Game()
@@ -58,6 +59,7 @@ void Game::render(float deltaTime)
         _spriteMng.drawAll(m_window, sf::seconds(deltaTime));
         m_life.render(m_window);
         m_score.render(m_window);
+        m_level.render(m_window);
     }
 
     m_window.display();

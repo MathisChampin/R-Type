@@ -36,6 +36,7 @@ namespace NmpServer {
             void threadSystem();
             void send_entity();
             bool check_level(registry &);
+            bool check_level_player(registry &);
             void copyEcs();
 
             int getId(component::attribute &att);
@@ -66,6 +67,7 @@ namespace NmpServer {
             sparse_array<component::state> _states;
             sparse_array<component::size> _sizes;
             sparse_array<component::attribute> _attributes;
+            sparse_array<component::level> _levels;
             sparse_array<component::life> _lifes;
             sparse_array<component::score> _scores;
             registry _ecs;
