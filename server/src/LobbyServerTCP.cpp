@@ -2,6 +2,73 @@
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+#include <thread>
+#include <asio/ip/tcp.hpp>
+#include <asio/io_context.hpp>
+
+// Helper function to trim whitespace from a string
+std::string LobbyServerTCP::trim(const std::string& str) {
+    size_t first = str.find_first_not_of(" \t\r\n");
+    if (std::string::npos == first) {
+        return str;
+    }
+    size_t last = str.find_last_not_of(" \t\r\n");
+    return str.substr(first, (last - first + 1));
+}
+
+// Helper function to convert a string to lowercase
+std::string LobbyServerTCP::tolower(const std::string& str) {
+    std::string lowerStr = str;
+    std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), ::tolower);
+    return lowerStr;
+}
+
+// Helper function to print the raw bytes of a string
+void LobbyServerTCP::printRawBytes(const std::string& str) {
+    std::cout << "Raw bytes: ";
+    for (char c : str) {
+        std::cout << static_cast<int>(c) << " ";
+    }
+    std::cout << std::endl;
+}
+
+// Helper function to print the contents of the lobbies_ map
+void LobbyServerTCP::printLobbies(const std::map<std::string, Lobby>& lobbies)
+{
+    std::cout << "Current Lobbies:\n";
+    for (const auto& pair : lobbies) {
+        std::cout << "  Lobby ID: " << pair.first << std::endl;
+        std::cout << "    Creator IP: " << pair.second.creatorIP << std::endl;
+        std::cout << "    Joined: " << (pair.second.joined ? "true" : "false") << std::endl;
+        std::cout << "    Players: ";
+        for (const auto& player : pair.second.players) {
+            std::cout << player << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+// Helper function to get the local machine's external IP address
+std::string LobbyServerTCP::getLocalIP() {
+    try {
+        asio::io_context ioContext;
+        asio::ip::udp::resolver resolver(ioContext);
+        asio::ip::udp::resolver::query query(asio::ip::udp::v4(), "google.com", "");
+        auto it = resolver.resolve(query);
+        asio::ip::udp::endpoint endpoint = *it;
+
+        asio::ip::udp::socket socket(ioContext);
+        socket.open(asio::ip::udp::v4());
+        socket.connect(endpoint);
+        asio::ip::address localAddress = socket.local_endpoint().address();
+        return localAddress.to_string();
+    }
+    catch (std::exception& e) {
+        std::cerr << "Error getting local IP: " << e.what() << std::endl;
+        return "";
+    }
+}
 
 LobbyServerTCP::LobbyServerTCP(asio::io_context& ioContext, int port)
     : acceptor_(ioContext) {
@@ -48,7 +115,7 @@ void LobbyServerTCP::handleClient(std::shared_ptr<asio::ip::tcp::socket> socket,
     }
 
     auto doRead = [this, socket, buffer, playerId, clientIP]() {
-        socket->async_read_some(asio::buffer(*buffer), 
+        socket->async_read_some(asio::buffer(*buffer),
             [this, socket, buffer, playerId, clientIP](std::error_code ec, std::size_t length) {
                 if (!ec) {
                     if (length > 0) {
@@ -95,6 +162,9 @@ std::string LobbyServerTCP::processRequest(const std::string& request, const std
     } else if (command == "CREATE_LOBBY") {
         std::string lobbyId;
         sstream >> lobbyId;
+        lobbyId = trim(lobbyId);
+        std::cout << "CREATE_LOBBY: Lobby ID after trim: '" << lobbyId << "'" << std::endl;
+        printRawBytes(lobbyId);
         if (lobbyId.empty()) {
             return "ERROR: Invalid CREATE_LOBBY command. Usage: CREATE_LOBBY <lobbyId>\n";
         }
@@ -105,6 +175,9 @@ std::string LobbyServerTCP::processRequest(const std::string& request, const std
     } else if (command == "JOIN_LOBBY") {
         std::string lobbyId;
         sstream >> lobbyId;
+        lobbyId = trim(lobbyId);
+        std::cout << "JOIN_LOBBY: Lobby ID after trim: '" << lobbyId << "'" << std::endl;
+        printRawBytes(lobbyId);
         if (lobbyId.empty()) {
             return "ERROR: Invalid JOIN_LOBBY command. Usage: JOIN_LOBBY <lobbyId>\n";
         }
@@ -116,14 +189,17 @@ std::string LobbyServerTCP::processRequest(const std::string& request, const std
         return leaveLobby(playerId);
     } else if (command == "SEND_MESSAGE") {
         std::string message;
-        std::getline(sstream, message); 
-        message = message.substr(1);
+        std::getline(sstream, message);
+        message = trim(message);
         return sendMessage(playerId, message);
     } else if (command == "GET_CHAT_HISTORY") {
         return getChatHistory(playerId);
     } else if (command == "GET_UDP_INFO") {
         std::string lobbyId;
         sstream >> lobbyId;
+        lobbyId = trim(lobbyId);
+        std::cout << "GET_UDP_INFO: Lobby ID after trim: '" << lobbyId << "'" << std::endl;
+        printRawBytes(lobbyId);
         return getUdpInfo(lobbyId);
     }
     else {
@@ -132,6 +208,7 @@ std::string LobbyServerTCP::processRequest(const std::string& request, const std
 }
 
 std::string LobbyServerTCP::listLobbies() {
+    std::lock_guard<std::mutex> lock(lobbies_mutex_);
     if (lobbies_.empty()) {
         return "No lobbies available.\n";
     }
@@ -144,23 +221,48 @@ std::string LobbyServerTCP::listLobbies() {
 }
 
 std::string LobbyServerTCP::createLobby(const std::string& lobbyId, const std::string& creatorIP) {
-    if (lobbies_.find(lobbyId) != lobbies_.end()) {
+    std::string lowerLobbyId = tolower(lobbyId);
+    std::lock_guard<std::mutex> lock(lobbies_mutex_);
+
+    std::cout << "createLobby: Trying to create lobby with ID: " << lowerLobbyId << std::endl;
+    if (lobbies_.find(lowerLobbyId) != lobbies_.end()) {
         return "ERROR: Lobby already exists.\n";
     }
-    lobbies_[lobbyId] = Lobby{lobbyId, {}, {}, creatorIP};
-    std::cout << "Lobby created with ID: " << lobbyId << " by " << creatorIP << std::endl;
-    return "Lobby created with ID: " + lobbyId + "\n";
+
+    std::string updatedCreatorIP = creatorIP;
+    if (creatorIP == "127.0.0.1") {
+        std::cout << "createLobby: Creator IP is localhost (127.0.0.1). Attempting to get external IP.\n";
+        updatedCreatorIP = getLocalIP();
+        if (updatedCreatorIP.empty()) {
+            std::cerr << "createLobby: Failed to determine external IP. Using localhost IP.\n";
+            updatedCreatorIP = "127.0.0.1";
+        } else {
+            std::cout << "createLobby: Updated creator IP to: " << updatedCreatorIP << std::endl;
+        }
+    }
+    lobbies_[lowerLobbyId] = Lobby{lowerLobbyId, {}, {}, updatedCreatorIP};
+    std::cout << "Lobby created with ID: " << lowerLobbyId << " by " << updatedCreatorIP << std::endl;
+    printLobbies(lobbies_);
+    return "Lobby created with ID: " + lowerLobbyId + "\n";
 }
 
 std::string LobbyServerTCP::joinLobby(const std::string& lobbyId, const std::string& playerId) {
-    if (lobbies_.find(lobbyId) == lobbies_.end()) {
+    std::string lowerLobbyId = tolower(lobbyId);
+    std::lock_guard<std::mutex> lock(lobbies_mutex_);
+    std::cout << "joinLobby: Trying to join lobby with ID: " << lowerLobbyId << std::endl;
+    if (lobbies_.find(lowerLobbyId) == lobbies_.end()) {
+        std::cout << "joinLobby: Lobby not found: " << lowerLobbyId << std::endl;
         return "ERROR: Lobby does not exist.\n";
     }
-    lobbies_[lobbyId].players.push_back(playerId);
-    return "Player " + playerId + " joined lobby " + lobbyId + "\n";
+    lobbies_[lowerLobbyId].players.push_back(playerId);
+    lobbies_[lowerLobbyId].joined = true;
+    std::cout << "joinLobby: Player " << playerId << " added to lobby " << lowerLobbyId << std::endl;
+    printLobbies(lobbies_);
+    return "Player " + playerId + " joined lobby " + lowerLobbyId + "\n";
 }
 
 std::string LobbyServerTCP::leaveLobby(const std::string& playerId) {
+    std::lock_guard<std::mutex> lock(lobbies_mutex_);
     for (auto& [lobbyId, lobby] : lobbies_) {
         auto it = std::find(lobby.players.begin(), lobby.players.end(), playerId);
         if (it != lobby.players.end()) {
@@ -180,7 +282,8 @@ std::string LobbyServerTCP::leaveLobby(const std::string& playerId) {
     return "ERROR: You are not in any lobby.\n";
 }
 
-bool LobbyServerTCP::isPlayerInLobby(const std::string& playerId) const {
+bool LobbyServerTCP::isPlayerInLobby(const std::string& playerId)  {
+    std::lock_guard<std::mutex> lock(lobbies_mutex_);
     for (const auto& [lobbyId, lobby] : lobbies_) {
         if (std::find(lobby.players.begin(), lobby.players.end(), playerId) != lobby.players.end()) {
             return true;
@@ -190,6 +293,7 @@ bool LobbyServerTCP::isPlayerInLobby(const std::string& playerId) const {
 }
 
 std::string LobbyServerTCP::sendMessage(const std::string& playerId, const std::string& message) {
+    std::lock_guard<std::mutex> lock(lobbies_mutex_);
     std::string lobbyId = "";
     for (const auto& [lid, lobby] : lobbies_) {
         if (std::find(lobby.players.begin(), lobby.players.end(), playerId) != lobby.players.end()) {
@@ -219,8 +323,8 @@ std::string LobbyServerTCP::sendMessage(const std::string& playerId, const std::
 
     return "";
 }
-
 std::string LobbyServerTCP::getChatHistory(const std::string& playerId) {
+    std::lock_guard<std::mutex> lock(lobbies_mutex_);
     std::string lobbyId = "";
     for (const auto& [lid, lobby] : lobbies_) {
         if (std::find(lobby.players.begin(), lobby.players.end(), playerId) != lobby.players.end()) {
@@ -242,14 +346,28 @@ std::string LobbyServerTCP::getChatHistory(const std::string& playerId) {
 }
 
 std::string LobbyServerTCP::getUdpInfo(const std::string& lobbyId) {
-    if (lobbies_.find(lobbyId) == lobbies_.end()) {
-        return "ERROR: Lobby " + lobbyId + " does not exist.\n";
+    std::string lowerLobbyId = tolower(lobbyId);
+    std::lock_guard<std::mutex> lock(lobbies_mutex_);
+    std::cout << "getUdpInfo: Request for lobby: " << lowerLobbyId << std::endl;
+    printLobbies(lobbies_);
+
+    auto it = lobbies_.find(lowerLobbyId);
+    if (it == lobbies_.end()) {
+        std::cout << "getUdpInfo: Lobby not found: " << lowerLobbyId << std::endl;
+        return "ERROR: Lobby " + lowerLobbyId + " does not exist.\n";
     }
 
-    std::string creatorIP = lobbies_[lobbyId].creatorIP;
+    if (!it->second.joined) {
+        std::cout << "getUdpInfo: Lobby not yet fully joined: " << lowerLobbyId << std::endl;
+        return "ERROR: Lobby " + lowerLobbyId + " not yet fully joined.\n";
+    }
+
+    std::string creatorIP = it->second.creatorIP;
     if (creatorIP.empty()) {
-        return "ERROR: Creator IP information not available for lobby " + lobbyId + ".\n";
+        std::cout << "getUdpInfo: Creator IP not found for lobby: " << lowerLobbyId << std::endl;
+        return "ERROR: Creator IP information not available for lobby " + lowerLobbyId + ".\n";
     }
 
-    return "UDP_INFO: Creator IP for lobby " + lobbyId + " is " + creatorIP + "\n";
+    std::cout << "getUdpInfo: Returning creator IP: " << creatorIP << " for lobby: " << lowerLobbyId << std::endl;
+    return  creatorIP;
 }

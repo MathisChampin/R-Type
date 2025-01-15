@@ -1,6 +1,8 @@
 #include "../include/OptionsMenu.hpp"
 #include <iostream>
 #include <cctype>
+#include "../../server/include/Server.hpp"
+#include "../../server/include/ProtocolHandler.hpp"
 
 OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     : m_window(window),
@@ -20,7 +22,7 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
       m_ipAddressInput(""),
       m_ipAddressText(),
       m_ipAddressInputBorder(),
-      m_portInput("8080"),
+      m_portInput("50000"),
       m_portText(),
       m_portInputBorder(),
       m_isChatOpen(false),
@@ -53,7 +55,7 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     m_ipAddressText.setString("Adresse IP : ");
     m_ipAddressText.setCharacterSize(30);
     m_ipAddressText.setFillColor(sf::Color::White);
-    m_ipAddressText.setPosition(m_window.getSize().x / 2.0f + 250, 300);
+    m_ipAddressText.setPosition(m_window.getSize().x / 2.0f - 120, 300);
 
     // // Configuration du texte pour le port
     // m_portText.setFont(m_font);
@@ -76,17 +78,17 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     m_lobbyNameText.setString("Nom du lobby : ");
     m_lobbyNameText.setCharacterSize(30);
     m_lobbyNameText.setFillColor(sf::Color::White);
-    m_lobbyNameText.setPosition(m_window.getSize().x / 2.0f + 350, 400);
+    m_lobbyNameText.setPosition(m_window.getSize().x / 2.0f - 120, 400);
 
     // Configuration de l'input de chat
     m_chatInput.setFont(m_font);
     m_chatInput.setCharacterSize(24);
     m_chatInput.setFillColor(sf::Color::White);
-    m_chatInput.setPosition(10, m_window.getSize().y + 80);
+    m_chatInput.setPosition(10, m_window.getSize().y - 50);
 
     // Configuration de la bordure de l'input de chat
     m_chatInputBorder.setSize(sf::Vector2f(m_window.getSize().x - 20, 40));
-    m_chatInputBorder.setPosition(10, m_window.getSize().y + 80);
+    m_chatInputBorder.setPosition(10, m_window.getSize().y - 50);
     m_chatInputBorder.setFillColor(sf::Color::Transparent);
     m_chatInputBorder.setOutlineColor(sf::Color::White);
     m_chatInputBorder.setOutlineThickness(2);
@@ -154,12 +156,14 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                 sendMessage();
                 m_chatInputString.clear();
                 m_chatInput.setString("");
+            } else {
+                m_isChatOpen = false;
             }
         }
 
-        if (m_isConnecting) { 
+        if (m_isConnecting) {
             if (event.key.code == sf::Keyboard::Up) {
-                m_selectedButton = (m_selectedButton == -1) ? -2 : -1; 
+                m_selectedButton = (m_selectedButton == -1) ? -2 : -1;
             } else if (event.key.code == sf::Keyboard::Down) {
                 m_selectedButton = (m_selectedButton == -1) ? -2 : -1;
             } else if (event.key.code == sf::Keyboard::Tab) {
@@ -168,15 +172,14 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                 } else {
                     m_selectedButton = (m_selectedButton == -1) ? -2 : -1;
                 }
-            } else if (event.key.code == sf::Keyboard::L) {
-                m_isConnecting = false;
-                m_selectedButton = 1; 
-                m_buttons[1].setFillColor(sf::Color::Cyan); 
-                m_ipAddressInputBorder.setOutlineColor(sf::Color::White); 
-                m_portInputBorder.setOutlineColor(sf::Color::White); 
             } else if (event.key.code == sf::Keyboard::Enter) {
+                m_isConnecting = false;
+                m_selectedButton = 1;
+                m_buttons[1].setFillColor(sf::Color::Cyan);
+                m_ipAddressInputBorder.setOutlineColor(sf::Color::White);
+                m_portInputBorder.setOutlineColor(sf::Color::White);
                 connectTcpClient(m_ipAddressInput, m_portInput);
-            }
+            } 
         } else {
             if (event.key.code == sf::Keyboard::Up) {
                 if (m_selectedButton > 0) {
@@ -190,12 +193,12 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                     m_selectedButton++;
                     m_buttons[m_selectedButton].setFillColor(sf::Color::Cyan);
                 }
-            } else if (event.key.code == sf::Keyboard::Enter) {
-                if (m_selectedButton == 0) { 
+            } else if (event.key.code == sf::Keyboard::Enter && m_isChatOpen == false) {
+                if (m_selectedButton == 0) {
                     m_isConnecting = true;
-                    m_selectedButton = -1; 
-                    m_ipAddressInputBorder.setOutlineColor(sf::Color::Cyan); 
-                    m_buttons[0].setFillColor(sf::Color::White); 
+                    m_selectedButton = -1;
+                    m_ipAddressInputBorder.setOutlineColor(sf::Color::Cyan);
+                    m_buttons[0].setFillColor(sf::Color::White);
                 } else if (m_selectedButton >= 1 && m_selectedButton <= 4 && m_tcpClient.has_value()) {
                     switch (m_selectedButton) {
                         case 1: createLobby(); break;
@@ -209,7 +212,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
     }
 
     if (event.type == sf::Event::TextEntered) {
-         if (m_isConnecting) {
+        if (m_isConnecting) {
             if (m_selectedButton == -1) {
                 if (event.text.unicode < 128) {
                     char enteredChar = static_cast<char>(event.text.unicode);
@@ -220,7 +223,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                     }
                     m_ipAddressText.setString("Adresse IP : " + m_ipAddressInput);
                 }
-            } else if (m_selectedButton == -2) { 
+            } else if (m_selectedButton == -2) {
                 if (event.text.unicode < 128) {
                     char enteredChar = static_cast<char>(event.text.unicode);
                     if (enteredChar == '\b' && !m_portInput.empty()) {
@@ -231,7 +234,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                     m_portText.setString("Port : " + m_portInput);
                 }
             }
-         } else if (m_isChatOpen) {
+        } else if (m_isChatOpen) {
             if (event.text.unicode < 128) {
                 char enteredChar = static_cast<char>(event.text.unicode);
                 if (enteredChar == '\b' && !m_chatInputString.empty()) {
@@ -253,7 +256,46 @@ void OptionsMenu::handleEvent(const sf::Event &event)
             }
         }
     }
+
+    if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+            for (size_t i = 0; i < m_buttons.size(); ++i) {
+                if (m_buttons[i].getGlobalBounds().contains(mousePos)) {
+                    if (m_selectedButton != -1) {
+                        m_buttons[m_selectedButton].setFillColor(sf::Color::White);
+                    }
+                    m_selectedButton = static_cast<int>(i);
+                    m_buttons[m_selectedButton].setFillColor(sf::Color::Cyan);
+                    break;
+                }
+            }
+        }
+    }
 }
+
+int OptionsMenu::start_udp() {
+    try {
+        std::thread serverThread([this]() {
+            try {
+                NmpServer::Server server;
+
+                server.run();
+            } catch (const std::exception& e) {
+                std::cerr << "Erreur lors de l'exécution du serveur : " << e.what() << std::endl;
+            }
+        });
+
+        serverThread.detach();
+
+        return 0; 
+    } catch (const std::exception& e) {
+        std::cerr << "Exception lors de la création du thread du serveur : " << e.what() << std::endl;
+        return -1; 
+    }
+}
+
+
 
 void OptionsMenu::createLobby()
 {
@@ -272,6 +314,7 @@ void OptionsMenu::createLobby()
             } else {
                 m_lobbyListText.setString("Lobby créé avec succès.");
                 m_lobbyNameInput.clear();
+                start_udp();
             }
         } else {
             m_lobbyListText.setString("Erreur lors de la création du lobby.");
@@ -281,24 +324,40 @@ void OptionsMenu::createLobby()
     }
 }
 
-void OptionsMenu::joinLobby()
-{
-    if(m_tcpClient.has_value()){
+void OptionsMenu::joinLobby() {
+    if (m_tcpClient.has_value()) {
         if (m_lobbyNameInput.empty()) {
             m_lobbyListText.setString("Erreur: le nom du lobby est vide.");
             return;
         }
 
-        m_tcpClient.value().send("JOIN_LOBBY " + m_lobbyNameInput);
-        auto response = m_tcpClient.value().receive();
-        if (response.has_value()) {
-            std::string responseStr = response.value();
-            if (responseStr.find("ERROR:") == 0) {
-                m_lobbyListText.setString(responseStr);
+        std::string lobbyNameCopy = m_lobbyNameInput;  
+
+        m_tcpClient.value().send("JOIN_LOBBY " + lobbyNameCopy); // Use the copy
+        auto joinResponse = m_tcpClient.value().receive();
+        if (joinResponse.has_value()) {
+            std::string joinResponseStr = joinResponse.value();
+            if (joinResponseStr.find("ERROR:") == 0) {
+                m_lobbyListText.setString(joinResponseStr);
             } else {
-                m_lobbyListText.setString("Rejoint le lobby: " + m_lobbyNameInput);
-                m_lobbyNameInput.clear();
+                m_lobbyListText.setString("Rejoint le lobby: " + lobbyNameCopy); // Use the copy
                 getChatHistory();
+                m_tcpClient.value().send("GET_UDP_INFO " + lobbyNameCopy); // Use the copy BEFORE clearing
+                auto udpInfoResponse = m_tcpClient.value().receive();
+                std::cout << "ma mere" << std::endl;
+                creatorIp.emplace() = udpInfoResponse.value();
+                std::cout << "creatorIp: " << creatorIp.value() << std::endl;
+                if (udpInfoResponse.has_value()) {
+                    std::string udpInfoResponseStr = udpInfoResponse.value();
+                    if (udpInfoResponseStr.find("ERROR:") == 0) {
+                        m_lobbyListText.setString(udpInfoResponseStr);
+                    } else {
+                        m_lobbyListText.setString(udpInfoResponseStr);
+                    }
+                } else {
+                    m_lobbyListText.setString("Erreur en récupérant les informations UDP.");
+                }
+                m_lobbyNameInput.clear();
             }
         } else {
             m_lobbyListText.setString("Erreur en rejoignant le lobby.");
@@ -449,20 +508,20 @@ void OptionsMenu::render()
     // Animation de l'affichage du titre
     static sf::Clock clock;
     static bool shouldMove = true;
-    if (shouldMove && clock.getElapsedTime().asSeconds() > 0.31f) {
+    if (shouldMove && clock.getElapsedTime().asSeconds() > 0.00f) {
         shouldMove = false;
     }
 
     // Dessin du titre (avec animation si nécessaire)
     if (shouldMove) {
-        m_titleText.setPosition(m_titleText.getPosition().x + 50, m_titleText.getPosition().y);
+        m_titleText.setPosition(m_titleText.getPosition().x + 0, m_titleText.getPosition().y);
     }
     m_window.draw(m_titleText);
 
     // Dessin des boutons
     for (auto &button : m_buttons) {
         if (shouldMove) {
-            button.setPosition(button.getPosition().x + 50, button.getPosition().y);
+            button.setPosition(button.getPosition().x + 0, button.getPosition().y);
         }
         m_window.draw(button);
     }

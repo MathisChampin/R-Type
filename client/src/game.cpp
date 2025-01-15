@@ -2,10 +2,13 @@
 #include <iostream>
 #include <algorithm>
 
-Game::Game(sf::RenderWindow &window, SkinType skinType, sf::Font &font, ParallaxBackground &playingBackground, SoundManager &soundManager)
-    : m_skinType(skinType),              
+Game::Game(std::string ip, sf::RenderWindow &window, SkinType skinType, sf::Font &font, ParallaxBackground &playingBackground, SoundManager &soundManager)
+    : 
+    _ip(ip),
       m_window(window),                 
+    m_skinType(skinType),              
       m_playingBackground(playingBackground),
+      m_client(_ip),
       m_players(m_client),
       m_currentState(GameState::Playing),
       m_font(font),                    

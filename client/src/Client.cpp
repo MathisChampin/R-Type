@@ -1,12 +1,14 @@
 #include "../include/client/Client.hpp"
 #include "../include/client/ClientPacket.hpp"
+#include <chrono>
+#include <thread>
 
 namespace NmpClient
 {
-    Client::Client() : _resolver(_io_context), _socket(_io_context)
+    Client::Client(std::string ip) : _resolver(_io_context), _socket(_io_context)
     {
         asio::ip::udp::resolver::results_type endpoints =
-            _resolver.resolve(asio::ip::udp::v4(), "127.0.0.1", "8080");
+            _resolver.resolve(asio::ip::udp::v4(), ip, "8080");
         _receiver_endpoint = *endpoints.begin();
         _socket.open(asio::ip::udp::v4());
         std::cout << "client bind to server 8080" << std::endl;
@@ -18,6 +20,8 @@ namespace NmpClient
         {
             std::cout << "waiting for join response" << std::endl;
             resJoin = this->get_data();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
         }
         evalResJoin(resJoin.value());
         std::cout << "id client: " << _id << std::endl;
@@ -40,7 +44,7 @@ namespace NmpClient
                     test.push_back(val);
                 }
     
-                NmpClient::Packet packet = _binary.deserialize(test);
+                NmpClient::Packet packet = _binary.deserializes(test);
                 _bufferAsio.fill(0); 
     
                 return packet;

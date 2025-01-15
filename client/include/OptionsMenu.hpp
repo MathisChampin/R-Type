@@ -18,6 +18,7 @@ public:
     void render();
     void connectTcpClient(const std::string& ipAddress, const std::string& port);
 
+    std::optional<std::string> creatorIp;
 private:
     sf::RenderWindow &m_window;
     sf::Font m_font;
@@ -30,6 +31,7 @@ private:
 
     // Client TCP (maintenant optionnel)
     std::optional<NmpClient::TcpClient> m_tcpClient;
+
 
     // Lobby Management
     std::vector<sf::Text> m_buttons;
@@ -76,6 +78,8 @@ private:
     void sendMessage();
     void getChatHistory();
     void updateChatHistory(const std::string& chatHistory);
+    int start_udp();
+
 };
 
 #endif // OPTIONS_MENU_HPP

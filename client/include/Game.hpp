@@ -29,7 +29,7 @@ class Game
 {
 public:
     //Game() = default;
-    Game(sf::RenderWindow &window, SkinType skinType, sf::Font &font, ParallaxBackground &playingBackground, SoundManager &soundManager);
+    Game(std::string ip, sf::RenderWindow &window, SkinType skinType, sf::Font &font, ParallaxBackground &playingBackground, SoundManager &soundManager);
     ~Game();
 
     void run();
@@ -80,11 +80,12 @@ private:
     void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
     void destroy_useless_sprites();
 
+    std::string _ip;
     // Game state
+    sf::RenderWindow &m_window;
     SkinType m_skinType;    
 
     // Window (reference)
-    sf::RenderWindow &m_window;
 
     // Parallax background
     ParallaxBackground m_playingBackground;
