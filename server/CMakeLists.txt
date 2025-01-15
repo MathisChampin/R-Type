@@ -69,4 +69,4 @@ elseif(UNIX)
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)
-target_link_libraries(${PROJECT_NAME}_exec PRIVATE nlohmann_json r_type_server)
+target_link_libraries(${PROJECT_NAME}_exec PRIVATE nlohmann_json ${PROJECT_NAME})

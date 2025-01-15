@@ -1,122 +1,50 @@
 [
     {
-        "delaySpawn": 4,
-        "posX": 999,
-        "posY": 277,
+        "delaySpawn": 1,
+        "posX": 955,
+        "posY": 419,
+        "type": 2
+    },
+    {
+        "delaySpawn": 0,
+        "posX": 453,
+        "posY": 199,
         "type": 1
     },
     {
-        "delaySpawn": 0,
-        "posX": 377,
-        "posY": 129,
-        "type": 4
-    },
-    {
-        "delaySpawn": 3,
-        "posX": 319,
-        "posY": 851,
-        "type": 4
-    },
-    {
-        "delaySpawn": 1,
-        "posX": 451,
-        "posY": 569,
+        "delaySpawn": 4,
+        "posX": 989,
+        "posY": 330,
         "type": 2
     },
     {
-        "delaySpawn": 3,
-        "posX": 682,
-        "posY": 767,
-        "type": 4
-    },
-    {
-        "delaySpawn": 3,
-        "posX": 469,
-        "posY": 486,
-        "type": 4
-    },
-    {
-        "delaySpawn": 0,
-        "posX": 490,
-        "posY": 348,
-        "type": 2
-    },
-    {
-        "delaySpawn": 3,
-        "posX": 847,
-        "posY": 391,
+        "delaySpawn": 4,
+        "posX": 787,
+        "posY": 679,
         "type": 1
     },
     {
         "delaySpawn": 2,
-        "posX": 668,
-        "posY": 837,
+        "posX": 328,
+        "posY": 263,
         "type": 3
     },
     {
         "delaySpawn": 2,
-        "posX": 966,
-        "posY": 562,
-        "type": 2
+        "posX": 867,
+        "posY": 506,
+        "type": 1
     },
     {
         "delaySpawn": 2,
-        "posX": 566,
-        "posY": 727,
-        "type": 3
+        "posX": 200,
+        "posY": 648,
+        "type": 1
     },
     {
         "delaySpawn": 3,
-        "posX": 697,
-        "posY": 723,
-        "type": 2
-    },
-    {
-        "delaySpawn": 2,
-        "posX": 943,
-        "posY": 323,
+        "posX": 349,
+        "posY": 596,
         "type": 4
-    },
-    {
-        "delaySpawn": 1,
-        "posX": 609,
-        "posY": 768,
-        "type": 1
-    },
-    {
-        "delaySpawn": 1,
-        "posX": 968,
-        "posY": 848,
-        "type": 1
-    },
-    {
-        "delaySpawn": 4,
-        "posX": 739,
-        "posY": 436,
-        "type": 4
-    },
-    {
-        "delaySpawn": 1,
-        "posX": 673,
-        "posY": 496,
-        "type": 4
-    },
-    {
-        "delaySpawn": 4,
-        "posX": 310,
-        "posY": 629,
-        "type": 4
-    },
-    {
-        "delaySpawn": 1,
-        "posX": 956,
-        "posY": 148,
-        "type": 1
-    },
-    {
-        "delaySpawn": 1,
-        "posX": 824,
-        "posY": 251,
-        "type": 2
     }
 ]

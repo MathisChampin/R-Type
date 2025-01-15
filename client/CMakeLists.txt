@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB_RECURSE CLIENT_SOURCES "${CMAKE_SOURCE_DIR}/client/src/*.cpp")
 file(GLOB_RECURSE CLIENT_HEADERS "${CMAKE_SOURCE_DIR}/client/include/*.hpp")
-file(GLOB_RECURSE ECS_SYSTEM_SOURCES "${PROJECT_ROOT_DIR}/ECS/src/system/*.cpp")
 
 if(NOT CLIENT_SOURCES)
     message(FATAL_ERROR "No source files found in ${CMAKE_SOURCE_DIR}/client/src/")
@@ -17,13 +16,13 @@ if(NOT DEFINED asio_SOURCE_DIR AND NOT EXISTS ${CMAKE_SOURCE_DIR}/_deps/asio-src
     message(FATAL_ERROR "ASIO not found. Ensure it is downloaded via CPM or exists in the expected directory.")
 endif()
 
-add_executable(r_type_client ${CLIENT_SOURCES} ${CLIENT_HEADERS} ${ECS_SYSTEM_SOURCES})
+add_executable(r_type_client ${CLIENT_SOURCES} ${CLIENT_HEADERS})
 
 target_include_directories(r_type_client PRIVATE
-    ${PROJECT_ROOT_DIR}/ECS/include
-    ${PROJECT_ROOT_DIR}/ECS/include/component
-    ${PROJECT_ROOT_DIR}/ECS/include/system
-    ${PROJECT_ROOT_DIR}/server/include
+    ${CMAKE_SOURCE_DIR}/ECS/include
+    ${CMAKE_SOURCE_DIR}/ECS/include/component
+    ${CMAKE_SOURCE_DIR}/ECS/include/system
+    ${CMAKE_SOURCE_DIR}/server/include
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/client/include
     $<IF:$<BOOL:${asio_SOURCE_DIR}>,${asio_SOURCE_DIR}/asio/include,${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include>
@@ -31,7 +30,7 @@ target_include_directories(r_type_client PRIVATE
 )
 
 target_link_directories(r_type_client PRIVATE
-    ${PROJECT_ROOT_DIR}/ECS/ecs_build
+    ${CMAKE_SOURCE_DIR}/ECS/ecs_build
     ${CMAKE_BINARY_DIR}/server
 )
 
@@ -54,7 +53,7 @@ elseif(MSVC)
         debug sfml-window-d optimized sfml-window
         debug sfml-graphics-d optimized sfml-graphics
         debug sfml-audio-d optimized sfml-audio
-        ws2_32
+        ws2_32 r_type_ecs r_type_server
     )
 
     add_custom_command(
