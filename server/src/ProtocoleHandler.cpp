@@ -208,29 +208,38 @@ namespace NmpServer
         if (type == 1) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
             _ecs.add_component<component::velocity>(ennemies, {-2, 0});
+            _ecs.add_component<component::size>(ennemies, {50, 50});
+            _ecs.add_component<component::life>(ennemies, {1});
         }
         if (type == 2) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies2});
             _ecs.add_component<component::velocity>(ennemies, {0, -2});
+            _ecs.add_component<component::size>(ennemies, {50, 50});
+            _ecs.add_component<component::life>(ennemies, {1});
         }
         if (type == 3) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies3});
             _ecs.add_component<component::velocity>(ennemies, {-2, -2});
+            _ecs.add_component<component::size>(ennemies, {50, 50});
+            _ecs.add_component<component::life>(ennemies, {1});
         }
         if (type == 4) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies4});
+            _ecs.add_component<component::size>(ennemies, {50, 50});
             _ecs.add_component<component::velocity>(ennemies, {-2, -2});
+            _ecs.add_component<component::life>(ennemies, {1});
+
         }
         if (type == 5) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies5});
+            _ecs.add_component<component::size>(ennemies, {900, 800});
             _ecs.add_component<component::velocity>(ennemies, {0, 0});
+            _ecs.add_component<component::life>(ennemies, {10});
         }
 
         _ecs.add_component<component::level>(ennemies, {component::level::Level0});
         _ecs.add_component<component::controllable>(ennemies, {component::controllable::Key::NoKey});
-        _ecs.add_component<component::life>(ennemies, {1});
         _ecs.add_component<component::position>(ennemies, {posX, posY});
-        _ecs.add_component<component::size>(ennemies, {50, 50});
         _ecs.add_component<component::state>(ennemies, {component::state::Alive});
         _ecs.add_component<component::idPlayer>(ennemies, {ennemies.get_id()});
     }
