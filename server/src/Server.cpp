@@ -47,7 +47,7 @@ namespace NmpServer
         _attributes = ecs.get_components<component::attribute>();
         _lifes = ecs.get_components<component::life>();
         _scores = ecs.get_components<component::score>();
-
+        _levels = ecs.get_components<component::level>();
     }
 
     int Server::getId(component::attribute &att)
@@ -141,8 +141,9 @@ namespace NmpServer
         auto &l = _lifes[i];
         auto &s = _scores[i];
         auto &att = _attributes[i];
-
-        Packet packet(EVENT::INFO, l.life, s.score);
+        auto &lvl = _levels[i];
+        std::cout << "lEVEL: " << lvl._levelKey << std::endl;
+        Packet packet(EVENT::INFO, l.life, s.score, lvl._levelKey);
         if (att._type == component::attribute::Player1) {
             std::cout << "send life player 1" << std::endl;
             send_data(packet, _vecPlayer[0]);
@@ -168,7 +169,7 @@ namespace NmpServer
                 auto &s = _sizes[i];
                 SpriteInfo sprite = {static_cast<int>(i), id, pos.x, pos.y, s.x, s.y};
                 Packet packet(EVENT::SPRITE, sprite);
-                broadcast(packet);
+                broadcast(packet); 
             }
             if ((st._stateKey == component::state::stateKey::Alive || st._stateKey == component::state::stateKey::Lose) &&
                 (att._type == component::attribute::Player1 || 
@@ -181,6 +182,23 @@ namespace NmpServer
         Packet packet(EVENT::EOI);
             broadcast(packet);
         //std::cout << "END SEND ENTITY" << std::endl;
+    }
+
+    bool Server::check_level_player(registry &_ecs)
+    {
+        auto &att = _ecs.get_components<component::attribute>();
+        auto &level = _ecs.get_components<component::level>();
+
+        for (size_t i = 0; i < att.size(); i++) {
+            if ((att[i]._type == component::attribute::Player1 ||
+            att[i]._type == component::attribute::Player2 ||
+            att[i]._type == component::attribute::Player3 ||
+            att[i]._type == component::attribute::Player4) && (level[i]._levelKey == component::level::Level3 ||
+            level[i]._levelKey == component::level::Level4 || level[i]._levelKey == component::level::Level5 ||
+            level[i]._levelKey == component::level::Level6))
+                return true;
+        }
+        return false;
     }
 
     bool Server::check_level(registry &_ecs)
@@ -239,13 +257,15 @@ namespace NmpServer
             {
                 std::lock_guard<std::mutex> lock(_ecsMutex);
                 auto &ecs = _ptp.getECS();
-                sys.collision_system(ecs);
-                sys.position_system(ecs);
-                sys.shoot_system_ennemies(ecs);
-                sys.lose_system(ecs);
-                sys.spawn_power_up_life(ecs);
-                sys.collision_power_up(ecs);
-                sys.level_system(ecs);
+                if (!check_level_player(ecs)) {
+                    sys.collision_system(ecs);
+                    sys.position_system(ecs);
+                    sys.shoot_system_ennemies(ecs);
+                    sys.lose_system(ecs);
+                    sys.spawn_power_up_life(ecs);
+                    sys.collision_power_up(ecs);
+                    sys.level_system(ecs);
+                }
                 copyEcs();
 
                 if (!check_level(ecs)) {

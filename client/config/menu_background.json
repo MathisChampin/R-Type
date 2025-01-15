@@ -1,0 +1,6 @@
+{
+    "type": "menu",
+    "texture": "../assets/backgrounds/space_dust.png",
+    "position": { "x": 0, "y": 0 },
+    "size": { "width": 1920, "height": 1080 }
+}

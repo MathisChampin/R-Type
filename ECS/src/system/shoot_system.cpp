@@ -6,6 +6,7 @@
 #include "idPlayer.hpp"
 #include "state.hpp"
 #include "size.hpp"
+#include "level.hpp"
 #include <chrono>
 #include <iostream>
 
@@ -26,6 +27,7 @@ void create_shoot(Entity entity, registry &reg)
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
     reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
 void create_shoot3(Entity entity, registry &reg)
@@ -45,6 +47,8 @@ void create_shoot3(Entity entity, registry &reg)
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
     reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
+
 }
 
 void create_shoot4(Entity entity, registry &reg)
@@ -63,6 +67,7 @@ void create_shoot4(Entity entity, registry &reg)
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
     reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
 void create_shoot5(Entity entity, registry &reg)
@@ -81,6 +86,7 @@ void create_shoot5(Entity entity, registry &reg)
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
     reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
 }
 
@@ -101,6 +107,7 @@ void create_shoot6(Entity entity, registry &reg)
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
     reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
 void create_shoot_ennemie(Entity entity, registry &reg, int sy)
@@ -116,6 +123,7 @@ void create_shoot_ennemie(Entity entity, registry &reg, int sy)
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
 void create_shoot_ennemie2(Entity entity, registry &reg, int sy)
@@ -131,6 +139,7 @@ void create_shoot_ennemie2(Entity entity, registry &reg, int sy)
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
 void create_shoot_ennemie3(Entity entity, registry &reg, int sy)
@@ -148,6 +157,7 @@ void create_shoot_ennemie3(Entity entity, registry &reg, int sy)
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
 void create_shoot_ennemie4(Entity entity, registry &reg, int sy)
@@ -165,6 +175,7 @@ void create_shoot_ennemie4(Entity entity, registry &reg, int sy)
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
 void create_shoot_ennemie5(Entity entity, registry &reg, int sy)
@@ -180,6 +191,7 @@ void create_shoot_ennemie5(Entity entity, registry &reg, int sy)
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
 void create_shoot_ennemie6(Entity entity, registry &reg, int sy)
@@ -195,6 +207,7 @@ void create_shoot_ennemie6(Entity entity, registry &reg, int sy)
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
 void System::shoot_system_player_1(registry &reg, size_t i)

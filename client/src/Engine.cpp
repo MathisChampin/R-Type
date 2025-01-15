@@ -9,8 +9,8 @@ Engine::Engine() : m_currentState(GameState::Menu)
     initializeSoundManager();
 
     // Background layers
-    std::vector<std::pair<std::string, float>> menuLayers = {{"assets/backgrounds/space_dust.png", 0.1f}};
-    std::vector<std::pair<std::string, float>> playingLayers = {{"assets/backgrounds/space_dust.png", 0.2f}};
+    std::vector<std::pair<std::string, float>> menuLayers = { {"assets/backgrounds/space_dust.png", 0.1f} };
+    std::vector<std::pair<std::string, float>> playingLayers = { {"assets/backgrounds/space_dust.png", 0.2f} };
 
     m_menuBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
     m_playingBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), playingLayers);
@@ -56,31 +56,35 @@ void Engine::initializeSoundManager()
 void Engine::setupMenuOptions()
 {
     m_menu->addOption("Jouer", [this]()
-                      {
+    {
         std::cout << "Démarrage du jeu..." << std::endl;
         m_game = std::make_unique<Game>(m_window, m_customMenu.get()->getSelectedSkin(), m_font, *m_playingBackground, m_soundManager);
-        m_currentState = GameState::Playing; });
+        m_currentState = GameState::Playing;
+    });
 
     m_menu->addOption("Créer un lobby", [this]()
-                      {
+    {
         std::cout << "Création du lobby..." << std::endl;
-
-        m_currentState = GameState::PlayingInLobby; });
+        m_currentState = GameState::PlayingInLobby;
+    });
 
     m_menu->addOption("Options", [this]()
-                      {
+    {
         std::cout << "Ouverture des options..." << std::endl;
-        m_currentState = GameState::Options; });
+        m_currentState = GameState::Options;
+    });
 
     m_menu->addOption("Los Santos Custom", [this]()
-                      {
+    {
         std::cout << "Custom..." << std::endl;
-        m_currentState = GameState::Custom; });
+        m_currentState = GameState::Custom;
+    });
 
     m_menu->addOption("Quitter", [this]()
-                      {
+    {
         std::cout << "Fermeture du jeu..." << std::endl;
-        m_window.close(); });
+        m_window.close();
+    });
 }
 
 void Engine::handleEvents()
@@ -112,10 +116,13 @@ void Engine::handleEvents()
             m_customMenu->handleEvent(event);
             break;
         case GameState::Playing:
-            std::cout << "Handling events in game..." << std::endl;
             m_game.get()->handleEvents();
             break;
         case GameState::PlayingInLobby:
+            break;
+        case GameState::AnimationLevel:
+            break;
+        default:
             break;
         }
     }
@@ -138,13 +145,22 @@ void Engine::update(float deltaTime)
         m_customMenu->update();
         break;
     case GameState::Playing:
-        m_playingBackground->update(deltaTime);
-        m_game.get()->update(deltaTime);
+        if (m_game.get()->AnimationLevel()) {
+            std::cout << "Passage à AnimationLevel" << std::endl;
+            m_game.get()->setPaused(true); // Met le jeu en pause
+            m_currentState = GameState::AnimationLevel;
+        } else {
+            m_playingBackground->update(deltaTime);
+            m_game.get()->update(deltaTime);
+        }
         break;
-    case GameState::PlayingInLobby:
+    case GameState::AnimationLevel:
+        break;
+    default:
         break;
     }
 }
+
 
 void Engine::render(float deltaTime)
 {
@@ -156,25 +172,52 @@ void Engine::render(float deltaTime)
         m_menuBackground->render(m_window);
         m_menu->render();
         break;
+
     case GameState::Options:
         m_menuBackground->render(m_window);
         m_optionsMenu->render();
         break;
+
     case GameState::Custom:
         m_customBackground->render(m_window);
         m_customMenu->render();
         break;
+
     case GameState::Playing:
-        std::cout << "Rendering game..." << std::endl;
         m_playingBackground->render(m_window);
         m_game.get()->render(deltaTime);
         break;
+
     case GameState::PlayingInLobby:
+        m_playingBackground->render(m_window);
+        m_game.get()->render(deltaTime);
+        break;
+
+    case GameState::AnimationLevel:
+    {
+        std::cout << "je suis dans le render de animation level" << std::endl;
+        // Bloc pour encapsuler l'utilisation de sf::Text
+        m_window.clear(sf::Color::Black);
+
+        sf::Text animationText;
+        animationText.setFont(m_font);
+        animationText.setString("Animation en cours...");
+        animationText.setCharacterSize(50);
+        animationText.setFillColor(sf::Color::White);
+        animationText.setPosition(100, 100);
+
+        m_window.draw(animationText);
+        std::cout << "je sors du render d'animation" << std::endl;
+        break; // Assurez-vous que le break reste dans ce bloc
+    }
+
+    default:
         break;
     }
 
     m_window.display();
 }
+
 
 void Engine::run()
 {
@@ -183,8 +226,8 @@ void Engine::run()
         float deltaTime = m_clock.restart().asSeconds();
 
         handleEvents();
-        if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
-        {
+        if (m_currentState == GameState::Playing) {
+            std::cout << "je suis dans le engine run" << std::endl;
             m_game.get()->run();
         }
         update(deltaTime);
