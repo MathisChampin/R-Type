@@ -82,6 +82,14 @@ elseif(MSVC)
             $<TARGET_FILE_DIR:r_type_client>
         COMMENT "Copie des config dans le répertoire binaire"
     )
+
+    add_custom_command(
+    TARGET r_type_client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/server/Release/r_type_server.dll"
+        $<TARGET_FILE_DIR:r_type_client>
+    COMMENT "Copie de r_type_server.dll dans le répertoire binaire"
+)
 endif()
 
 add_custom_command(
