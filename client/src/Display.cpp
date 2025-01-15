@@ -29,6 +29,7 @@ void Game::handler_packets()
         std::cout << "count before: " << _spriteMng.getSpriteCount() << std::endl;
         
         _spriteMng.eraseOldSprite(_containerEndFrameId);
+        
         std::cout << "count after: " << _spriteMng.getSpriteCount() << std::endl;
         return;
     }
