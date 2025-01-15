@@ -527,8 +527,8 @@ void OptionsMenu::render()
     }
 
     // Dessin des éléments de chat si la fenêtre de chat est ouverte
-    if (m_isChatOpen) {
         m_window.draw(m_chatHistoryText);
+    if (m_isChatOpen) {
         m_window.draw(m_chatInputBorder);
         m_window.draw(m_chatInput);
     }
