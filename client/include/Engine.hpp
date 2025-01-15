@@ -44,6 +44,8 @@ private:
 
     GameState m_currentState;
     sf::Clock m_clock;
+    int level;
+    float m_animationTime; // Temps écoulé pendant l'animation
 };
 
 #endif // ENGINE_HPP
