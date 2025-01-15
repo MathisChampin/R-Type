@@ -71,7 +71,7 @@ class GameECS {
 
             for (size_t i = 0; i < attributes.size(); i++) {
                 auto &att = attributes[i];
-                if (att._type == component::attribute::Shoot1) {
+                if (att._type == component::attribute::Shoot1 || att._type == component::attribute::Shoot) {
                     bool shootExists = false;
                     for (auto& enemyShoots : enemyShoot) {
                         if (enemyShoots->get_id() == i) {
@@ -133,6 +133,7 @@ class GameECS {
             auto &attributes = m_ecs.get_components<component::attribute>();
             auto &positions = m_ecs.get_components<component::position>();
             auto &states = m_ecs.get_components<component::state>();
+            auto &idP = m_ecs.get_components<component::idPlayer>();
 
             std::vector<std::shared_ptr<Shoot>> shootsToRemove;
 
@@ -141,14 +142,18 @@ class GameECS {
             for (size_t i = 0; i < attributes.size(); i++) {
                 auto &att = attributes[i];
                 auto &s = states[i];
-                if (att._type == component::attribute::Shoot1 && s._stateKey == component::state::Alive) {
-                    auto &pos = positions[i];
-                    for (auto& shootSprite : enemyShoot) {
-                        if (shootSprite->get_id() == i) {
-                            shootSprite->setPosition(sf::Vector2f(pos.x, pos.y));
+                if ((att._type == component::attribute::Shoot || att._type == component::attribute::Shoot1) && s._stateKey == component::state::Alive) {
+                    for (size_t j = 0; j < attributes.size(); j++) {
+                        if ((attributes[j]._type == component::attribute::Ennemies || attributes[j]._type == component::attribute::Player1) && states[j]._stateKey == component::state::Alive) {
+                            auto &pos = positions[i];
+                            for (auto& shootSprite : enemyShoot) {
+                                if (idP[i].id == j) {
+                                    shootSprite->setPosition(sf::Vector2f(pos.x, pos.y));
+                                }
+                            }
                         }
-                    }
-                } else if (att._type == component::attribute::Shoot1 && s._stateKey == component::state::Dead) {
+                    }   
+                } else if ((att._type == component::attribute::Shoot || att._type == component::attribute::Shoot1) && s._stateKey == component::state::Dead) {
                     for (auto it = enemyShoot.begin(); it != enemyShoot.end(); ++it) {
                         if (enemyShoot.empty()) {
                             return;

@@ -63,12 +63,18 @@ void System::spawn_power_up_life(registry &reg)
     auto &position = reg.get_components<component::position>();
     auto &attribute = reg.get_components<component::attribute>();
     auto &states = reg.get_components<component::state>();
+    int count = 0;
 
     for (size_t i = 0; i < attribute.size(); i++) {
         if ((attribute[i]._type == component::attribute::Ennemies2 || 
-            attribute[i]._type == component::attribute::Ennemies3 ||
-            attribute[i]._type == component::attribute::Ennemies4 || 
-            attribute[i]._type == component::attribute::Ennemies) && states[i]._stateKey == component::state::Dead)
-                    create_power_up_life(component::attribute::PowerUpLife, reg, position[i].x, position[i].y, i);
+             attribute[i]._type == component::attribute::Ennemies3 ||
+             attribute[i]._type == component::attribute::Ennemies4 || 
+             attribute[i]._type == component::attribute::Ennemies) && 
+             states[i]._stateKey == component::state::Dead) {
+            count++;
+            if (count % 7 == 0) {
+                create_power_up_life(component::attribute::PowerUpLife, reg, position[i].x, position[i].y, i);
+            }
+        }
     }
 }

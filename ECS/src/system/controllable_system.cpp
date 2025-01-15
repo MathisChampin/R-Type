@@ -150,6 +150,7 @@ void System::control_system_p2(registry& reg)
             if (ctl.active_key == component::controllable::Key::Clear) {
                 attributes[i]._type = component::attribute::Clear;
             }
+            
             pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
             pos.y = move_player_y(ctl.active_key, vel.y, pos.y);
         }

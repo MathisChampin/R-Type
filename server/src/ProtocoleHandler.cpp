@@ -210,7 +210,7 @@ namespace NmpServer
         if (type == 1) {
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies});
             _ecs.add_component<component::velocity>(ennemies, {-2, 0});
-            _ecs.add_component<component::size>(ennemies, {50, 50});
+            _ecs.add_component<component::size>(ennemies, {33, 36});
             _ecs.add_component<component::life>(ennemies, {1});
         }
         if (type == 2) {
