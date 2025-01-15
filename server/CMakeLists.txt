@@ -16,6 +16,8 @@ set(SOURCES
     ${SRC_DIR}/ProtocoleHandler.cpp
     ${SRC_DIR}/Parser.cpp
     ${SRC_DIR}/LobbyServerTCP.cpp
+    ${SRC_DIR}/ProceduralLevel.cpp
+
 
 )
 
