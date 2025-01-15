@@ -25,23 +25,12 @@ public:
 
     void drawAll(sf::RenderWindow &window, sf::Time deltaTime)
     {
-        std::vector<std::size_t> toRemove;
         deltaTime = deltaTime;
-        
+
         for (const auto &[id, sprite] : _mapSprite)
         {
             sprite->update(deltaTime);
             sprite->draw(window);
-            
-            if (sprite->getType() == Type::Explosions && sprite->hasFinishedAnimation())
-            {
-                toRemove.push_back(id);
-            }
-        }
-        
-        for (auto id : toRemove)
-        {
-            removeSprite(id);
         }
     }
 
@@ -65,12 +54,9 @@ public:
         {
             if (container.find(it->first) == container.end())
             {
-                if (it->second->getType() != Type::Bullet && 
-                    it->second->getType() != Type::Explosions)
+                if (it->second->getType() != Type::Bullet)
                 {
-                    sf::Vector2f pos = it->second->getPosition();
                     it = _mapSprite.erase(it);
-                    createDeathAnimation(pos);
                 }
                 else
                 {
@@ -83,14 +69,6 @@ public:
             }
         }
         container.clear();
-    }
-
-    void createDeathAnimation(sf::Vector2f pos)
-    {
-        std::size_t newId = generateUniqueId();
-        auto sprite = std::make_shared<Sprite>("../../client/config/explosion.json");
-        sprite->setPosition(pos);
-        _mapSprite[newId] = sprite;
     }
 
     void eraseAll()

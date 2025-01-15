@@ -70,7 +70,7 @@ private:
     void get_shoots9(NmpClient::SpriteInfo &sp);
     void get_shoots10(NmpClient::SpriteInfo &sp);
     void get_shoots11(NmpClient::SpriteInfo &sp);
-    void handler_packets();
+    // void handler_packets();
 
     void launch_getter(std::size_t id, NmpClient::SpriteInfo &sp);
     void destroy_useless_sprites();
