@@ -5,10 +5,10 @@
 
 namespace NmpClient
 {
-    Client::Client() : _resolver(_io_context), _socket(_io_context)
+    Client::Client(std::string ip) : _resolver(_io_context), _socket(_io_context)
     {
         asio::ip::udp::resolver::results_type endpoints =
-            _resolver.resolve(asio::ip::udp::v4(), "10.68.250.37", "8080");
+            _resolver.resolve(asio::ip::udp::v4(), ip, "8080");
         _receiver_endpoint = *endpoints.begin();
         _socket.open(asio::ip::udp::v4());
         std::cout << "client bind to server 8080" << std::endl;

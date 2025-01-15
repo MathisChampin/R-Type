@@ -10,7 +10,7 @@ namespace NmpClient
     class Client : public IClient
     {
     public:
-        Client();
+        Client(std::string ip);
 
         /**
          * @brief Sends the input packet to the server.

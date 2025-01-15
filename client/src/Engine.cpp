@@ -58,7 +58,7 @@ void Engine::setupMenuOptions()
     m_menu->addOption("Jouer", [this]()
     {
         std::cout << "Démarrage du jeu..." << std::endl;
-        m_game = std::make_unique<Game>(m_window, m_customMenu.get()->getSelectedSkin(), m_font, *m_playingBackground, m_soundManager);
+        m_game = std::make_unique<Game>(m_creatorIp, m_window, m_customMenu.get()->getSelectedSkin(), m_font, *m_playingBackground, m_soundManager);
         m_currentState = GameState::Playing;
     });
 
