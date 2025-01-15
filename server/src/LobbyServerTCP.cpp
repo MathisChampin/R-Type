@@ -369,5 +369,5 @@ std::string LobbyServerTCP::getUdpInfo(const std::string& lobbyId) {
     }
 
     std::cout << "getUdpInfo: Returning creator IP: " << creatorIP << " for lobby: " << lowerLobbyId << std::endl;
-    return "UDP_INFO: Creator IP for lobby " + lowerLobbyId + " is " + creatorIP + "\n";
+    return creatorIP;
 }
