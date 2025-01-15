@@ -44,6 +44,7 @@ private:
 
     GameState m_currentState;
     sf::Clock m_clock;
+    std::string m_creatorIp;
 };
 
 #endif // ENGINE_HPP

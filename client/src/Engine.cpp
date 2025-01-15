@@ -111,6 +111,10 @@ void Engine::handleEvents()
             break;
         case GameState::Options:
             m_optionsMenu->handleEvent(event);
+            if (m_optionsMenu.get()->creatorIp.has_value()) {
+                m_creatorIp = m_optionsMenu.get()->creatorIp.value();
+                std::cout << "oh le boos" << m_creatorIp << std::endl;
+            }
             break;
         case GameState::Custom:
             m_customMenu->handleEvent(event);

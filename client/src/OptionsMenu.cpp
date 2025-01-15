@@ -327,6 +327,8 @@ void OptionsMenu::joinLobby() {
                 getChatHistory();
                 m_tcpClient.value().send("GET_UDP_INFO " + lobbyNameCopy); // Use the copy BEFORE clearing
                 auto udpInfoResponse = m_tcpClient.value().receive();
+                creatorIp.value() = udpInfoResponse.value();
+                std::cout << "creatorIp: " << creatorIp.value() << std::endl;
                 if (udpInfoResponse.has_value()) {
                     std::string udpInfoResponseStr = udpInfoResponse.value();
                     if (udpInfoResponseStr.find("ERROR:") == 0) {

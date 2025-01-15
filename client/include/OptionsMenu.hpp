@@ -18,6 +18,7 @@ public:
     void render();
     void connectTcpClient(const std::string& ipAddress, const std::string& port);
 
+    std::optional<std::string> creatorIp;
 private:
     sf::RenderWindow &m_window;
     sf::Font m_font;
