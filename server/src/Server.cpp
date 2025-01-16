@@ -1,6 +1,6 @@
 #include "Server.hpp"
 #include "Registry.hpp"
-#include "ClockManager.hpp"
+
 
 
 namespace NmpServer
@@ -14,9 +14,10 @@ namespace NmpServer
         _parser("../../server/configFile/level1.json")
     {
         _bufferAsio.fill(0);
-        _prodLevel.generateLevel(8);
+        _prodLevel.generateLevel(2);
         _parser.parseConfig();
-        _ptp.loadEnnemiesFromconfig(_parser.getVector());
+        //_ptp.loadEnnemiesFromconfig(_parser.getVector());
+        _vecSpawn = _parser.getVector();
     }
 
     Server::~Server()
@@ -241,21 +242,26 @@ namespace NmpServer
                 _vecPlayer.push_back(_copy_endpoint);
             {
                 std::unique_lock<std::mutex> lock(_ecsMutex);
+                std::cout << "packet" << std::endl;
                 _ptp.fillPacket(packet);
                 _ptp.executeOpCode();
             }
-            //lock player mutex
         }
     }
 
     void Server::threadSystem()
     {
-        bool noFrame{false};
         System sys;
+        ClockManager clock;
+        int difficulty{2};
+        clock.start();
+        bool spriteAdded{false};
+        
         auto frameDuration = std::chrono::milliseconds(40);
         while (_running) {
             {
                 std::lock_guard<std::mutex> lock(_ecsMutex);
+                delaySpawn(clock, spriteAdded);
                 auto &ecs = _ptp.getECS();
                 sys.collision_system(ecs);
                 sys.position_system(ecs);
@@ -266,25 +272,41 @@ namespace NmpServer
                 sys.level_system(ecs);
                 copyEcs();
 
-                if (!check_level(ecs)) {
+                if (!check_level(ecs) && (spriteAdded == true || _vecSpawn.size() < 5)) {
+                    difficulty += 3;
+                    clock.start();
+                    std::cout << "reset: " << clock.elapsedSeconds() << std::endl;
                     //sys.kill_system(ecs);
-                    //_ptp.clearPlayer();
-
-                    _prodLevel.generateLevel(20);
+                    _ptp.clearPlayer();
+                    std::cout << "new level" << std::endl;
+                    _prodLevel.generateLevel(difficulty);
                     _parser.loadNewLevel("../../server/configFile/level1.json");
-                    _ptp.loadEnnemiesFromconfig(_parser.getVector());
-                    noFrame = true;
+                    _vecSpawn = _parser.getVector();
+                    spriteAdded = false;
+                    continue;
                 }
             }
-            if (!noFrame) {
-                send_entity();
-            } else {
-                std::cout << "no frame" << std::endl;
-                //frameDuration = std::chrono::milliseconds(50);
-                noFrame = false;
-            }
+            send_entity();
             std::this_thread::sleep_for(frameDuration);
         }
+    }
+
+    void Server::delaySpawn(ClockManager &clock, bool &spriteAdded)
+    {
+        if (_vecSpawn.size() >= 1) {
+            for (auto it = _vecSpawn.begin(); it != _vecSpawn.end(); ) {
+                std::cout << "loop: " << std::endl;
+                if (clock.elapsedSeconds() >= it->delaySpawn) {
+                    _ptp.initEnnemies(it->posX, it->posY, it->type);
+                    std::cout << "size: " << _vecSpawn.size() << std::endl;
+                    it = _vecSpawn.erase(it);
+                    std::cout << "size: " << _vecSpawn.size() << std::endl;
+                    spriteAdded = true;
+                    } else {
+                        ++it;
+                    }
+                } 
+            }
     }
 
     void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
@@ -296,9 +318,6 @@ namespace NmpServer
         //           << endpoint.port() << std::endl;
 
         _binary.serialize(packet, _bufferSerialize);
-        // for (auto elem: _bufferSerialize) {
-        //     std::cout << "elem: " << elem << std::endl;
-        // }
         _socketSend.send_to(asio::buffer(_bufferSerialize), endpoint);
         _bufferSerialize.clear();
     }

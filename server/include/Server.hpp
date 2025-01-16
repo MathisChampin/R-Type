@@ -4,6 +4,7 @@
 #include "Binary.hpp"
 #include "ProtocolHandler.hpp"
 #include "ProceduralLevel.hpp"
+#include "ClockManager.hpp"
 #include "Registry.hpp"
 #include "Parser.hpp"
 #include <mutex>
@@ -26,25 +27,25 @@ namespace NmpServer {
             void broadcast(Packet &packet) override;
             asio::ip::udp::endpoint getLastEndpoint() const;
             void sendScoreLife(int i);
-            void sendScore(int i);
-            void sendScores(int i);
-
 
             std::vector<asio::ip::udp::endpoint> _vecPlayer;
         private:
             void threadInput();
             void threaEvalInput();
             void threadSystem();
+            void delaySpawn(ClockManager &c, bool &srpiteAdded);
             void send_entity();
             bool check_level(registry &);
             bool check_level_player(registry &);
             void copyEcs();
+            std::vector<NmpServer::infoEnnemies_t> _vecSpawn;
 
             int getId(component::attribute &att);
 
             std::atomic<bool> _running;
             bool _shootReady;
             std::queue<Packet> _queue;
+            std::mutex _mutexPtp;
             std::mutex _queueMutex;
             std::mutex _ecsMutex;
             std::mutex _playerMutex;
