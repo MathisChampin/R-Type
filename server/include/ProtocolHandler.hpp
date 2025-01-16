@@ -41,6 +41,7 @@ namespace NmpServer {
             void loadEnnemiesFromconfig(const std::vector<infoEnnemies_t> vecEnnemies);
             void clearPlayer();
     
+            void initEnnemies(int posX, int posY, int type);
         private:
             void evalMove();
             void evalQuit();
@@ -48,7 +49,6 @@ namespace NmpServer {
 
             void initPlayer();
             void initComponents();
-            void initEnnemies(int posX, int posY, int type);
             void joinNewLevel(asio::ip::udp::endpoint ip);
         
             void updateMoveEcs(Entity &player, component::controllable::Key &control, sparse_array<component::position>::value_type &pos, component::attribute &att);

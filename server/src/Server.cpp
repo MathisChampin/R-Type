@@ -1,6 +1,6 @@
 #include "Server.hpp"
 #include "Registry.hpp"
-#include "ClockManager.hpp"
+
 
 
 namespace NmpServer
@@ -14,9 +14,10 @@ namespace NmpServer
         _parser("../../server/configFile/level1.json")
     {
         _bufferAsio.fill(0);
-        _prodLevel.generateLevel(8);
+        _prodLevel.generateLevel(2);
         _parser.parseConfig();
-        _ptp.loadEnnemiesFromconfig(_parser.getVector());
+        //_ptp.loadEnnemiesFromconfig(_parser.getVector());
+        _vecSpawn = _parser.getVector();
     }
 
     Server::~Server()
@@ -32,6 +33,15 @@ namespace NmpServer
         std::thread systemThread(&Server::threadSystem, this);
         std::thread inputThread(&Server::threadInput, this);
         std::thread handleInputThread(&Server::threaEvalInput, this);
+        //std::thread handleSpawnThread(&Server::threadSpawn, this);
+
+        // {
+        //     std::unique_lock<std::mutex> lock(_mutexSpawn);
+        //     std::cout << "wsh" << std::endl;
+        //     _shootReady = true;
+        //     _cvShoot.notify_all();
+
+        // }
 
         inputThread.join();
         systemThread.join();
@@ -241,6 +251,9 @@ namespace NmpServer
                 _vecPlayer.push_back(_copy_endpoint);
             {
                 std::unique_lock<std::mutex> lock(_ecsMutex);
+                //auto t = std::scoped_lock{_ecsMutex, _mutexPtp};
+
+                std::cout << "packet" << std::endl;
                 _ptp.fillPacket(packet);
                 _ptp.executeOpCode();
             }
@@ -250,13 +263,19 @@ namespace NmpServer
 
     void Server::threadSystem()
     {
-        bool noFrame{false};
         System sys;
+        ClockManager clock;
+        int difficulty{2};
+        clock.start();
+        bool spriteAdded{false};
+        
         auto frameDuration = std::chrono::milliseconds(40);
         while (_running) {
             {
                 std::lock_guard<std::mutex> lock(_ecsMutex);
+                delaySpawn(clock, spriteAdded);
                 auto &ecs = _ptp.getECS();
+                //copy ecs ici et tout les syscall depuis la copy
                 sys.collision_system(ecs);
                 sys.position_system(ecs);
                 sys.shoot_system_ennemies(ecs);
@@ -266,26 +285,85 @@ namespace NmpServer
                 sys.level_system(ecs);
                 copyEcs();
 
-                if (!check_level(ecs)) {
+                if (!check_level(ecs) && (spriteAdded == true || _vecSpawn.size() < 5)) {
+                    difficulty += 3;
+                    clock.start();
+                    std::cout << "reset: " << clock.elapsedSeconds() << std::endl;
                     //sys.kill_system(ecs);
-                    //_ptp.clearPlayer();
-
-                    _prodLevel.generateLevel(20);
+                    _ptp.clearPlayer();
+                    std::cout << "new level" << std::endl;
+                    _prodLevel.generateLevel(difficulty);
                     _parser.loadNewLevel("../../server/configFile/level1.json");
-                    _ptp.loadEnnemiesFromconfig(_parser.getVector());
-                    noFrame = true;
+                    _vecSpawn = _parser.getVector();
+                    //delaySpawn(clock, spriteAdded);
+                    spriteAdded = false;
+                    //_ptp.loadEnnemiesFromconfig(_parser.getVector());
+                    continue;
                 }
             }
-            if (!noFrame) {
-                send_entity();
-            } else {
-                std::cout << "no frame" << std::endl;
-                //frameDuration = std::chrono::milliseconds(50);
-                noFrame = false;
-            }
+            send_entity();
             std::this_thread::sleep_for(frameDuration);
         }
     }
+
+    void Server::delaySpawn(ClockManager &clock, bool &spriteAdded)
+    {
+        if (_vecSpawn.size() >= 1) {
+            for (auto it = _vecSpawn.begin(); it != _vecSpawn.end(); ) {
+                std::cout << "loop: " << std::endl;
+                if (clock.elapsedSeconds() >= it->delaySpawn) {
+                    _ptp.initEnnemies(it->posX, it->posY, it->type);
+                    std::cout << "size: " << _vecSpawn.size() << std::endl;
+                    it = _vecSpawn.erase(it);
+                    std::cout << "size: " << _vecSpawn.size() << std::endl;
+                    spriteAdded = true;
+                    } else {
+                        ++it;
+                    }
+                } 
+            }
+    }
+
+// void Server::threadSpawn()
+// {
+//     ClockManager clock;
+
+//     while (1) {
+//         {
+//             std::unique_lock<std::mutex> lock(_mutexSpawn);
+//             _cvShoot.wait(lock, [this] { return _shootReady; });
+//         }
+
+//         std::cout << "bah oui" << std::endl;
+
+//         _vecSpawn = _parser.getVector();
+//         clock.start();
+
+//         while (_vecSpawn.size() >= 1) {
+//             for (auto it = _vecSpawn.begin(); it != _vecSpawn.end(); ) {
+//                 if (clock.elapsedSeconds() >= it->delaySpawn) {
+//                     {
+//                         std::lock_guard<std::mutex> ecsLock(_ecsMutex);
+//                         _ptp.initEnnemies(it->posX, it->posY, it->type);
+//                     }
+//                     std::cout << "size: " << _vecSpawn.size() << std::endl;
+//                     it = _vecSpawn.erase(it);
+//                     std::cout << "size: " << _vecSpawn.size() << std::endl;
+
+//                 } else {
+//                     ++it;
+//                 }
+//             }
+//             std::cout << "end creation" << std::endl;
+//         }
+
+//         // Réinitialiser pour attendre la prochaine notification
+//         _shootReady = false;
+//     }
+// }
+
+
+
 
     void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
     {

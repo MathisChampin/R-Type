@@ -255,7 +255,7 @@ namespace NmpServer
     void ProtocoleHandler::joinNewLevel(asio::ip::udp::endpoint ip)
     {
         Entity player;
-        this->initPlayer();
+        //this->initPlayer();
         auto lastPlayer = _vecPlayer.back().first;
 
         std::cout << "send new id: " << lastPlayer.get_id() << std::endl;
@@ -265,7 +265,7 @@ namespace NmpServer
 
     void ProtocoleHandler::clearPlayer()
     {
-        _vecPlayer.clear();
+        //_vecPlayer.clear();
         for (auto elem : _refServer.get()._vecPlayer) {
             std::cout << "send new id" << std::endl;
             joinNewLevel(elem);
