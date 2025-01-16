@@ -299,13 +299,16 @@ int OptionsMenu::start_udp() {
 
 void OptionsMenu::createLobby()
 {
-    if(m_tcpClient.has_value()){
+    if (m_tcpClient.has_value()) {
         if (m_lobbyNameInput.empty()) {
             m_lobbyListText.setString("Erreur : le nom du lobby est vide.");
             return;
         }
 
-        m_tcpClient.value().send("CREATE_LOBBY " + m_lobbyNameInput);
+        std::string lobbyNameCopy = m_lobbyNameInput;  
+
+        m_tcpClient.value().send("CREATE_LOBBY " + lobbyNameCopy);
+
         auto response = m_tcpClient.value().receive();
         if (response.has_value()) {
             std::string responseStr = response.value();
@@ -314,7 +317,7 @@ void OptionsMenu::createLobby()
             } else {
                 m_lobbyListText.setString("Lobby créé avec succès.");
                 m_lobbyNameInput.clear();
-                start_udp();
+                start_udp();  
             }
         } else {
             m_lobbyListText.setString("Erreur lors de la création du lobby.");
@@ -327,32 +330,36 @@ void OptionsMenu::createLobby()
 void OptionsMenu::joinLobby() {
     if (m_tcpClient.has_value()) {
         if (m_lobbyNameInput.empty()) {
-            m_lobbyListText.setString("Erreur: le nom du lobby est vide.");
+            m_lobbyListText.setString("Erreur : le nom du lobby est vide.");
             return;
         }
 
-        std::string lobbyNameCopy = m_lobbyNameInput;  
+        std::string lobbyNameCopy = m_lobbyNameInput;
+        m_tcpClient.value().send("JOIN_LOBBY " + lobbyNameCopy);
 
-        m_tcpClient.value().send("JOIN_LOBBY " + lobbyNameCopy); // Use the copy
+        // Recevoir la réponse
         auto joinResponse = m_tcpClient.value().receive();
         if (joinResponse.has_value()) {
             std::string joinResponseStr = joinResponse.value();
+
             if (joinResponseStr.find("ERROR:") == 0) {
+                // Gérer les erreurs
                 m_lobbyListText.setString(joinResponseStr);
             } else {
-                m_lobbyListText.setString("Rejoint le lobby: " + lobbyNameCopy); // Use the copy
+                m_lobbyListText.setString("Rejoint le lobby: " + lobbyNameCopy);
                 getChatHistory();
-                m_tcpClient.value().send("GET_UDP_INFO " + lobbyNameCopy); // Use the copy BEFORE clearing
+
+                m_tcpClient.value().send("GET_UDP_INFO " + lobbyNameCopy);
                 auto udpInfoResponse = m_tcpClient.value().receive();
-                std::cout << "ma mere" << std::endl;
-                creatorIp.emplace() = udpInfoResponse.value();
-                std::cout << "creatorIp: " << creatorIp.value() << std::endl;
+
                 if (udpInfoResponse.has_value()) {
                     std::string udpInfoResponseStr = udpInfoResponse.value();
+
                     if (udpInfoResponseStr.find("ERROR:") == 0) {
                         m_lobbyListText.setString(udpInfoResponseStr);
                     } else {
-                        m_lobbyListText.setString(udpInfoResponseStr);
+                        m_lobbyListText.setString("Infos UDP reçues : " + udpInfoResponseStr);
+                        creatorIp.emplace(udpInfoResponseStr);
                     }
                 } else {
                     m_lobbyListText.setString("Erreur en récupérant les informations UDP.");
@@ -366,6 +373,7 @@ void OptionsMenu::joinLobby() {
         m_lobbyListText.setString("Erreur : Client TCP non initialisé.");
     }
 }
+
 
 void OptionsMenu::leaveLobby()
 {
@@ -461,7 +469,6 @@ void OptionsMenu::update()
         m_cursorClock.restart();
     }
 
-    // Mise à jour de la couleur de la bordure en fonction de la sélection
     if (m_isConnecting) {
         m_ipAddressInputBorder.setOutlineColor(m_selectedButton == -1 ? sf::Color::Cyan : sf::Color::White);
         m_portInputBorder.setOutlineColor(m_selectedButton == -2 ? sf::Color::Cyan : sf::Color::White);
@@ -526,7 +533,6 @@ void OptionsMenu::render()
         m_window.draw(button);
     }
 
-    // Dessin des éléments de chat si la fenêtre de chat est ouverte
         m_window.draw(m_chatHistoryText);
     if (m_isChatOpen) {
         m_window.draw(m_chatInputBorder);

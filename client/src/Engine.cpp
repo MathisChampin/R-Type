@@ -60,12 +60,12 @@ void Engine::setupMenuOptions()
         m_currentState = GameState::Playing;
     });
 
-    m_menu->addOption("Créer un lobby", [this]() {
-        std::cout << "Création du lobby..." << std::endl;
-        m_currentState = GameState::PlayingInLobby;
-    });
+    // m_menu->addOption("Créer un lobby", [this]() {
+    //     std::cout << "Création du lobby..." << std::endl;
+    //     m_currentState = GameState::PlayingInLobby;
+    // });
 
-    m_menu->addOption("Options", [this]() {
+    m_menu->addOption("Multiplayer", [this]() {
         std::cout << "Ouverture des options..." << std::endl;
         m_currentState = GameState::Options;
     });

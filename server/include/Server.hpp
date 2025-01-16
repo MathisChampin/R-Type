@@ -60,7 +60,7 @@ namespace NmpServer {
             std::array<int, 256> _bufferAsio;
             std::queue<Packet> _queueInput;
 
-            NmpBinary::Binary _binary;
+            NmpBinary::SBinary _binary;
             ProtocoleHandler _ptp;
             Parser _parser;
             ProceduralLevel _prodLevel;

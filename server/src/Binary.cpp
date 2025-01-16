@@ -2,7 +2,7 @@
 
 namespace NmpBinary
 {
-    std::vector<std::string> Binary::getAction(std::string &action)
+    std::vector<std::string> SBinary::getAction(std::string &action)
     {
         std::vector<std::string> buffAction;
         std::size_t posDelim = action.find('/', 0);
@@ -16,16 +16,8 @@ namespace NmpBinary
         return buffAction;
     }
 
-    uint Binary::getOctets(int &code, unsigned int octets)
-    {
-        uint value{0};
 
-        if (octets == 0 || octets == 8 || octets == 16 || octets == 24)
-            value = (code >> 0) & 0xF;
-        return value;
-    }
-
-    void Binary::serialize(NmpServer::Packet &packet, std::vector<int> &buffer)
+    void SBinary::serialize(NmpServer::Packet &packet, std::vector<int> &buffer)
     {
         NmpServer::EVENT opcode = packet.getOpCode();
         std::size_t id = packet.getId();
@@ -63,7 +55,7 @@ namespace NmpBinary
         }
     }
 
-    NmpServer::Packet Binary::deserialize(std::vector<int> &buffer)
+    NmpServer::Packet SBinary::deserialize(std::vector<int> &buffer)
     {
         std::size_t id = static_cast<std::size_t>(buffer[0]);
         std::cout << "id server deserialize: " << id << std::endl;
@@ -79,12 +71,12 @@ namespace NmpBinary
         return NmpServer::Packet(id, event);
     }
 
-    void Binary::clearBuffer(std::vector<int> &buffer)
+    void SBinary::clearBuffer(std::vector<int> &buffer)
     {
         buffer.clear();
     }
 
-    void Binary::printBuffer(std::vector<int> &buffer)
+    void SBinary::printBuffer(std::vector<int> &buffer)
     {
         for (auto elem : buffer) {
             std::cout << "bufferSerialize: " << elem << std::endl;
