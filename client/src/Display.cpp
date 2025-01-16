@@ -48,16 +48,16 @@ void Game::handler_packets()
     else if (p.getOpCode() == NmpClient::EVENT::JOIN)
     {
         std::cout << "new level" << std::endl;
-        std::cout << "size: " << _spriteMng.getSpriteCount() << std::endl;
+        std::cout << "sizeSpm: " << _spriteMng.getSpriteCount() << std::endl;
         _spriteMng.eraseAll();
-        m_client._id = p.getId();
+        //m_client._id = p.getId();
         std::cout << "new id" << p.getId() << std::endl;
     }
-    //if (p.getOpCode() == NmpClient::EVENT::SPRITE) {
+    if (p.getOpCode() == NmpClient::EVENT::SPRITE) {
         auto spriteInf = p.getSpriteInfo();
         _containerEndFrameId.insert(spriteInf.idClient);
         launch_getter(spriteInf.id, spriteInf);
-    //}
+    }
 }
 
 void Game::get_player(NmpClient::SpriteInfo &sp)
