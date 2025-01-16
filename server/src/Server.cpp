@@ -251,13 +251,10 @@ namespace NmpServer
                 _vecPlayer.push_back(_copy_endpoint);
             {
                 std::unique_lock<std::mutex> lock(_ecsMutex);
-                //auto t = std::scoped_lock{_ecsMutex, _mutexPtp};
-
                 std::cout << "packet" << std::endl;
                 _ptp.fillPacket(packet);
                 _ptp.executeOpCode();
             }
-            //lock player mutex
         }
     }
 
@@ -275,7 +272,6 @@ namespace NmpServer
                 std::lock_guard<std::mutex> lock(_ecsMutex);
                 delaySpawn(clock, spriteAdded);
                 auto &ecs = _ptp.getECS();
-                //copy ecs ici et tout les syscall depuis la copy
                 sys.collision_system(ecs);
                 sys.position_system(ecs);
                 sys.shoot_system_ennemies(ecs);
@@ -295,9 +291,7 @@ namespace NmpServer
                     _prodLevel.generateLevel(difficulty);
                     _parser.loadNewLevel("../../server/configFile/level1.json");
                     _vecSpawn = _parser.getVector();
-                    //delaySpawn(clock, spriteAdded);
                     spriteAdded = false;
-                    //_ptp.loadEnnemiesFromconfig(_parser.getVector());
                     continue;
                 }
             }
@@ -324,47 +318,6 @@ namespace NmpServer
             }
     }
 
-// void Server::threadSpawn()
-// {
-//     ClockManager clock;
-
-//     while (1) {
-//         {
-//             std::unique_lock<std::mutex> lock(_mutexSpawn);
-//             _cvShoot.wait(lock, [this] { return _shootReady; });
-//         }
-
-//         std::cout << "bah oui" << std::endl;
-
-//         _vecSpawn = _parser.getVector();
-//         clock.start();
-
-//         while (_vecSpawn.size() >= 1) {
-//             for (auto it = _vecSpawn.begin(); it != _vecSpawn.end(); ) {
-//                 if (clock.elapsedSeconds() >= it->delaySpawn) {
-//                     {
-//                         std::lock_guard<std::mutex> ecsLock(_ecsMutex);
-//                         _ptp.initEnnemies(it->posX, it->posY, it->type);
-//                     }
-//                     std::cout << "size: " << _vecSpawn.size() << std::endl;
-//                     it = _vecSpawn.erase(it);
-//                     std::cout << "size: " << _vecSpawn.size() << std::endl;
-
-//                 } else {
-//                     ++it;
-//                 }
-//             }
-//             std::cout << "end creation" << std::endl;
-//         }
-
-//         // Réinitialiser pour attendre la prochaine notification
-//         _shootReady = false;
-//     }
-// }
-
-
-
-
     void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
     {
         // std::cout << "send packet" << std::endl;
@@ -374,9 +327,6 @@ namespace NmpServer
         //           << endpoint.port() << std::endl;
 
         _binary.serialize(packet, _bufferSerialize);
-        // for (auto elem: _bufferSerialize) {
-        //     std::cout << "elem: " << elem << std::endl;
-        // }
         _socketSend.send_to(asio::buffer(_bufferSerialize), endpoint);
         _bufferSerialize.clear();
     }
