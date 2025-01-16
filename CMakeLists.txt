@@ -33,6 +33,9 @@ CPMAddPackage(
 add_subdirectory(ECS)
 add_subdirectory(server)
 add_subdirectory(client)
+if(UNIX)
+    add_subdirectory(client_2)
+endif()
 
 if(DEFINED ENV{GITHUB_ACTIONS})
     message(STATUS "Running in CI environment: Forcing CPM include directories")
