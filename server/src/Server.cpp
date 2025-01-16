@@ -33,15 +33,6 @@ namespace NmpServer
         std::thread systemThread(&Server::threadSystem, this);
         std::thread inputThread(&Server::threadInput, this);
         std::thread handleInputThread(&Server::threaEvalInput, this);
-        //std::thread handleSpawnThread(&Server::threadSpawn, this);
-
-        // {
-        //     std::unique_lock<std::mutex> lock(_mutexSpawn);
-        //     std::cout << "wsh" << std::endl;
-        //     _shootReady = true;
-        //     _cvShoot.notify_all();
-
-        // }
 
         inputThread.join();
         systemThread.join();
