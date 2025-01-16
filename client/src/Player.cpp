@@ -54,7 +54,7 @@ void Player::handleInput()
     }
 
     if (currentDirection == nullptr)
-    {
+    {    
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
             static NmpClient::DIRECTION leftDirection = NmpClient::DIRECTION::LEFT;

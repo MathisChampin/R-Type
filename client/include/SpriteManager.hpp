@@ -61,7 +61,6 @@ public:
         {
             if (container.find(it->first) == container.end())
             {
-                it->second->
                 if (it->second->getType() == Type::Enemy || it->second->getType() == Type::Player)
                 {
                     m_deathAnimation.triggerAnimation(it->first % 10);

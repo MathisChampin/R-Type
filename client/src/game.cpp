@@ -3,17 +3,16 @@
 #include <algorithm>
 
 Game::Game(std::string ip, sf::RenderWindow &window, SkinType skinType, sf::Font &font, ParallaxBackground &playingBackground, SoundManager &soundManager)
-    : 
-    _ip(ip),
-      m_window(window),                 
-    m_skinType(skinType),              
+    : _ip(ip),
+      m_window(window),
+      m_skinType(skinType),
       m_playingBackground(playingBackground),
       m_client(_ip),
       m_players(m_client),
       m_currentState(GameState::Playing),
-      m_font(font),                    
+      m_font(font),
       m_SoundManager(soundManager),
-      m_previousLevel(0)                 
+      m_previousLevel(0)
 {
     m_life.initialize("./assets/life/hearts.png", 5, 15.f);
     m_score.initialize(m_font, 30, sf::Vector2f(20, 60));
@@ -37,7 +36,7 @@ void Game::handleEvents()
 
 void Game::processInput(sf::Event &event)
 {
-    if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
+    if (event.type == sf::Event::Closed)
     {
         m_window.close();
     }
@@ -45,6 +44,7 @@ void Game::processInput(sf::Event &event)
 
 void Game::update(float deltaTime)
 {
+
     if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
     {
         m_players.handleInput();
@@ -56,8 +56,9 @@ void Game::update(float deltaTime)
 bool Game::AnimationLevel()
 {
     int currentLevel = m_level.getLevel();
-    
-    if (currentLevel != m_previousLevel && (currentLevel == 3 || currentLevel == 4 || currentLevel == 5 || currentLevel == 6)) {
+
+    if (currentLevel != m_previousLevel && (currentLevel == 3 || currentLevel == 4 || currentLevel == 5 || currentLevel == 6))
+    {
         m_previousLevel = currentLevel;
         std::cout << "Changement de niveau détecté : " << currentLevel << std::endl;
         return true;
@@ -68,7 +69,7 @@ bool Game::AnimationLevel()
 
 void Game::render(float deltaTime)
 {
-    //m_window.clear();
+    // m_window.clear();
     if (m_currentState == GameState::Playing || m_currentState == GameState::PlayingInLobby)
     {
         m_playingBackground.render(m_window);

@@ -157,6 +157,11 @@ void Engine::setupMenuOptions()
         }
     });
 
+    m_menu->addOption("Los Santos Custom", [this]() {
+        std::cout << "Custom..." << std::endl;
+        m_currentState = GameState::Custom;
+    });
+
     m_menu->addOption("Quitter", [this]() {
         std::cout << "Fermeture du jeu..." << std::endl;
         m_window.close();
