@@ -305,7 +305,7 @@ void OptionsMenu::createLobby()
             return;
         }
 
-        std::string lobbyNameCopy = m_lobbyNameInput;  // Utilisation d'une copie locale
+        std::string lobbyNameCopy = m_lobbyNameInput;  
 
         m_tcpClient.value().send("CREATE_LOBBY " + lobbyNameCopy);
 
@@ -317,7 +317,7 @@ void OptionsMenu::createLobby()
             } else {
                 m_lobbyListText.setString("Lobby créé avec succès.");
                 m_lobbyNameInput.clear();
-                start_udp();  // Exécuter le serveur UDP dans un thread séparé
+                start_udp();  
             }
         } else {
             m_lobbyListText.setString("Erreur lors de la création du lobby.");
@@ -334,10 +334,7 @@ void OptionsMenu::joinLobby() {
             return;
         }
 
-        // Copie locale du nom du lobby pour éviter les conflits d'accès
         std::string lobbyNameCopy = m_lobbyNameInput;
-
-        // Envoyer la commande de rejoindre le lobby
         m_tcpClient.value().send("JOIN_LOBBY " + lobbyNameCopy);
 
         // Recevoir la réponse
@@ -349,11 +346,9 @@ void OptionsMenu::joinLobby() {
                 // Gérer les erreurs
                 m_lobbyListText.setString(joinResponseStr);
             } else {
-                // Réussite : mise à jour de l'état et récupération de l'historique du chat
                 m_lobbyListText.setString("Rejoint le lobby: " + lobbyNameCopy);
                 getChatHistory();
 
-                // Envoyer une commande pour obtenir les informations UDP
                 m_tcpClient.value().send("GET_UDP_INFO " + lobbyNameCopy);
                 auto udpInfoResponse = m_tcpClient.value().receive();
 
@@ -364,13 +359,11 @@ void OptionsMenu::joinLobby() {
                         m_lobbyListText.setString(udpInfoResponseStr);
                     } else {
                         m_lobbyListText.setString("Infos UDP reçues : " + udpInfoResponseStr);
-                        creatorIp.emplace(udpInfoResponseStr); // Stocker l'IP de l'hôte
+                        creatorIp.emplace(udpInfoResponseStr);
                     }
                 } else {
                     m_lobbyListText.setString("Erreur en récupérant les informations UDP.");
                 }
-
-                // Effacer le nom du lobby après la connexion
                 m_lobbyNameInput.clear();
             }
         } else {
@@ -476,7 +469,6 @@ void OptionsMenu::update()
         m_cursorClock.restart();
     }
 
-    // Mise à jour de la couleur de la bordure en fonction de la sélection
     if (m_isConnecting) {
         m_ipAddressInputBorder.setOutlineColor(m_selectedButton == -1 ? sf::Color::Cyan : sf::Color::White);
         m_portInputBorder.setOutlineColor(m_selectedButton == -2 ? sf::Color::Cyan : sf::Color::White);
@@ -541,7 +533,6 @@ void OptionsMenu::render()
         m_window.draw(button);
     }
 
-    // Dessin des éléments de chat si la fenêtre de chat est ouverte
         m_window.draw(m_chatHistoryText);
     if (m_isChatOpen) {
         m_window.draw(m_chatInputBorder);
