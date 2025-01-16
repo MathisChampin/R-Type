@@ -7,10 +7,10 @@
 #include <cstdint>
 
 namespace NmpBinary {
-    class Binary {
+    class SBinary {
         public:
-            Binary() = default;
-            ~Binary() = default;
+            SBinary() = default;
+            ~SBinary() = default;
 
             void serialize(NmpServer::Packet &packet,  std::vector<int> &buffer);
             NmpServer::Packet deserialize(std::vector<int> &buffer);
@@ -19,6 +19,5 @@ namespace NmpBinary {
 
         private:
             std::vector<std::string> getAction(std::string &action);
-            uint getOctets(int &code, unsigned int octets);
     };
 }

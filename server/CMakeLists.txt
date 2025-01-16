@@ -12,8 +12,16 @@ list(FILTER SERVER_SOURCES EXCLUDE REGEX "src/main.cpp$")
 
 file(GLOB_RECURSE SERVER_HEADERS "include/*.hpp")
 
-# Création de la bibliothèque partagée
-add_library(${PROJECT_NAME} SHARED ${SERVER_SOURCES} ${SERVER_HEADERS})
+# Création de la bibliothèque statique
+add_library(${PROJECT_NAME} STATIC ${SERVER_SOURCES} ${SERVER_HEADERS})
+
+# Propriétés de sortie pour la bibliothèque
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/server/Debug"
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/server/Release"
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/server/Debug"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/server/Release"
+)
 
 # Fichier source pour l'exécutable
 set(SERVER_MAIN_SOURCE "src/main.cpp")
@@ -21,10 +29,16 @@ set(SERVER_MAIN_SOURCE "src/main.cpp")
 # Création de l'exécutable
 add_executable(${PROJECT_NAME}_exec ${SERVER_MAIN_SOURCE})
 
-# Inclusion des répertoires d'en-tête pour la bibliothèque et l'exécutable
+# Propriétés de sortie pour l'exécutable
+set_target_properties(${PROJECT_NAME}_exec PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_BINARY_DIR}/server/Debug"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/server/Release"
+)
+
+# Inclusion des répertoires d'en-tête
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/build/_deps/asio-src/asio/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../ECS/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../ECS/include/component>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../ECS/include/system>
@@ -32,41 +46,31 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 target_include_directories(${PROJECT_NAME}_exec PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/build/_deps/asio-src/asio/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../ECS/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../ECS/include/component>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../ECS/include/system>
-)
-
-# Gestion des dépendances
-if(NOT DEFINED asio_SOURCE_DIR AND NOT EXISTS ${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include/asio.hpp)
-    message(FATAL_ERROR "ASIO not found. Ensure it is downloaded via CPM or exists in the expected directory.")
-endif()
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-    $<IF:$<BOOL:${asio_SOURCE_DIR}>,${asio_SOURCE_DIR}/asio/include,${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include>
-)
-
-target_include_directories(${PROJECT_NAME}_exec PUBLIC
-    $<IF:$<BOOL:${asio_SOURCE_DIR}>,${asio_SOURCE_DIR}/asio/include,${CMAKE_SOURCE_DIR}/_deps/asio-src/asio/include>
 )
 
 # Ajout des options de compilation
-target_compile_definitions(${PROJECT_NAME} PRIVATE ASIO_STANDALONE)
-target_compile_definitions(${PROJECT_NAME}_exec PRIVATE ASIO_STANDALONE)
-
-# Ajout des chemins de recherche de bibliothèques
-target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/ECS/ecs_build)
-target_link_directories(${PROJECT_NAME}_exec PRIVATE ${CMAKE_SOURCE_DIR}/ECS/ecs_build)
-
-# Lier avec les bibliothèques nécessaires
 if(MSVC)
-    target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs ws2_32)
-    target_link_libraries(${PROJECT_NAME}_exec PRIVATE r_type_ecs ws2_32)
-elseif(UNIX)
-    target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs pthread)
-    target_link_libraries(${PROJECT_NAME}_exec PRIVATE r_type_ecs pthread)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _WINDLL ASIO_STANDALONE)
+    target_compile_definitions(${PROJECT_NAME}_exec PRIVATE ASIO_STANDALONE)
+else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE ASIO_STANDALONE)
+    target_compile_definitions(${PROJECT_NAME}_exec PRIVATE ASIO_STANDALONE)
 endif()
 
+# Lien avec les bibliothèques nécessaires
+if(MSVC)
+    target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs ws2_32)
+    target_link_libraries(${PROJECT_NAME}_exec PRIVATE r_type_ecs ws2_32 ${PROJECT_NAME})
+elseif(UNIX)
+    target_link_libraries(${PROJECT_NAME} PRIVATE r_type_ecs pthread)
+    target_link_libraries(${PROJECT_NAME}_exec PRIVATE r_type_ecs pthread ${PROJECT_NAME})
+endif()
+
+# Lien avec les bibliothèques JSON
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)
 target_link_libraries(${PROJECT_NAME}_exec PRIVATE nlohmann_json ${PROJECT_NAME})
+

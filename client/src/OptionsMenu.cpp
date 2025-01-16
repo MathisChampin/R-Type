@@ -299,13 +299,16 @@ int OptionsMenu::start_udp() {
 
 void OptionsMenu::createLobby()
 {
-    if(m_tcpClient.has_value()){
+    if (m_tcpClient.has_value()) {
         if (m_lobbyNameInput.empty()) {
             m_lobbyListText.setString("Erreur : le nom du lobby est vide.");
             return;
         }
 
-        m_tcpClient.value().send("CREATE_LOBBY " + m_lobbyNameInput);
+        std::string lobbyNameCopy = m_lobbyNameInput;  // Utilisation d'une copie locale
+
+        m_tcpClient.value().send("CREATE_LOBBY " + lobbyNameCopy);
+
         auto response = m_tcpClient.value().receive();
         if (response.has_value()) {
             std::string responseStr = response.value();
@@ -314,7 +317,7 @@ void OptionsMenu::createLobby()
             } else {
                 m_lobbyListText.setString("Lobby créé avec succès.");
                 m_lobbyNameInput.clear();
-                start_udp();
+                start_udp();  // Exécuter le serveur UDP dans un thread séparé
             }
         } else {
             m_lobbyListText.setString("Erreur lors de la création du lobby.");
@@ -327,36 +330,47 @@ void OptionsMenu::createLobby()
 void OptionsMenu::joinLobby() {
     if (m_tcpClient.has_value()) {
         if (m_lobbyNameInput.empty()) {
-            m_lobbyListText.setString("Erreur: le nom du lobby est vide.");
+            m_lobbyListText.setString("Erreur : le nom du lobby est vide.");
             return;
         }
 
-        std::string lobbyNameCopy = m_lobbyNameInput;  
+        // Copie locale du nom du lobby pour éviter les conflits d'accès
+        std::string lobbyNameCopy = m_lobbyNameInput;
 
-        m_tcpClient.value().send("JOIN_LOBBY " + lobbyNameCopy); // Use the copy
+        // Envoyer la commande de rejoindre le lobby
+        m_tcpClient.value().send("JOIN_LOBBY " + lobbyNameCopy);
+
+        // Recevoir la réponse
         auto joinResponse = m_tcpClient.value().receive();
         if (joinResponse.has_value()) {
             std::string joinResponseStr = joinResponse.value();
+
             if (joinResponseStr.find("ERROR:") == 0) {
+                // Gérer les erreurs
                 m_lobbyListText.setString(joinResponseStr);
             } else {
-                m_lobbyListText.setString("Rejoint le lobby: " + lobbyNameCopy); // Use the copy
+                // Réussite : mise à jour de l'état et récupération de l'historique du chat
+                m_lobbyListText.setString("Rejoint le lobby: " + lobbyNameCopy);
                 getChatHistory();
-                m_tcpClient.value().send("GET_UDP_INFO " + lobbyNameCopy); // Use the copy BEFORE clearing
+
+                // Envoyer une commande pour obtenir les informations UDP
+                m_tcpClient.value().send("GET_UDP_INFO " + lobbyNameCopy);
                 auto udpInfoResponse = m_tcpClient.value().receive();
-                std::cout << "ma mere" << std::endl;
-                creatorIp.emplace() = udpInfoResponse.value();
-                std::cout << "creatorIp: " << creatorIp.value() << std::endl;
+
                 if (udpInfoResponse.has_value()) {
                     std::string udpInfoResponseStr = udpInfoResponse.value();
+
                     if (udpInfoResponseStr.find("ERROR:") == 0) {
                         m_lobbyListText.setString(udpInfoResponseStr);
                     } else {
-                        m_lobbyListText.setString(udpInfoResponseStr);
+                        m_lobbyListText.setString("Infos UDP reçues : " + udpInfoResponseStr);
+                        creatorIp.emplace(udpInfoResponseStr); // Stocker l'IP de l'hôte
                     }
                 } else {
                     m_lobbyListText.setString("Erreur en récupérant les informations UDP.");
                 }
+
+                // Effacer le nom du lobby après la connexion
                 m_lobbyNameInput.clear();
             }
         } else {
@@ -366,6 +380,7 @@ void OptionsMenu::joinLobby() {
         m_lobbyListText.setString("Erreur : Client TCP non initialisé.");
     }
 }
+
 
 void OptionsMenu::leaveLobby()
 {

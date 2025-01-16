@@ -46,6 +46,5 @@ namespace NmpBinary
 
     private:
         std::vector<std::string> getAction(std::string &action);
-        uint getOctets(int &code, unsigned int octets);
     };
 }

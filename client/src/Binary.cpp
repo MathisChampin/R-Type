@@ -17,14 +17,6 @@ namespace NmpBinary
         return buffAction;
     }
 
-    uint Binary::getOctets(int &code, unsigned int octets)
-    {
-        uint value{0};
-
-        if (octets == 0 || octets == 8 || octets == 16 || octets == 24)
-            value = (code >> 0) & 0xF;
-        return value;
-    }
 
     void Binary::serialize(NmpClient::Packet &packet, std::vector<int> &buffer)
     {
