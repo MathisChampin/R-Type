@@ -17,7 +17,7 @@ void Enemy::update(float deltaTime)
     if (m_elapsedTime >= m_animationTime)
     {
         m_elapsedTime = 0.0f;
-        m_currentFrame = (m_currentFrame + 1) % 4;                            // 4 frames d'animation
+        m_currentFrame = (m_currentFrame + 1) % 4;
         m_sprite.setTextureRect(sf::IntRect(m_currentFrame * 32, 0, 32, 32));
     }
 }

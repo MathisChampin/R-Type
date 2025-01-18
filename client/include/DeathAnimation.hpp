@@ -18,12 +18,12 @@ public:
     void setAnimationPosition(sf::Vector2f position);
 
 private:
-    std::vector<sf::Texture> m_textures; // Stores all frames of the animation
-    std::vector<std::pair<sf::Sprite, float>> m_animations; // Sprite and remaining animation time
+    std::vector<sf::Texture> m_textures;
+    std::vector<std::pair<sf::Sprite, float>> m_animations;
     int m_frameCount;
     int m_maxAnimations;
-    float m_animationDuration; // Total duration of an animation
-    float m_frameTime; // Time per frame
+    float m_animationDuration;
+    float m_frameTime;
 };
 
 #endif // DEATHANIMATION_HPP

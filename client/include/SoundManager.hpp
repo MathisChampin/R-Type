@@ -9,7 +9,6 @@ class SoundManager {
 public:
     SoundManager() = default;
 
-    // Load a music file
     bool loadMusic(const std::string& key, const std::string& musicFile) {
         auto music = std::make_shared<sf::Music>();
         if (!music->openFromFile(musicFile)) {
@@ -20,13 +19,12 @@ public:
         return true;
     }
 
-    // Play a music track
     bool playMusic(const std::string& key, bool loop = false) {
         auto it = _musics.find(key);
         if (it != _musics.end()) {
             auto& music = it->second;
             if (music->getStatus() == sf::Music::Playing) {
-                music->stop(); // Ensure the music restarts if it's already playing
+                music->stop();
             }
             music->setLoop(loop);
             music->play();
@@ -37,7 +35,6 @@ public:
         }
     }
 
-    // Pause a specific music track
     void pauseMusic(const std::string& key) {
         auto it = _musics.find(key);
         if (it != _musics.end() && it->second->getStatus() == sf::Music::Playing) {
@@ -47,7 +44,6 @@ public:
         }
     }
 
-    // Stop a specific music track
     void stopMusic(const std::string& key) {
         auto it = _musics.find(key);
         if (it != _musics.end()) {
@@ -57,7 +53,6 @@ public:
         }
     }
 
-    // Stop all music tracks
     void stopAllMusic() {
         for (auto& [key, music] : _musics) {
             if (music->getStatus() == sf::Music::Playing) {
@@ -66,7 +61,6 @@ public:
         }
     }
 
-    // Set volume for a specific music track
     void setMusicVolume(const std::string& key, float volume) {
         auto it = _musics.find(key);
         if (it != _musics.end()) {
@@ -76,14 +70,12 @@ public:
         }
     }
 
-    // Set volume for all music tracks
     void setAllMusicVolume(float volume) {
         for (auto& [key, music] : _musics) {
             music->setVolume(volume);
         }
     }
 
-    // Load a sound buffer
     bool loadSound(const std::string& key, const std::string& soundFile) {
         sf::SoundBuffer buffer;
         if (!buffer.loadFromFile(soundFile)) {
@@ -94,7 +86,6 @@ public:
         return true;
     }
 
-    // Play a sound
     bool playSound(const std::string& key, bool loop = false) {
         auto it = _soundBuffers.find(key);
         if (it != _soundBuffers.end()) {
@@ -110,7 +101,6 @@ public:
         }
     }
 
-    // Stop all sounds
     void stopAllSounds() {
         for (auto& sound : _activeSounds) {
             sound.stop();
@@ -118,7 +108,6 @@ public:
         _activeSounds.clear();
     }
 
-    // Clean up finished sounds
     void cleanupSounds() {
         _activeSounds.erase(
             std::remove_if(
