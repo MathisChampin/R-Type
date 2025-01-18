@@ -19,6 +19,7 @@ public:
     void connectTcpClient(const std::string& ipAddress, const std::string& port);
 
     std::optional<std::string> creatorIp;
+
 private:
     sf::RenderWindow &m_window;
     sf::Font m_font;
@@ -32,7 +33,6 @@ private:
     // Client TCP (maintenant optionnel)
     std::optional<NmpClient::TcpClient> m_tcpClient;
 
-
     // Lobby Management
     std::vector<sf::Text> m_buttons;
     int m_selectedButton;
@@ -44,7 +44,7 @@ private:
     sf::Text m_lobbyNameText;
 
     // IP Address Input
-    std::string m_ipAddressInput; 
+    std::string m_ipAddressInput;
     sf::Text m_ipAddressText;
     sf::RectangleShape m_ipAddressInputBorder;
 
@@ -54,21 +54,34 @@ private:
     sf::RectangleShape m_portInputBorder;
 
     // Chat
-    bool m_isChatOpen; 
-    bool m_isChatInputSelected; 
+    bool m_isChatOpen;
+    bool m_isChatInputSelected;
     sf::Text m_chatInput;
     std::string m_chatInputString;
     sf::RectangleShape m_chatInputBorder;
     sf::Text m_chatHistoryText;
     std::vector<std::string> m_chatHistory;
-    sf::Clock m_chatUpdateClock; 
+    sf::Clock m_chatUpdateClock;
 
     // Pour la gestion du curseur
-    bool m_cursorVisible; // Doit être avant m_isConnecting
-    sf::Clock m_cursorClock; // Doit être avant m_isConnecting
+    bool m_cursorVisible;
+    sf::Clock m_cursorClock;
 
     // Etat de la connexion
-    bool m_isConnecting; // Doit être après m_cursorVisible et m_cursorClock
+    bool m_isConnecting;
+
+    // Lobby configuration
+    int m_difficulty; // 0: Easy, 1: Medium, 2: Hard
+    bool m_friendlyFire;
+    sf::Text m_easyButton;
+    sf::Text m_mediumButton;
+    sf::Text m_hardButton;
+    sf::Text m_friendlyFireText;
+    sf::RectangleShape m_friendlyFireCheckBox;
+    bool m_friendlyFireCheckBoxSelected;
+    sf::RectangleShape m_optionsBackground;
+    sf::RectangleShape m_optionsBorder;   
+    sf::Text m_optionsText;         
 
     // Network Actions
     void createLobby();
@@ -79,7 +92,6 @@ private:
     void getChatHistory();
     void updateChatHistory(const std::string& chatHistory);
     int start_udp();
-
 };
 
 #endif // OPTIONS_MENU_HPP

@@ -33,9 +33,12 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
       m_chatHistoryText(),
       m_chatHistory(),
       m_chatUpdateClock(),
-      m_cursorVisible(false), 
-      m_cursorClock(),        
-      m_isConnecting(false)   
+      m_cursorVisible(false),
+      m_cursorClock(),
+      m_isConnecting(false),
+      m_difficulty(0), // 0: Easy, 1: Medium, 2: Hard
+      m_friendlyFire(false),
+      m_friendlyFireCheckBoxSelected(false)
 {
     // Initialisation de la police
     if (!m_font.loadFromFile("./assets/fonts/ZenDots-Regular.ttf")) {
@@ -56,13 +59,6 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     m_ipAddressText.setCharacterSize(30);
     m_ipAddressText.setFillColor(sf::Color::White);
     m_ipAddressText.setPosition(m_window.getSize().x / 2.0f - 120, 300);
-
-    // // Configuration du texte pour le port
-    // m_portText.setFont(m_font);
-    // m_portText.setString("Port : ");
-    // m_portText.setCharacterSize(30);
-    // m_portText.setFillColor(sf::Color::White);
-    // m_portText.setPosition(m_window.getSize().x / 2.0f - 150, 350);
 
     // Configuration de la couleur des bordures des inputs
     m_ipAddressInputBorder.setFillColor(sf::Color::Transparent);
@@ -104,6 +100,55 @@ OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     m_lobbyListText.setCharacterSize(25);
     m_lobbyListText.setFillColor(sf::Color::White);
     m_lobbyListText.setPosition(100, 700);
+
+    // Boutons de difficulté
+    m_easyButton.setFont(m_font);
+    m_easyButton.setString("Easy");
+    m_easyButton.setCharacterSize(25);
+    m_easyButton.setFillColor(sf::Color::Green);
+    m_easyButton.setPosition(m_window.getSize().x / 2.0f - 600, 450);
+
+    m_mediumButton.setFont(m_font);
+    m_mediumButton.setString("Medium");
+    m_mediumButton.setCharacterSize(25);
+    m_mediumButton.setFillColor(sf::Color::White);
+    m_mediumButton.setPosition(m_window.getSize().x / 2.0f - 490, 450);
+
+    m_hardButton.setFont(m_font);
+    m_hardButton.setString("Hard");
+    m_hardButton.setCharacterSize(25);
+    m_hardButton.setFillColor(sf::Color::White);
+    m_hardButton.setPosition(m_window.getSize().x / 2.0f - 350, 450);
+
+    // Texte et case à cocher pour le friendly fire
+    m_friendlyFireText.setFont(m_font);
+    m_friendlyFireText.setString("Friendly Fire:");
+    m_friendlyFireText.setCharacterSize(25);
+    m_friendlyFireText.setFillColor(sf::Color::White);
+    m_friendlyFireText.setPosition(m_window.getSize().x / 2.0f - 500, 500);
+
+    m_friendlyFireCheckBox.setSize(sf::Vector2f(20, 20));
+    m_friendlyFireCheckBox.setPosition(m_window.getSize().x / 2.0f - 280 , 510);
+    m_friendlyFireCheckBox.setFillColor(sf::Color::Transparent);
+    m_friendlyFireCheckBox.setOutlineColor(sf::Color::White);
+    m_friendlyFireCheckBox.setOutlineThickness(2);
+    m_optionsBackground.setSize(sf::Vector2f(380, 150));
+    m_optionsBackground.setPosition(m_window.getSize().x / 2.0f - 620, 430);
+    m_optionsBackground.setFillColor(sf::Color::Black);
+
+    m_optionsBorder.setSize(sf::Vector2f(380, 150));
+    m_optionsBorder.setPosition(m_window.getSize().x / 2.0f - 620, 430);
+    m_optionsBorder.setFillColor(sf::Color::Transparent);
+    m_optionsBorder.setOutlineColor(sf::Color::White);
+    m_optionsBorder.setOutlineThickness(2);
+
+    m_optionsText.setFont(m_font);
+    m_optionsText.setString("Options :");
+    m_optionsText.setCharacterSize(30);
+    m_optionsText.setFillColor(sf::Color::White);
+    sf::FloatRect textRect = m_optionsText.getLocalBounds();
+    m_optionsText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+    m_optionsText.setPosition(m_window.getSize().x / 2.0f - 550 , 410);
 }
 
 void OptionsMenu::connectTcpClient(const std::string& ipAddress, const std::string& port)
@@ -120,7 +165,7 @@ void OptionsMenu::connectTcpClient(const std::string& ipAddress, const std::stri
 void OptionsMenu::setupButtons()
 {
     std::vector<std::string> buttonLabels = {"Connexion", "Créer un lobby", "Rejoindre un lobby", "Quitter le lobby", "Lister les lobbies"};
-    float yOffset = 500;
+    float yOffset = 550;
 
     for (const auto &label : buttonLabels) {
         sf::Text button;
@@ -179,7 +224,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                 m_ipAddressInputBorder.setOutlineColor(sf::Color::White);
                 m_portInputBorder.setOutlineColor(sf::Color::White);
                 connectTcpClient(m_ipAddressInput, m_portInput);
-            } 
+            }
         } else {
             if (event.key.code == sf::Keyboard::Up) {
                 if (m_selectedButton > 0) {
@@ -249,7 +294,7 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                 char enteredChar = static_cast<char>(event.text.unicode);
                 if (enteredChar == '\b' && !m_lobbyNameInput.empty()) {
                     m_lobbyNameInput.pop_back();
-                } else if (std::isalnum(enteredChar) || std::isspace(enteredChar)) {
+} else if (std::isalnum(enteredChar) || std::isspace(enteredChar)) {
                     m_lobbyNameInput += enteredChar;
                 }
                 m_lobbyNameText.setString("Nom du lobby : " + m_lobbyNameInput);
@@ -270,6 +315,30 @@ void OptionsMenu::handleEvent(const sf::Event &event)
                     break;
                 }
             }
+
+            // Gestion des boutons de difficulté
+            if (m_easyButton.getGlobalBounds().contains(mousePos)) {
+                m_difficulty = 0;
+                m_easyButton.setFillColor(sf::Color::Green);
+                m_mediumButton.setFillColor(sf::Color::White);
+                m_hardButton.setFillColor(sf::Color::White);
+            } else if (m_mediumButton.getGlobalBounds().contains(mousePos)) {
+                m_difficulty = 1;
+                m_easyButton.setFillColor(sf::Color::White);
+                m_mediumButton.setFillColor(sf::Color::Yellow);
+                m_hardButton.setFillColor(sf::Color::White);
+            } else if (m_hardButton.getGlobalBounds().contains(mousePos)) {
+                m_difficulty = 2;
+                m_easyButton.setFillColor(sf::Color::White);
+                m_mediumButton.setFillColor(sf::Color::White);
+                m_hardButton.setFillColor(sf::Color::Red);
+            }
+
+            // Gestion de la case à cocher du friendly fire
+            if (m_friendlyFireCheckBox.getGlobalBounds().contains(mousePos)) {
+                m_friendlyFire = !m_friendlyFire;
+                m_friendlyFireCheckBoxSelected = m_friendlyFire;
+            }
         }
     }
 }
@@ -288,10 +357,10 @@ int OptionsMenu::start_udp() {
 
         serverThread.detach();
 
-        return 0; 
+        return 0;
     } catch (const std::exception& e) {
         std::cerr << "Exception lors de la création du thread du serveur : " << e.what() << std::endl;
-        return -1; 
+        return -1;
     }
 }
 
@@ -305,7 +374,9 @@ void OptionsMenu::createLobby()
             return;
         }
 
-        std::string lobbyNameCopy = m_lobbyNameInput;  
+        std::string lobbyNameCopy = m_lobbyNameInput;
+        std::string difficultyStr = std::to_string(m_difficulty);
+        std::string friendlyFireStr = m_friendlyFire ? "1" : "0";
 
         m_tcpClient.value().send("CREATE_LOBBY " + lobbyNameCopy);
 
@@ -317,7 +388,7 @@ void OptionsMenu::createLobby()
             } else {
                 m_lobbyListText.setString("Lobby créé avec succès.");
                 m_lobbyNameInput.clear();
-                start_udp();  
+                start_udp();
             }
         } else {
             m_lobbyListText.setString("Erreur lors de la création du lobby.");
@@ -343,7 +414,6 @@ void OptionsMenu::joinLobby() {
             std::string joinResponseStr = joinResponse.value();
 
             if (joinResponseStr.find("ERROR:") == 0) {
-                // Gérer les erreurs
                 m_lobbyListText.setString(joinResponseStr);
             } else {
                 m_lobbyListText.setString("Rejoint le lobby: " + lobbyNameCopy);
@@ -485,6 +555,10 @@ void OptionsMenu::render()
     // m_window.draw(m_portText);
     m_window.draw(m_lobbyNameText);
     m_window.draw(m_lobbyListText);
+        m_window.draw(m_optionsBackground);
+    m_window.draw(m_optionsBorder);
+    m_window.draw(m_optionsText);
+
 
     // Dessin des bordures des inputs IP et port
     sf::Vector2f ipPos = m_ipAddressText.getPosition();
@@ -533,9 +607,23 @@ void OptionsMenu::render()
         m_window.draw(button);
     }
 
-        m_window.draw(m_chatHistoryText);
+    m_window.draw(m_chatHistoryText);
     if (m_isChatOpen) {
         m_window.draw(m_chatInputBorder);
         m_window.draw(m_chatInput);
+    }
+
+    m_window.draw(m_easyButton);
+    m_window.draw(m_mediumButton);
+    m_window.draw(m_hardButton);
+
+    m_window.draw(m_friendlyFireText);
+    m_window.draw(m_friendlyFireCheckBox);
+    if (m_friendlyFireCheckBoxSelected) {
+        sf::RectangleShape checkMark;
+        checkMark.setSize(sf::Vector2f(10, 10));
+        checkMark.setPosition(m_friendlyFireCheckBox.getPosition() + sf::Vector2f(5, 5));
+        checkMark.setFillColor(sf::Color::White);
+        m_window.draw(checkMark);
     }
 }
