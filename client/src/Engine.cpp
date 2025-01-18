@@ -183,7 +183,7 @@ void Engine::handleEvents()
             m_optionsMenu->handleEvent(event);
             if (m_optionsMenu.get()->creatorIp.has_value()) {
                 m_creatorIp = m_optionsMenu.get()->creatorIp.value();
-                std::cout << "oh le boos" << m_creatorIp << std::endl;
+                // std::cout << "oh le boos" << m_creatorIp << std::endl;
             }
             break;
         case GameState::Infos:
@@ -225,12 +225,25 @@ void Engine::update(float deltaTime)
         if (m_game.get()->AnimationLevel()) {
             m_currentState = GameState::AnimationLevel;
             m_animationTime = 0.0f;
+        } 
+        if (m_game.get()->AnimationLevelGame()){
+            m_currentState = GameState::AnimationLevelGame;
+            m_animationTime = 0.0f;
         } else {
             m_playingBackground->update(deltaTime);
             m_game.get()->update(deltaTime);
         }
         break;
     case GameState::AnimationLevel:
+        std::cout << "update animation player" << std::endl;
+        m_animationTime += deltaTime;
+        if (m_animationTime >= 2.0f) {
+            m_currentState = GameState::Playing;
+        }
+        break;
+    case GameState::AnimationLevelGame:
+        std::cout << "update animation game" << std::endl;
+
         m_animationTime += deltaTime;
         if (m_animationTime >= 3.0f) {
             m_currentState = GameState::Playing;
@@ -239,6 +252,33 @@ void Engine::update(float deltaTime)
     default:
         break;
     }
+}
+
+void renderAnimationLevel(sf::RenderWindow& window, sf::Font& font, int level, const std::string& message)
+{
+    std::cout << "oui oui" << std::endl;
+    sf::Vector2u windowSize = window.getSize();
+    sf::Text levelText;
+    levelText.setFont(font);
+    levelText.setString("Level " + std::to_string(level));
+    levelText.setCharacterSize(50);
+    levelText.setFillColor(sf::Color::White);
+
+    sf::FloatRect levelBounds = levelText.getLocalBounds();
+    levelText.setOrigin(levelBounds.width / 2, levelBounds.height / 2);
+    levelText.setPosition(windowSize.x / 2, 50);
+
+    sf::Text messageText;
+    messageText.setFont(font);
+    messageText.setString(message);
+    messageText.setCharacterSize(30);
+    messageText.setFillColor(sf::Color::White);
+    
+    sf::FloatRect messageBounds = messageText.getLocalBounds();
+    messageText.setOrigin(messageBounds.width / 2, messageBounds.height / 2);
+    messageText.setPosition((windowSize.x / 4) * 3, windowSize.y / 2);
+    window.draw(levelText);
+    window.draw(messageText);
 }
 
 void renderAnimationLevel(sf::RenderWindow& window, sf::Font& font, int level, const std::string& spriteFilePath, const std::string& message)
@@ -317,6 +357,15 @@ void Engine::render(float deltaTime)
         m_game.get()->render(deltaTime);
         break;
 
+    case GameState::AnimationLevelGame:
+    {
+        std::cout << "render level game" << std::endl;
+        m_playingBackground->render(m_window);
+        //m_game.get()->render(deltaTime);
+        int l = m_game.get()->getLevelGame();
+        renderAnimationLevel(m_window, m_font, l, "ntm");
+        break;
+    }
     case GameState::AnimationLevel:
     {
         int currentLevel = m_game.get()->getLevel();
@@ -359,7 +408,7 @@ void Engine::run()
 
         handleEvents();
         if (m_currentState == GameState::Playing) {
-            std::cout << "je suis dans le engine run" << std::endl;
+            //std::cout << "je suis dans le engine run" << std::endl;
             m_game.get()->run();
         }
         update(deltaTime);

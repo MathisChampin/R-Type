@@ -39,6 +39,25 @@ namespace NmpServer
         handleInputThread.join();
     }
 
+    void Server::pauseThreads()
+    {
+        {
+            std::lock_guard<std::mutex> lock(_pauseMutex);
+            _paused.store(true);
+            std::cout << "thread sleep animation can run" << std::endl;
+        }
+    }
+
+    void Server::resumeThreads()
+    {
+        {
+        std::lock_guard<std::mutex> lock(_pauseMutex);
+        _paused.store(false);
+        }
+        _pauseCv.notify_all();
+        std::cout << "thread going" << std::endl;
+    }
+
     void Server::copyEcs()
     {
         auto &ecs = _ptp.getECS();
@@ -53,88 +72,11 @@ namespace NmpServer
 
     int Server::getId(component::attribute &att)
     {
-        int id = 0;
-
-        if (att._type == component::attribute::Player1 ||
-            att._type == component::attribute::Player2 ||
-            att._type == component::attribute::Player3 ||
-            att._type == component::attribute::Player4) {
-            id = 1;
-            //std::cout << "je t'envoie un player" << std::endl;
-            }
-        if (att._type == component::attribute::Ennemies) {
-            id = 2;
-            std::cout << "je t'envoie un ennemie" << std::endl;
+        auto it = _mapSpriteID.find(att._type);
+        if (it != _mapSpriteID.end()) {
+            return it->second;
         }
-        if (att._type == component::attribute::Ennemies2) {
-            std::cout << "je t'envoie un ennemis 2" << std::endl;
-            id = 3;
-        }
-        if (att._type == component::attribute::Ennemies3) {
-            std::cout << "je t'envoie un ennemis 3" << std::endl;
-            id = 4;
-        }
-        if (att._type == component::attribute::Ennemies4) {
-            std::cout << "je t'envoie un ennemis 4" << std::endl;
-            id = 5;
-        }
-        if (att._type == component::attribute::Ennemies5) {
-            std::cout << "je t'envoie un ennemis 5" << std::endl;
-            id = 6;
-        }
-        if (att._type == component::attribute::Shoot) {
-            std::cout << "je t'envoie un shoot" << std::endl;
-            id = 7;
-        }
-        if (att._type == component::attribute::Shoot2) {
-            std::cout << "je t'envoie un shoot 2" << std::endl;
-            id = 8;
-        }
-        if (att._type == component::attribute::Shoot3) {
-            std::cout << "je t'envoie un shoot" << std::endl;
-            id = 9;
-        }
-        if (att._type == component::attribute::Shoot4) {
-            std::cout << "je t'envoie un shoot" << std::endl;
-            id = 10;
-        }
-        if (att._type == component::attribute::PowerUpLife) {
-            std::cout << "je t'envoie un power up life" << std::endl;
-            id = 11;
-        }
-        if (att._type == component::attribute::PowerUpMove) {
-            std::cout << "je t'envoie un power up move" << std::endl;
-            id = 12;
-        }
-        if (att._type == component::attribute::Shoot5) {
-            std::cout << "je t'envoie un shoot 2" << std::endl;
-            id = 13;
-        }
-        if (att._type == component::attribute::Shoot6) {
-            std::cout << "je t'envoie un shoot 6" << std::endl;
-            id = 14;
-        }
-        if (att._type == component::attribute::Shoot7) {
-            std::cout << "je t'envoie un shoot 2" << std::endl;
-            id = 15;
-        }
-        if (att._type == component::attribute::Shoot8) {
-            std::cout << "je t'envoie un shoot 2" << std::endl;
-            id = 16;
-        }
-        if (att._type == component::attribute::Shoot9) {
-            std::cout << "je t'envoie un shoot 2" << std::endl;
-            id = 17;
-        }
-        if (att._type == component::attribute::Shoot10) {
-            std::cout << "je t'envoie un shoot 2" << std::endl;
-            id = 18;
-        }
-        if (att._type == component::attribute::Shoot1) {
-            std::cout << "je t'envoie un shoot 2" << std::endl;
-            id = 19;
-        }
-        return id;
+        return 0;
     }
 
     void Server::sendScoreLife(int i)
@@ -143,7 +85,7 @@ namespace NmpServer
         auto &s = _scores[i];
         auto &att = _attributes[i];
         auto &lvl = _levels[i];
-        std::cout << "lEVEL: " << lvl._levelKey << std::endl;
+        // std::cout << "lEVEL: " << lvl._levelKey << std::endl;
         Packet packet(EVENT::INFO, l.life, s.score, lvl._levelKey);
         if (att._type == component::attribute::Player1) {
             std::cout << "send life player 1" << std::endl;
@@ -221,14 +163,22 @@ namespace NmpServer
     void Server::threadInput()
     {
         while (true) {
+            {
+                std::unique_lock<std::mutex> lock(_pauseMutex);
+                _pauseCv.wait(lock, [this] { return !_paused.load(); });
+            }
             this->get_data();
         }
     }
 
     void Server::threaEvalInput()
     {
+        Packet packet;
         while (true) {
-            Packet packet;
+            {
+                std::unique_lock<std::mutex> lock(_pauseMutex);
+                _pauseCv.wait(lock, [this] { return !_paused.load(); });
+            }
             {
                 std::unique_lock<std::mutex> lock(_queueMutex);
                 if (!_running)
@@ -255,13 +205,16 @@ namespace NmpServer
         ClockManager clock;
         int difficulty{2};
         clock.start();
-        bool spriteAdded{false};
         
         auto frameDuration = std::chrono::milliseconds(40);
         while (_running) {
             {
+                std::unique_lock<std::mutex> lock(_pauseMutex);
+                _pauseCv.wait(lock, [this] { return !_paused.load(); });
+            }
+            {
                 std::lock_guard<std::mutex> lock(_ecsMutex);
-                delaySpawn(clock, spriteAdded);
+                delaySpawn(clock);
                 auto &ecs = _ptp.getECS();
                 sys.collision_system(ecs);
                 sys.position_system(ecs);
@@ -272,17 +225,22 @@ namespace NmpServer
                 sys.level_system(ecs);
                 copyEcs();
 
-                if (!check_level(ecs) && (spriteAdded == true || _vecSpawn.size() < 5)) {
+                if (!check_level(ecs) && isLevelReady()) {
                     difficulty += 3;
                     clock.start();
                     std::cout << "reset: " << clock.elapsedSeconds() << std::endl;
-                    //sys.kill_system(ecs);
+
                     _ptp.clearPlayer();
                     std::cout << "new level" << std::endl;
+
                     _prodLevel.generateLevel(difficulty);
                     _parser.loadNewLevel("../../server/configFile/level1.json");
                     _vecSpawn = _parser.getVector();
-                    spriteAdded = false;
+
+                    pauseThreads();
+                    std::this_thread::sleep_for(std::chrono::seconds(3));
+                    resumeThreads();
+
                     continue;
                 }
             }
@@ -291,23 +249,23 @@ namespace NmpServer
         }
     }
 
-    void Server::delaySpawn(ClockManager &clock, bool &spriteAdded)
+    void Server::delaySpawn(ClockManager &clock)
     {
-        if (_vecSpawn.size() >= 1) {
-            for (auto it = _vecSpawn.begin(); it != _vecSpawn.end(); ) {
-                std::cout << "loop: " << std::endl;
-                if (clock.elapsedSeconds() >= it->delaySpawn) {
-                    _ptp.initEnnemies(it->posX, it->posY, it->type);
-                    std::cout << "size: " << _vecSpawn.size() << std::endl;
-                    it = _vecSpawn.erase(it);
-                    std::cout << "size: " << _vecSpawn.size() << std::endl;
-                    spriteAdded = true;
-                    } else {
-                        ++it;
-                    }
-                } 
+        for (auto it = _vecSpawn.begin(); it != _vecSpawn.end(); ) {
+            if (clock.elapsedSeconds() >= it->delaySpawn) {
+                _ptp.initEnnemies(it->posX, it->posY, it->type);
+                it = _vecSpawn.erase(it);
+            } else {
+                ++it;
             }
+        }
     }
+
+    bool Server::isLevelReady()
+    {
+        return _vecSpawn.empty();
+    }
+
 
     void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
     {
@@ -334,14 +292,14 @@ namespace NmpServer
             bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
 
             if (bytes > 0) {
-                std::cout << "Received data from remote endpoint: " 
-                          << _remote_endpoint.address().to_string() << ":"
-                          << _remote_endpoint.port() << std::endl;
+                // std::cout << "Received data from remote endpoint: " 
+                //           << _remote_endpoint.address().to_string() << ":"
+                //           << _remote_endpoint.port() << std::endl;
 
-                std::cout << "bytes: " << bytes << std::endl;
+                // std::cout << "bytes: " << bytes << std::endl;
 
                 extract_bytes(bytes, rawData);
-                                std::cout << "afterbytes: " << bytes << std::endl;
+                                // std::cout << "afterbytes: " << bytes << std::endl;
 
                 NmpServer::Packet packet = _binary.deserialize(rawData);
 

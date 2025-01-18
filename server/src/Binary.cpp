@@ -39,7 +39,6 @@ namespace NmpBinary
             buffer.push_back(static_cast<int>(sprite.sizeX));
             buffer.push_back(static_cast<int>(sprite.sizeY));
         } else if (opcode == NmpServer::EVENT::JOIN) { 
-            std::cout << "Ce negro de lorge: " << id << std::endl;
             buffer.push_back(static_cast<int>(opcode));
             buffer.push_back(static_cast<int>(id));
         } else if (opcode == NmpServer::EVENT::EOI) {

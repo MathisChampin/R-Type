@@ -47,8 +47,9 @@ void Game::handler_packets()
     }
     else if (p.getOpCode() == NmpClient::EVENT::JOIN)
     {
-        std::cout << "new level" << std::endl;
+        std::cout << "CLIENT new level" << std::endl;
         std::cout << "sizeSpm: " << _spriteMng.getSpriteCount() << std::endl;
+        m_level_game++;
         _spriteMng.eraseAll();
         //m_client._id = p.getId();
         std::cout << "new id" << p.getId() << std::endl;
