@@ -17,10 +17,14 @@ Engine::Engine() : m_currentState(GameState::Menu), m_animationTime(0.0f)
         {"assets/backgrounds/parallax-space-stars.png", 0.2f},
         {"assets/backgrounds/parallax-space-far-planets.png", 0.3f}
     };
+    std::vector<std::pair<std::string, float>> levelLayers = {
+        {"assets/backgrounds/back2.jpg", 0.3f},
+        {"assets/backgrounds/back1.png", -0.1f},
+    };
 
     m_menuBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
     m_playingBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), playingLayers);
-
+    m_levelBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), levelLayers);
 
     m_customBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), playingLayers);
     m_infosBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
@@ -57,6 +61,19 @@ void Engine::initializeSoundManager()
         std::cerr << "Erreur : Impossible de charger la musique." << std::endl;
     } else if (!m_soundManager.playMusic("background", true)) {
         std::cerr << "Erreur : La musique n'a pas pu être jouée." << std::endl;
+    }
+}
+
+// Function to trigger the popup
+void Engine::triggerPopup(const std::string& spritePath, const std::string& message)
+{
+    if (m_popupTexture.loadFromFile(spritePath)) {
+        m_popupSprite.setTexture(m_popupTexture);
+        m_popupMessage = message;
+        m_showPopup = true;
+        m_animationTime = 0.0f;
+    } else {
+        std::cerr << "Erreur : Impossible de charger la texture depuis " << spritePath << std::endl;
     }
 }
 
@@ -238,17 +255,49 @@ void Engine::update(float deltaTime)
         m_customMenu->update();
         break;
     case GameState::Playing:
-        if (m_game.get()->AnimationLevel()) {
-            m_currentState = GameState::AnimationLevel;
-            m_animationTime = 0.0f;
-        } 
-        else if (m_game.get()->AnimationLevelGame()) {
+        if (m_showPopup) {
+            m_animationTime += deltaTime;
+            if (m_animationTime >= 2.0f) {
+                m_showPopup = false;
+            }
+        }
+        if (m_game.get()->AnimationLevelGame()) {
             std::cout << "je suis dans le update du jeu pour changer de level" << std::endl;
             m_currentState = GameState::AnimationLevelGame;
             m_animationTime = 0.0f;
         } else {
             m_playingBackground->update(deltaTime);
             m_game.get()->update(deltaTime);
+            if (m_game.get()->AnimationLevel()) {
+                int currentLevel = m_game->getLevel();
+                std::string spritePath;
+                std::string message;
+
+                switch (currentLevel) {
+                case 3:
+                    spritePath = "./assets/bullet/player/resized_tir_player_2_1.png";
+                    message = "Key Z unlocked!";
+                    break;
+                case 4:
+                    spritePath = "./assets/bullet/player/resized_tir_player_3_1.png";
+                    message = "Key E unlocked!";
+                    break;
+                case 5:
+                    spritePath = "./assets/bullet/player/resized_tir_player_4_1.png";
+                    message = "Key R unlocked!";
+                    break;
+                case 6:
+                    spritePath = "./assets/bullet/player/resized_tir_player_5_1.png";
+                    message = "Key T unlocked!";
+                    break;
+                default:
+                    break;
+                }
+                if (!spritePath.empty()) {
+                    triggerPopup(spritePath, message);
+                }
+            }
+            break;
         }
         break;
     case GameState::AnimationLevel:
@@ -260,7 +309,7 @@ void Engine::update(float deltaTime)
         break;
     case GameState::AnimationLevelGame:
         std::cout << "update animation game" << std::endl;
-
+        m_levelBackground->update(deltaTime);
         m_animationTime += deltaTime;
         if (m_animationTime >= 3.0f) {
             m_currentState = GameState::Playing;
@@ -298,47 +347,53 @@ void renderAnimationNewFile(sf::RenderWindow& window, sf::Font& font, int level)
     window.draw(centerText);
 }
 
-void renderAnimationLevel(sf::RenderWindow& window, sf::Font& font, int level, const std::string& spriteFilePath, const std::string& message)
+void Engine::renderPopup()
 {
-    window.clear(sf::Color::Black);
+    if (!m_showPopup) return;
 
-    sf::Vector2u windowSize = window.getSize();
+    // Créez le texte pour mesurer sa largeur
+    sf::Text popupText;
+    popupText.setFont(m_font);
+    popupText.setString(m_popupMessage);
+    popupText.setCharacterSize(20); // Taille du texte
+    popupText.setFillColor(sf::Color::White); // Couleur blanche
 
-    sf::Text levelText;
-    levelText.setFont(font);
-    levelText.setString("Level " + std::to_string(level));
-    levelText.setCharacterSize(50);
-    levelText.setFillColor(sf::Color::White);
-    
-    sf::FloatRect levelBounds = levelText.getLocalBounds();
-    levelText.setOrigin(levelBounds.width / 2, levelBounds.height / 2);
-    levelText.setPosition(windowSize.x / 2, 50);
+    sf::FloatRect textBounds = popupText.getLocalBounds();
 
-    sf::Texture texture;
-    if (!texture.loadFromFile(spriteFilePath)) {
-        std::cerr << "Erreur : Impossible de charger la texture depuis " << spriteFilePath << std::endl;
-        return;
-    }
+    // Mise à l'échelle de la sprite
+    float spriteScale = 1.5f;
+    m_popupSprite.setScale(spriteScale, spriteScale);
+    sf::FloatRect spriteBounds = m_popupSprite.getGlobalBounds();
 
-    sf::Sprite sprite(texture);
-    sf::FloatRect spriteBounds = sprite.getLocalBounds();
-    sprite.setOrigin(spriteBounds.width / 2, spriteBounds.height / 2);
-    sprite.setPosition(windowSize.x / 4, windowSize.y / 2);
-    sprite.setScale(2.0f, 2.0f);
+    // Calcul de la largeur nécessaire pour la box
+    float padding = 20.0f; // Espacement entre éléments et marges
+    float boxWidth = padding + spriteBounds.width + padding + textBounds.width + padding;
+    float boxHeight = std::max(spriteBounds.height, textBounds.height) + 2 * padding;
 
-    sf::Text messageText;
-    messageText.setFont(font);
-    messageText.setString(message);
-    messageText.setCharacterSize(30);
-    messageText.setFillColor(sf::Color::White);
-    
-    sf::FloatRect messageBounds = messageText.getLocalBounds();
-    messageText.setOrigin(messageBounds.width / 2, messageBounds.height / 2);
-    messageText.setPosition((windowSize.x / 4) * 3, windowSize.y / 2);
-    window.draw(levelText);
-    window.draw(sprite);
-    window.draw(messageText);
+    // Création de la box noire pour la popup
+    sf::RectangleShape popupBackground(sf::Vector2f(boxWidth, boxHeight));
+    popupBackground.setFillColor(sf::Color(0, 0, 0, 200)); // Couleur noire semi-transparente
+    popupBackground.setOutlineColor(sf::Color::White);     // Bordure blanche
+    popupBackground.setOutlineThickness(2.0f);            // Épaisseur de la bordure
+    popupBackground.setPosition((m_window.getSize().x - popupBackground.getSize().x) / 2, 50); // Centrer horizontalement
+
+    // Position de la sprite
+    float spriteOffsetX = popupBackground.getPosition().x + padding;
+    float spriteOffsetY = popupBackground.getPosition().y + (popupBackground.getSize().y - spriteBounds.height) / 2.0f;
+    m_popupSprite.setPosition(spriteOffsetX, spriteOffsetY);
+
+    // Position du texte
+    float textOffsetX = spriteOffsetX + spriteBounds.width + padding; // Décalage après la sprite
+    float textOffsetY = popupBackground.getPosition().y + (popupBackground.getSize().y - textBounds.height) / 2.0f - 5.0f; // Centrer verticalement
+    popupText.setPosition(textOffsetX, textOffsetY);
+
+    // Dessiner les éléments de la popup
+    m_window.draw(popupBackground);
+    m_window.draw(m_popupSprite);
+    m_window.draw(popupText);
 }
+
+
 
 void Engine::render(float deltaTime)
 {
@@ -367,6 +422,7 @@ void Engine::render(float deltaTime)
     case GameState::Playing:
         m_playingBackground->render(m_window);
         m_game.get()->render(deltaTime);
+        renderPopup(); 
         break;
 
     case GameState::PlayingInLobby:
@@ -377,38 +433,12 @@ void Engine::render(float deltaTime)
     case GameState::AnimationLevelGame:
     {
         std::cout << "render level game" << std::endl;
-        m_playingBackground->render(m_window);
+        m_levelBackground->render(m_window);
         //m_game.get()->render(deltaTime);
         int l = m_game.get()->getLevelGame();
         renderAnimationNewFile(m_window, m_font, l);
         break;
     }
-    case GameState::AnimationLevel:
-    {
-        int currentLevel = m_game.get()->getLevel();
-        std::string spritePath;
-        std::string message;
-
-        switch (currentLevel)
-        {
-        case 3:
-            renderAnimationLevel(m_window, m_font, m_game.get()->getLevel(), "./assets/bullet/player/tir_player_2_1.png", "Key Z too unlock");
-            break;
-        case 4:
-            renderAnimationLevel(m_window, m_font, m_game.get()->getLevel(), "./assets/bullet/player/tir_player_3_1.png", "Key E too unlock");
-            break;
-        case 5:
-            renderAnimationLevel(m_window, m_font, m_game.get()->getLevel(), "./assets/bullet/player/tir_player_4_1.png", "Key R too unlock");
-            break;
-        case 6:
-            renderAnimationLevel(m_window, m_font, m_game.get()->getLevel(), "./assets/bullet/player/tir_player_5_1.png", "Key T too unlock");
-            break;
-        default:
-            break;
-        }
-        break;
-    }
-
     default:
         break;
     }
