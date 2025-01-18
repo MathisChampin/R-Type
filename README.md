@@ -42,3 +42,14 @@ cd build/client
 ``` 
 
 --- 
+
+
+
+### Lien de la norme de commmit
+
+https://www.npmjs.com/package/@commitlint/config-conventional
+
+
+## Lien du coding style C++ 20 utulisé par cppcheck
+
+https://github.com/danmar/cppcheck/blob/main/man/manual.md
