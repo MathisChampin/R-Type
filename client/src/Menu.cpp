@@ -151,7 +151,7 @@ void Menu::handleEvent(const sf::Event &event)
                     m_callbacks[i]();
                 }
 
-                if (m_options[i].getString() == "Quitter")
+                if (m_options[i].getString() == "Leave")
                 {
                     m_window.close();
                 }

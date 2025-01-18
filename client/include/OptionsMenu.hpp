@@ -64,11 +64,11 @@ private:
     sf::Clock m_chatUpdateClock; 
 
     // Pour la gestion du curseur
-    bool m_cursorVisible; // Doit être avant m_isConnecting
-    sf::Clock m_cursorClock; // Doit être avant m_isConnecting
+    bool m_cursorVisible;
+    sf::Clock m_cursorClock;
 
     // Etat de la connexion
-    bool m_isConnecting; // Doit être après m_cursorVisible et m_cursorClock
+    bool m_isConnecting;
 
     // Network Actions
     void createLobby();
