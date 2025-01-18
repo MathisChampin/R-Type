@@ -66,7 +66,7 @@ bool check_collision(sparse_array<component::position> &positions,
 void handle_collision_with_player1(size_t i, size_t shoot_id, size_t j,
     sparse_array<component::life> &lifes,
     sparse_array<component::state> &states,
-    const sparse_array<component::attribute> &attributes,
+    sparse_array<component::attribute> &attributes,
     registry &reg)
 {
     auto &life = lifes[j];
@@ -83,7 +83,8 @@ void handle_collision_with_player1(size_t i, size_t shoot_id, size_t j,
         if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
             life.life -= 2;
             if (life.life <= 0) {
-                state._stateKey = component::state::stateKey::Dead;
+                attributes[i]._type = component::attribute::Clear;
+                state._stateKey = component::state::Dead;
             }
         }
         state_shoot._stateKey = component::state::stateKey::Dead;
@@ -101,7 +102,7 @@ void handle_collision_with_player1(size_t i, size_t shoot_id, size_t j,
 void handle_collision_with_player2(size_t i, size_t shoot_id, size_t j,
     sparse_array<component::life> &lifes,
     sparse_array<component::state> &states,
-    const sparse_array<component::attribute> &attributes,
+    sparse_array<component::attribute> &attributes,
     registry &reg)
 {
     auto &life = lifes[j];
@@ -118,7 +119,8 @@ void handle_collision_with_player2(size_t i, size_t shoot_id, size_t j,
         if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
             life.life -= 2;
             if (life.life <= 0) {
-                state._stateKey = component::state::stateKey::Dead;
+                attributes[i]._type = component::attribute::Clear;
+                state._stateKey = component::state::Dead;
             }
         }
         state_shoot._stateKey = component::state::stateKey::Dead;
@@ -136,7 +138,7 @@ void handle_collision_with_player2(size_t i, size_t shoot_id, size_t j,
 void handle_collision_with_player3(size_t i, size_t shoot_id, size_t j,
     sparse_array<component::life> &lifes,
     sparse_array<component::state> &states,
-    const sparse_array<component::attribute> &attributes,
+    sparse_array<component::attribute> &attributes,
     registry &reg)
 {
     auto &life = lifes[j];
@@ -153,7 +155,8 @@ void handle_collision_with_player3(size_t i, size_t shoot_id, size_t j,
         if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
             life.life -= 2;
             if (life.life <= 0) {
-                state._stateKey = component::state::stateKey::Dead;
+                attributes[i]._type = component::attribute::Clear;
+                state._stateKey = component::state::Dead;
             }
         }
         state_shoot._stateKey = component::state::stateKey::Dead;
@@ -171,7 +174,7 @@ void handle_collision_with_player3(size_t i, size_t shoot_id, size_t j,
 void handle_collision_with_player4(size_t i, size_t shoot_id, size_t j,
     sparse_array<component::life> &lifes,
     sparse_array<component::state> &states,
-    const sparse_array<component::attribute> &attributes,
+    sparse_array<component::attribute> &attributes,
     registry &reg)
 {
     auto &life = lifes[j];
@@ -188,7 +191,8 @@ void handle_collision_with_player4(size_t i, size_t shoot_id, size_t j,
         if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
             life.life -= 2;
             if (life.life <= 0) {
-                state._stateKey = component::state::stateKey::Dead;
+                attributes[i]._type = component::attribute::Clear;
+                state._stateKey = component::state::Dead;
             }
         }
         state_shoot._stateKey = component::state::stateKey::Dead;
@@ -203,6 +207,121 @@ void handle_collision_with_player4(size_t i, size_t shoot_id, size_t j,
     }
 }
 
+void handle_collision_with_fire_player1(size_t i, size_t j,
+    sparse_array<component::life> &lifes,
+    sparse_array<component::state> &states,
+    sparse_array<component::attribute> &attributes)
+{
+    auto &life = lifes[j];
+    auto &state = states[j];
+    auto &state_shoot = states[i];
+
+    if (attributes[i]._type == component::attribute::Shoot5) {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
+            life.life -= 2;
+            if (life.life <= 0) {
+                attributes[i]._type = component::attribute::Clear;
+                state._stateKey = component::state::Dead;
+            }
+        }
+        state_shoot._stateKey = component::state::stateKey::Dead;
+    } else {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
+            life.life -= 1;
+            if (life.life <= 0) {
+                state._stateKey = component::state::stateKey::Dead;
+            }
+        }
+        state_shoot._stateKey = component::state::stateKey::Dead;
+    }
+}
+
+void handle_collision_with_fire_player2(size_t i, size_t j,
+    sparse_array<component::life> &lifes,
+    sparse_array<component::state> &states,
+    sparse_array<component::attribute> &attributes)
+{
+    auto &life = lifes[j];
+    auto &state = states[j];
+    auto &state_shoot = states[i];
+
+    if (attributes[i]._type == component::attribute::Shoot5) {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
+            life.life -= 2;
+            if (life.life <= 0) {
+                attributes[i]._type = component::attribute::Clear;
+                state._stateKey = component::state::Dead;
+            }
+        }
+        state_shoot._stateKey = component::state::stateKey::Dead;
+    } else {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
+            life.life -= 1;
+            if (life.life <= 0) {
+                state._stateKey = component::state::stateKey::Dead;
+            }
+        }
+        state_shoot._stateKey = component::state::stateKey::Dead;
+    }
+}
+
+void handle_collision_with_fire_player3(size_t i, size_t j,
+    sparse_array<component::life> &lifes,
+    sparse_array<component::state> &states,
+    sparse_array<component::attribute> &attributes)
+{
+    auto &life = lifes[j];
+    auto &state = states[j];
+    auto &state_shoot = states[i];
+
+    if (attributes[i]._type == component::attribute::Shoot5) {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
+            life.life -= 2;
+            if (life.life <= 0) {
+                attributes[i]._type = component::attribute::Clear;
+                state._stateKey = component::state::Dead;
+            }
+        }
+        state_shoot._stateKey = component::state::stateKey::Dead;
+    } else {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
+            life.life -= 1;
+            if (life.life <= 0) {
+                state._stateKey = component::state::stateKey::Dead;
+            }
+        }
+        state_shoot._stateKey = component::state::stateKey::Dead;
+    }
+}
+
+void handle_collision_with_fire_player4(size_t i, size_t j,
+    sparse_array<component::life> &lifes,
+    sparse_array<component::state> &states,
+    sparse_array<component::attribute> &attributes)
+{
+    auto &life = lifes[j];
+    auto &state = states[j];
+    auto &state_shoot = states[i];
+
+    if (attributes[i]._type == component::attribute::Shoot5) {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
+            life.life -= 2;
+            if (life.life <= 0) {
+                attributes[i]._type = component::attribute::Clear;
+                state._stateKey = component::state::Dead;
+            }
+        }
+        state_shoot._stateKey = component::state::stateKey::Dead;
+    } else {
+        if (state._stateKey == component::state::stateKey::Alive && state_shoot._stateKey == component::state::Alive) {
+            life.life -= 1;
+            if (life.life <= 0) {
+                state._stateKey = component::state::stateKey::Dead;
+            }
+        }
+        state_shoot._stateKey = component::state::stateKey::Dead;
+    }
+}
 
 void handle_collision_with_enemy(size_t i, size_t shoot_id, size_t idEnnemy,
     sparse_array<component::score> &scores,
@@ -314,6 +433,48 @@ void System::collision_system(registry &reg)
                 handle_collision_with_player3(i, shoot_id.id, j, lifes, states, attributes, reg);
             if (attributes[j]._type == component::attribute::Player4)
                 handle_collision_with_player4(i, shoot_id.id, j, lifes, states, attributes, reg);
+            if (is_enemy(attributes[j]))
+                        handle_collision_with_enemy(i, shoot_id.id, j, scores, states, lifes, attributes, reg);
+        }
+    }
+}
+
+void System::collision_system_with_frendly_fire(registry &reg)
+{
+    auto &positions = reg.get_components<component::position>();
+    auto &sizes = reg.get_components<component::size>();
+    auto &lifes = reg.get_components<component::life>();
+    auto &scores = reg.get_components<component::score>();
+    auto &attributes = reg.get_components<component::attribute>();
+    auto &states = reg.get_components<component::state>();
+    auto &idPlayers = reg.get_components<component::idPlayer>();
+
+    for (size_t i = 0; i < attributes.size(); i++) {
+        if (attributes[i]._type != component::attribute::Shoot &&
+        attributes[i]._type != component::attribute::Shoot2 &&
+        attributes[i]._type != component::attribute::Shoot3 &&
+        attributes[i]._type != component::attribute::Shoot5 &&
+        attributes[i]._type != component::attribute::Shoot6 && 
+        attributes[i]._type != component::attribute::Shoot7 &&
+        attributes[i]._type != component::attribute::Shoot8 &&
+        attributes[i]._type != component::attribute::Shoot9 &&
+        attributes[i]._type != component::attribute::Shoot10 &&
+        attributes[i]._type != component::attribute::Shoot1)
+            continue;
+        auto &shoot_id = idPlayers[i];
+        for (size_t j = 0; j < attributes.size(); j++) {
+            if (!should_check_collision(j, attributes, states, shoot_id))
+                continue;
+            if (!check_collision(positions, sizes, attributes, i, j))
+                continue;
+            if (attributes[j]._type == component::attribute::Player1)
+                handle_collision_with_fire_player1(i, j, lifes, states, attributes);
+            if (attributes[j]._type == component::attribute::Player2)
+                handle_collision_with_fire_player2(i, j, lifes, states, attributes);
+            if (attributes[j]._type == component::attribute::Player3)
+                handle_collision_with_fire_player3(i, j, lifes, states, attributes);
+            if (attributes[j]._type == component::attribute::Player4)
+                handle_collision_with_fire_player4(i, j, lifes, states, attributes);
             if (is_enemy(attributes[j]))
                         handle_collision_with_enemy(i, shoot_id.id, j, scores, states, lifes, attributes, reg);
         }

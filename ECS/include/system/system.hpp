@@ -12,6 +12,7 @@ class System {
         void control_system_p3(registry &reg);
         void control_system_p4(registry &reg);
         void collision_system(registry &reg);
+        void collision_system_with_frendly_fire(registry &reg);
         void power_up_velocity_p1(registry &reg);
         void power_up_velocity_p2(registry &reg);
         void power_up_velocity_p3(registry &reg);

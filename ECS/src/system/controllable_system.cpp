@@ -4,6 +4,7 @@
 #include "attribute.hpp"
 #include "velocity.hpp"
 #include "shoot_type.hpp"
+#include "state.hpp"
 #include "level.hpp"
 #include <iostream>
 #include <map>
@@ -45,15 +46,15 @@ void System::control_system_p1(registry& reg) {
     auto &velocity = reg.get_components<component::velocity>();
     auto &shootTypes = reg.get_components<component::shoot_type>();
     auto &level = reg.get_components<component::level>();
+    auto &state = reg.get_components<component::state>();
 
     for (size_t i = 0; i < attributes.size(); ++i) {
-        if (attributes[i]._type == component::attribute::Player1) {
+        if (attributes[i]._type == component::attribute::Player1 && state[i]._stateKey == component::state::Alive) {
             auto &ctl = controllables[i];
             auto &pos = positions[i];
             auto &vel = velocity[i];
             auto &type = shootTypes[i];
             auto &lvl = level[i];
-            attributes[i]._type = component::attribute::Player1;
 
             if (lvl._levelKey >= component::level::Level6) {
                 if (ctl.active_key == component::controllable::Shoot5)
@@ -105,9 +106,10 @@ void System::control_system_p2(registry& reg)
     auto &velocity = reg.get_components<component::velocity>();
     auto &shootTypes = reg.get_components<component::shoot_type>();
     auto &level = reg.get_components<component::level>();
+    auto &state = reg.get_components<component::state>();
 
     for (size_t i = 0; i < attributes.size(); ++i) {
-        if (attributes[i]._type == component::attribute::Player2) {
+        if (attributes[i]._type == component::attribute::Player2 && state[i]._stateKey == component::state::Alive) {
             auto &ctl = controllables[i];
             auto &pos = positions[i];
             auto &vel = velocity[i];
@@ -165,9 +167,10 @@ void System::control_system_p3(registry& reg)
     auto &velocity = reg.get_components<component::velocity>();
     auto &shootTypes = reg.get_components<component::shoot_type>();
     auto &level = reg.get_components<component::level>();
+    auto &state = reg.get_components<component::state>();
 
     for (size_t i = 0; i < attributes.size(); ++i) {
-        if (attributes[i]._type == component::attribute::Player3) {
+        if (attributes[i]._type == component::attribute::Player3 && state[i]._stateKey == component::state::Alive) {
             auto &ctl = controllables[i];
             auto &pos = positions[i];
             auto &vel = velocity[i];
@@ -224,9 +227,10 @@ void System::control_system_p4(registry& reg)
     auto &velocity = reg.get_components<component::velocity>();
     auto &shootTypes = reg.get_components<component::shoot_type>();
     auto &level = reg.get_components<component::level>();
+    auto &state = reg.get_components<component::state>();
 
     for (size_t i = 0; i < attributes.size(); ++i) {
-        if (attributes[i]._type == component::attribute::Player4) {
+        if (attributes[i]._type == component::attribute::Player4 && state[i]._stateKey == component::state::Alive) {
             auto &ctl = controllables[i];
             auto &pos = positions[i];
             auto &vel = velocity[i];
