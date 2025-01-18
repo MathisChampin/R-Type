@@ -30,30 +30,24 @@ private:
     float m_volume;
     sf::Music m_music;
 
-    // Client TCP (maintenant optionnel)
     std::optional<NmpClient::TcpClient> m_tcpClient;
 
-    // Lobby Management
     std::vector<sf::Text> m_buttons;
     int m_selectedButton;
     sf::Text m_lobbyListText;
     void setupButtons();
 
-    // Lobby Name Input
     std::string m_lobbyNameInput;
     sf::Text m_lobbyNameText;
 
-    // IP Address Input
     std::string m_ipAddressInput;
     sf::Text m_ipAddressText;
     sf::RectangleShape m_ipAddressInputBorder;
 
-    // Port Input
     std::string m_portInput;
     sf::Text m_portText;
     sf::RectangleShape m_portInputBorder;
 
-    // Chat
     bool m_isChatOpen;
     bool m_isChatInputSelected;
     sf::Text m_chatInput;
@@ -63,15 +57,12 @@ private:
     std::vector<std::string> m_chatHistory;
     sf::Clock m_chatUpdateClock;
 
-    // Pour la gestion du curseur
     bool m_cursorVisible;
     sf::Clock m_cursorClock;
 
-    // Etat de la connexion
     bool m_isConnecting;
 
-    // Lobby configuration
-    int m_difficulty; // 0: Easy, 1: Medium, 2: Hard
+    int m_difficulty;
     bool m_friendlyFire;
     sf::Text m_easyButton;
     sf::Text m_mediumButton;
@@ -81,9 +72,12 @@ private:
     bool m_friendlyFireCheckBoxSelected;
     sf::RectangleShape m_optionsBackground;
     sf::RectangleShape m_optionsBorder;   
-    sf::Text m_optionsText;         
+    sf::Text m_optionsText;        
+    sf::RectangleShape m_optionsBackgrounds;
+    sf::RectangleShape m_optionsBorders;
+    sf::RectangleShape m_optionsBackgroundd;
+    sf::RectangleShape m_optionsBorderd;    
 
-    // Network Actions
     void createLobby();
     void joinLobby();
     void leaveLobby();
