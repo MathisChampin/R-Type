@@ -10,6 +10,7 @@ enum class GameState
     Custom,
     AnimationLevel,
     Infos,
+    AnimationLevelGame
 };
 
 #endif // STATE_HPP

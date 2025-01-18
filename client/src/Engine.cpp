@@ -196,7 +196,7 @@ void Engine::handleEvents()
             m_optionsMenu->handleEvent(event);
             if (m_optionsMenu.get()->creatorIp.has_value()) {
                 m_creatorIp = m_optionsMenu.get()->creatorIp.value();
-                std::cout << "oh le boos" << m_creatorIp << std::endl;
+                // std::cout << "oh le boos" << m_creatorIp << std::endl;
             }
             break;
         case GameState::Infos:
@@ -210,6 +210,9 @@ void Engine::handleEvents()
         case GameState::PlayingInLobby:
             break;
         case GameState::AnimationLevel:
+            break;
+        case GameState::AnimationLevelGame:
+            break;
         default:
             break;
         }
@@ -238,12 +241,26 @@ void Engine::update(float deltaTime)
         if (m_game.get()->AnimationLevel()) {
             m_currentState = GameState::AnimationLevel;
             m_animationTime = 0.0f;
+        } 
+        else if (m_game.get()->AnimationLevelGame()) {
+            std::cout << "je suis dans le update du jeu pour changer de level" << std::endl;
+            m_currentState = GameState::AnimationLevelGame;
+            m_animationTime = 0.0f;
         } else {
             m_playingBackground->update(deltaTime);
             m_game.get()->update(deltaTime);
         }
         break;
     case GameState::AnimationLevel:
+        std::cout << "update animation player" << std::endl;
+        m_animationTime += deltaTime;
+        if (m_animationTime >= 2.0f) {
+            m_currentState = GameState::Playing;
+        }
+        break;
+    case GameState::AnimationLevelGame:
+        std::cout << "update animation game" << std::endl;
+
         m_animationTime += deltaTime;
         if (m_animationTime >= 3.0f) {
             m_currentState = GameState::Playing;
@@ -252,6 +269,33 @@ void Engine::update(float deltaTime)
     default:
         break;
     }
+}
+
+void renderAnimationNewFile(sf::RenderWindow& window, sf::Font& font, int level) {
+    sf::Vector2u windowSize = window.getSize();
+
+    sf::Text topMessageText;
+    topMessageText.setFont(font);
+    topMessageText.setString("Nouvelle vague d'ennemis en cours de chargement...");
+    topMessageText.setCharacterSize(30);
+    topMessageText.setFillColor(sf::Color::White);
+
+    sf::FloatRect topMessageBounds = topMessageText.getLocalBounds();
+    topMessageText.setOrigin(topMessageBounds.width / 2, topMessageBounds.height / 2);
+    topMessageText.setPosition(windowSize.x / 2, 50);
+
+    sf::Text centerText;
+    centerText.setFont(font);
+    centerText.setString("Vague: " + std::to_string(level));
+    centerText.setCharacterSize(50);
+    centerText.setFillColor(sf::Color::White);
+
+    sf::FloatRect centerTextBounds = centerText.getLocalBounds();
+    centerText.setOrigin(centerTextBounds.width / 2, centerTextBounds.height / 2);
+    centerText.setPosition(windowSize.x / 2, windowSize.y / 2);
+
+    window.draw(topMessageText);
+    window.draw(centerText);
 }
 
 void renderAnimationLevel(sf::RenderWindow& window, sf::Font& font, int level, const std::string& spriteFilePath, const std::string& message)
@@ -330,6 +374,15 @@ void Engine::render(float deltaTime)
         m_game.get()->render(deltaTime);
         break;
 
+    case GameState::AnimationLevelGame:
+    {
+        std::cout << "render level game" << std::endl;
+        m_playingBackground->render(m_window);
+        //m_game.get()->render(deltaTime);
+        int l = m_game.get()->getLevelGame();
+        renderAnimationNewFile(m_window, m_font, l);
+        break;
+    }
     case GameState::AnimationLevel:
     {
         int currentLevel = m_game.get()->getLevel();
@@ -372,7 +425,7 @@ void Engine::run()
 
         handleEvents();
         if (m_currentState == GameState::Playing) {
-            std::cout << "je suis dans le engine run" << std::endl;
+            //std::cout << "je suis dans le engine run" << std::endl;
             m_game.get()->run();
         }
         update(deltaTime);
