@@ -8,11 +8,20 @@ Engine::Engine() : m_currentState(GameState::Menu), m_animationTime(0.0f)
     initializeSoundManager();
 
     // Background layers
-    std::vector<std::pair<std::string, float>> menuLayers = { {"assets/backgrounds/space_dust.png", 0.1f} };
-    std::vector<std::pair<std::string, float>> playingLayers = { {"assets/backgrounds/space_dust.png", 0.2f} };
+    std::vector<std::pair<std::string, float>> menuLayers = {
+        {"assets/backgrounds/parallax-space-backgound.png", 0.1f},
+        {"assets/backgrounds/parallax-space-stars.png", 0.2f}
+    };
+    std::vector<std::pair<std::string, float>> playingLayers = {
+        {"assets/backgrounds/parallax-space-backgound.png", 0.1f},
+        {"assets/backgrounds/parallax-space-stars.png", 0.2f},
+        {"assets/backgrounds/parallax-space-far-planets.png", 0.3f}
+    };
 
     m_menuBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
     m_playingBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), playingLayers);
+
+
     m_customBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), playingLayers);
     m_infosBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
 
@@ -27,7 +36,6 @@ Engine::Engine() : m_currentState(GameState::Menu), m_animationTime(0.0f)
     // Menu options
     setupMenuOptions();
 }
-
 void Engine::initializeWindow()
 {
     sf::VideoMode videoMode = sf::VideoMode::getDesktopMode();
