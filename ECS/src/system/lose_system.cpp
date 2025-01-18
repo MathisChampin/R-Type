@@ -14,7 +14,8 @@ void System::lose_system(registry &reg)
         if ((a._type == component::attribute::Player1 ||
         a._type == component::attribute::Player2 ||
         a._type == component::attribute::Player3 ||
-        a._type == component::attribute::Player4) && s._stateKey == component::state::Dead)
+        a._type == component::attribute::Player4 ||
+        a._type == component::attribute::Clear) && s._stateKey == component::state::Dead)
             s._stateKey = component::state::Lose;
     }
 }
