@@ -59,7 +59,7 @@ bool Game::AnimationLevelGame()
     if (m_level_game != m_level_previous_game) {
         m_level_previous_game = m_level_game;
         std::cout << "game level change : " << m_level_previous_game<< std::endl;
-
+        std::cout << "changement de level detecté" << std::endl;
         return true;
     }
     return false;
@@ -69,12 +69,6 @@ bool Game::AnimationLevel()
 {
     int currentLevel = m_level.getLevel();
     
-    if (m_level_game != m_level_previous_game) {
-        m_level_previous_game = m_level_game;
-        std::cout << "game level change : " << currentLevel << std::endl;
-
-        return true;
-    }
     if (currentLevel != m_previousLevel && (currentLevel == 3 || currentLevel == 4 || currentLevel == 5 || currentLevel == 6)) {
         m_previousLevel = currentLevel;
         std::cout << "Changement de niveau détecté : " << currentLevel << std::endl;

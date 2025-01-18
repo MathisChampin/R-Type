@@ -197,6 +197,9 @@ void Engine::handleEvents()
         case GameState::PlayingInLobby:
             break;
         case GameState::AnimationLevel:
+            break;
+        case GameState::AnimationLevelGame:
+            break;
         default:
             break;
         }
@@ -226,7 +229,8 @@ void Engine::update(float deltaTime)
             m_currentState = GameState::AnimationLevel;
             m_animationTime = 0.0f;
         } 
-        if (m_game.get()->AnimationLevelGame()){
+        else if (m_game.get()->AnimationLevelGame()) {
+            std::cout << "je suis dans le update du jeu pour changer de level" << std::endl;
             m_currentState = GameState::AnimationLevelGame;
             m_animationTime = 0.0f;
         } else {
@@ -254,31 +258,31 @@ void Engine::update(float deltaTime)
     }
 }
 
-void renderAnimationLevel(sf::RenderWindow& window, sf::Font& font, int level, const std::string& message)
-{
-    std::cout << "oui oui" << std::endl;
+void renderAnimationNewFile(sf::RenderWindow& window, sf::Font& font, int level) {
     sf::Vector2u windowSize = window.getSize();
-    sf::Text levelText;
-    levelText.setFont(font);
-    levelText.setString("Level " + std::to_string(level));
-    levelText.setCharacterSize(50);
-    levelText.setFillColor(sf::Color::White);
 
-    sf::FloatRect levelBounds = levelText.getLocalBounds();
-    levelText.setOrigin(levelBounds.width / 2, levelBounds.height / 2);
-    levelText.setPosition(windowSize.x / 2, 50);
+    sf::Text topMessageText;
+    topMessageText.setFont(font);
+    topMessageText.setString("Nouvelle vague d'ennemis en cours de chargement...");
+    topMessageText.setCharacterSize(30);
+    topMessageText.setFillColor(sf::Color::White);
 
-    sf::Text messageText;
-    messageText.setFont(font);
-    messageText.setString(message);
-    messageText.setCharacterSize(30);
-    messageText.setFillColor(sf::Color::White);
-    
-    sf::FloatRect messageBounds = messageText.getLocalBounds();
-    messageText.setOrigin(messageBounds.width / 2, messageBounds.height / 2);
-    messageText.setPosition((windowSize.x / 4) * 3, windowSize.y / 2);
-    window.draw(levelText);
-    window.draw(messageText);
+    sf::FloatRect topMessageBounds = topMessageText.getLocalBounds();
+    topMessageText.setOrigin(topMessageBounds.width / 2, topMessageBounds.height / 2);
+    topMessageText.setPosition(windowSize.x / 2, 50);
+
+    sf::Text centerText;
+    centerText.setFont(font);
+    centerText.setString("Vague: " + std::to_string(level));
+    centerText.setCharacterSize(50);
+    centerText.setFillColor(sf::Color::White);
+
+    sf::FloatRect centerTextBounds = centerText.getLocalBounds();
+    centerText.setOrigin(centerTextBounds.width / 2, centerTextBounds.height / 2);
+    centerText.setPosition(windowSize.x / 2, windowSize.y / 2);
+
+    window.draw(topMessageText);
+    window.draw(centerText);
 }
 
 void renderAnimationLevel(sf::RenderWindow& window, sf::Font& font, int level, const std::string& spriteFilePath, const std::string& message)
@@ -363,7 +367,7 @@ void Engine::render(float deltaTime)
         m_playingBackground->render(m_window);
         //m_game.get()->render(deltaTime);
         int l = m_game.get()->getLevelGame();
-        renderAnimationLevel(m_window, m_font, l, "ntm");
+        renderAnimationNewFile(m_window, m_font, l);
         break;
     }
     case GameState::AnimationLevel:
