@@ -14,7 +14,7 @@ Game::Game(std::string ip, sf::RenderWindow &window, SkinType skinType, sf::Font
       m_SoundManager(soundManager),
       m_previousLevel(0)
 {
-    m_life.initialize("./assets/life/hearts.png", 5, 15.f);
+    m_life.initialize("./assets/life/full_life.png", "./assets/life/mid_life.png", "./assets/life/low_life.png", 5);
     m_score.initialize(m_font, 30, sf::Vector2f(20, 60));
     m_level.initialize(m_font, 30, sf::Vector2f(0, 60));
 }
