@@ -37,8 +37,13 @@ public:
     void update(float deltaTime);
     void render(float deltaTime);
     bool AnimationLevel();
+    bool AnimationLevelGame();
+
     int getLevel() const {
         return m_level.getLevel();
+    }
+    int getLevelGame() const {
+        return m_level_game;
     }
     void handler_packets();
 
@@ -138,6 +143,8 @@ private:
     Life m_life;
     Score m_score;
     Level m_level;
+    int m_level_game{0};
+    int m_level_previous_game{0};
     int m_previousLevel;
 };
 

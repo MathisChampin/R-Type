@@ -1,5 +1,11 @@
 [
     {
+        "delaySpawn": 11,
+        "posX": 1776,
+        "posY": 872,
+        "type": 4
+    },
+    {
         "delaySpawn": 3,
         "posX": 1744,
         "posY": 413,
@@ -37,6 +43,53 @@
     },
     {
         "delaySpawn": 7,
+        "posX": 1788,
+        "posY": 107,
+        "type": 2
+    },
+    {
+        "delaySpawn": 9,
+        "posX": 1748,
+        "posY": 162,
+        "type": 2
+    },
+    {
+        "delaySpawn": 6,
+        "posX": 1707,
+        "posY": 380,
+        "type": 3
+    },
+    {
+        "delaySpawn": 7,
+        "posX": 1774,
+        "posY": 682,
+        "type": 2
+    },
+    {
+        "delaySpawn": 4,
+        "posX": 1756,
+        "posY": 202,
+        "type": 4
+    },
+    {
+        "delaySpawn": 2,
+        "posX": 1742,
+        "posY": 316,
+        "type": 2
+    },
+    {
+        "delaySpawn": 11,
+        "posX": 1789,
+        "posY": 231,
+        "type": 3
+    },
+    {
+        "delaySpawn": 6,
+        "posX": 1781,
+        "posY": 636,
+        "type": 2
+    },
+    {
         "posX": 1754,
         "posY": 895,
         "type": 1

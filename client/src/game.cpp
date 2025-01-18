@@ -53,6 +53,18 @@ void Game::update(float deltaTime)
     }
 }
 
+bool Game::AnimationLevelGame()
+{
+    std::cout << "previous: " <<  m_level_previous_game << " current : " << m_level_game << std::endl;
+    if (m_level_game != m_level_previous_game) {
+        m_level_previous_game = m_level_game;
+        std::cout << "game level change : " << m_level_previous_game<< std::endl;
+        std::cout << "changement de level detecté" << std::endl;
+        return true;
+    }
+    return false;
+}
+
 bool Game::AnimationLevel()
 {
     int currentLevel = m_level.getLevel();

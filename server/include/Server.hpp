@@ -25,23 +25,27 @@ namespace NmpServer {
             void send_data(Packet &packet, asio::ip::udp::endpoint enpoint) override;
             void extract_bytes(std::size_t &bytes, std::vector<int> &vec) override;
             void broadcast(Packet &packet) override;
-            asio::ip::udp::endpoint getLastEndpoint() const;
             void sendScoreLife(int i);
+            asio::ip::udp::endpoint getLastEndpoint() const;
 
             std::vector<asio::ip::udp::endpoint> _vecPlayer;
         private:
             void threadInput();
             void threaEvalInput();
             void threadSystem();
-            void delaySpawn(ClockManager &c, bool &srpiteAdded);
+            void delaySpawn(ClockManager &c);
+            bool isLevelReady();
             void send_entity();
             bool check_level(registry &);
             bool check_level_player(registry &);
             void copyEcs();
-            std::vector<NmpServer::infoEnnemies_t> _vecSpawn;
-
             int getId(component::attribute &att);
+            void pauseThreads();
+            void resumeThreads();
 
+            std::atomic<bool> _paused{false};
+            std::mutex _pauseMutex;
+            std::condition_variable _pauseCv;
             std::atomic<bool> _running;
             bool _shootReady;
             std::queue<Packet> _queue;
@@ -65,6 +69,32 @@ namespace NmpServer {
             ProtocoleHandler _ptp;
             Parser _parser;
             ProceduralLevel _prodLevel;
+
+            std::map<component::attribute::entityType, int> _mapSpriteID = {
+                {component::attribute::Player1, 1},
+                {component::attribute::Player2, 1},
+                {component::attribute::Player3, 1},
+                {component::attribute::Player4, 1},
+                {component::attribute::Ennemies, 2},
+                {component::attribute::Ennemies2, 3},
+                {component::attribute::Ennemies3, 4},
+                {component::attribute::Ennemies4, 5},
+                {component::attribute::Ennemies5, 6},
+                {component::attribute::Shoot, 7},
+                {component::attribute::Shoot2, 8},
+                {component::attribute::Shoot3, 9},
+                {component::attribute::Shoot4, 10},
+                {component::attribute::PowerUpLife, 11},
+                {component::attribute::PowerUpMove, 12},
+                {component::attribute::Shoot5, 13},
+                {component::attribute::Shoot6, 14},
+                {component::attribute::Shoot7, 15},
+                {component::attribute::Shoot8, 16},
+                {component::attribute::Shoot9, 17},
+                {component::attribute::Shoot10, 18},
+                {component::attribute::Shoot1, 19},
+            };
+            std::vector<NmpServer::infoEnnemies_t> _vecSpawn;
 
             sparse_array<component::position> _positions;
             sparse_array<component::state> _states;
