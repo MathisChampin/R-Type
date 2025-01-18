@@ -81,7 +81,7 @@ private:
     bool m_friendlyFireCheckBoxSelected;
     sf::RectangleShape m_optionsBackground;
     sf::RectangleShape m_optionsBorder;   
-    sf::Text m_optionsText;         
+    sf::Text m_optionsText;
 
     // Network Actions
     void createLobby();

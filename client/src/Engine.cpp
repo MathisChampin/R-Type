@@ -62,7 +62,7 @@ void Engine::initializeSoundManager()
 
 void Engine::setupMenuOptions()
 {
-    m_menu->addOption("Jouer", [this]() {
+    m_menu->addOption("Play", [this]() {
         std::cout << "Démarrage du jeu..." << std::endl;
         m_game = std::make_unique<Game>(m_creatorIp, m_window, m_customMenu.get()->getSelectedSkin(), m_font, *m_playingBackground, m_soundManager);
         m_currentState = GameState::Playing;
@@ -170,7 +170,7 @@ void Engine::setupMenuOptions()
         m_currentState = GameState::Custom;
     });
 
-    m_menu->addOption("Quitter", [this]() {
+    m_menu->addOption("Leave", [this]() {
         std::cout << "Fermeture du jeu..." << std::endl;
         m_window.close();
     });
@@ -276,7 +276,7 @@ void renderAnimationNewFile(sf::RenderWindow& window, sf::Font& font, int level)
 
     sf::Text topMessageText;
     topMessageText.setFont(font);
-    topMessageText.setString("Nouvelle vague d'ennemis en cours de chargement...");
+    topMessageText.setString("New wave of enemies loading...");
     topMessageText.setCharacterSize(30);
     topMessageText.setFillColor(sf::Color::White);
 
@@ -286,7 +286,7 @@ void renderAnimationNewFile(sf::RenderWindow& window, sf::Font& font, int level)
 
     sf::Text centerText;
     centerText.setFont(font);
-    centerText.setString("Vague: " + std::to_string(level));
+    centerText.setString("Wave: " + std::to_string(level));
     centerText.setCharacterSize(50);
     centerText.setFillColor(sf::Color::White);
 

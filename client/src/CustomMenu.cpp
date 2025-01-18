@@ -90,7 +90,6 @@ void CustomMenu::handleEvent(const sf::Event& event) {
         if (event.mouseButton.button == sf::Mouse::Left) {
             sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
             
-            // Vérifier si un sprite a été cliqué
             for (size_t i = 0; i < m_skinSprites.size(); ++i) {
                 if (m_skinSprites[i].getGlobalBounds().contains(mousePos)) {
                     m_selectedSkinIndex = i;
@@ -108,9 +107,7 @@ void CustomMenu::update() {
 void CustomMenu::render() {
     m_window.draw(m_titleText);
     
-    // Dessiner tous les sprites
     for (size_t i = 0; i < m_skinSprites.size(); ++i) {
-        // Mettre en surbrillance le skin sélectionné
         if (i == m_selectedSkinIndex) {
             m_skinSprites[i].setColor(sf::Color(255, 255, 255, 255));
         } else {
