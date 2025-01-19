@@ -8,5 +8,5 @@
     "texture6": "assets/bullet/player/tir_player_5_6.png",
     "texture7": "assets/bullet/player/tir_player_5_7.png",
     "position": { "x": 800, "y": 400 },
-    "size": { "width": 150, "height": 150 }
+    "size": { "width": 179, "height": 69 }
 }
