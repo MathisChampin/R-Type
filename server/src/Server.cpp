@@ -207,7 +207,7 @@ namespace NmpServer
         ClockManager clock;
         int difficulty{2};
         clock.start();
-        
+        int level = 0;
 
         auto frameDuration = std::chrono::milliseconds(40);
         while (_running) {
@@ -241,10 +241,18 @@ namespace NmpServer
                     _ptp.clearPlayer();
                     std::cout << "new level" << std::endl;
 
-                    _prodLevel.generateLevel(difficulty, Difficulty::Easy);
-                    _parser.loadNewLevel("../../server/configFile/level1.json");
-                    _vecSpawn = _parser.getVector();
+                    if (level != 10) {
+                        _prodLevel.generateLevel(difficulty, Difficulty::Easy);
+                        _parser.loadNewLevel("../../server/configFile/level1.json");
+                        _vecSpawn = _parser.getVector();
+                    } else {
+                        //_prodLevel.generateLevel(difficulty, Difficulty::Easy);
+                        _parser.loadNewLevel("../../server/configFile/test.json");
+                        _parser.parseConfig();
+                        _ptp.loadEnnemiesFromconfig(_parser.getVector());
 
+                    }
+                    level++;
                     pauseThreads();
                     std::this_thread::sleep_for(std::chrono::seconds(3));
                     resumeThreads();
