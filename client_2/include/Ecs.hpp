@@ -69,19 +69,20 @@ class GameECS {
             auto &attributes = m_ecs.get_components<component::attribute>();
             auto &positions = m_ecs.get_components<component::position>();
 
-            for (size_t i = 0; i < attributes.size(); i++) {
-                auto &att = attributes[i];
-                if (att._type == component::attribute::Shoot1 || att._type == component::attribute::Shoot) {
-                    bool shootExists = false;
-                    for (auto& enemyShoots : enemyShoot) {
-                        if (enemyShoots->get_id() == i) {
-                            shootExists = true;
+            for (size_t i = 0; i < attributes.size(); ++i) {
+                if (attributes[i]._type == component::attribute::Shoot11 || attributes[i]._type == component::attribute::Shoot1) {
+                    bool exists = false;
+                    for (auto &shootSprite : enemyShoot) {
+                        if (shootSprite->get_id() == i) {
+                            exists = true;
                             break;
                         }
                     }
-                    if (!shootExists) {
-                        std::shared_ptr<Shoot> shootEnemy = std::make_shared<Shoot>(i, "./assets/bullet.png", positions[i].x, positions[i].y);
-                        enemyShoot.push_back(shootEnemy);
+                    if (!exists) {
+                        std::shared_ptr<Shoot> newShoot = std::make_shared<Shoot>(
+                            i, "./assets/bullet.png", positions[i].x, positions[i].y + 60);
+                        enemyShoot.push_back(newShoot);
+                        std::cout << "Created new shoot with ID: " << i << std::endl;
                     }
                 }
             }
@@ -128,44 +129,44 @@ class GameECS {
             }
         }
 
-        void updatePositionShoots()
-        {
-            auto &attributes = m_ecs.get_components<component::attribute>();
+        int updateGame() {
+            auto &states = m_ecs.get_components<component::state>();
+
+            for (size_t i = 0; i < states.size(); i++) {
+                if (states[i]._stateKey == component::state::Lose)
+                    return 1;
+                if (states[i]._stateKey == component::state::Win)
+                    return 2;
+            }
+            return 0;
+        }
+
+        void updatePositionShoots() {
             auto &positions = m_ecs.get_components<component::position>();
             auto &states = m_ecs.get_components<component::state>();
-            auto &idP = m_ecs.get_components<component::idPlayer>();
+            createShoot();
 
-            std::vector<std::shared_ptr<Shoot>> shootsToRemove;
+            std::vector<size_t> shootsToRemove;
+            for (size_t i = 0; i < enemyShoot.size(); ++i) {
+                auto &shootSprite = enemyShoot[i];
+                int shootId = shootSprite->get_id();
+                auto &state = states[shootId];
 
-            if (enemyShoot.empty())
-                return;
-            for (size_t i = 0; i < attributes.size(); i++) {
-                auto &att = attributes[i];
-                auto &s = states[i];
-                if ((att._type == component::attribute::Shoot || att._type == component::attribute::Shoot1) && s._stateKey == component::state::Alive) {
-                    for (size_t j = 0; j < attributes.size(); j++) {
-                        if ((attributes[j]._type == component::attribute::Ennemies || attributes[j]._type == component::attribute::Player1) && states[j]._stateKey == component::state::Alive) {
-                            auto &pos = positions[i];
-                            for (auto& shootSprite : enemyShoot) {
-                                if (idP[i].id == j) {
-                                    shootSprite->setPosition(sf::Vector2f(pos.x, pos.y));
-                                }
-                            }
-                        }
-                    }   
-                } else if ((att._type == component::attribute::Shoot || att._type == component::attribute::Shoot1) && s._stateKey == component::state::Dead) {
-                    for (auto it = enemyShoot.begin(); it != enemyShoot.end(); ++it) {
-                        if (enemyShoot.empty()) {
-                            return;
-                        }
-                        if ((*it)->get_id() == i) {
-                            shootsToRemove.push_back(*it);
-                            enemyShoot.erase(it);
-                        }
-                    }
+                if (state._stateKey == component::state::Alive) {
+                    auto &pos = positions[shootId];
+                    shootSprite->setPosition(sf::Vector2f(pos.x, pos.y + 60));
+                } else if (state._stateKey == component::state::Dead) {
+                    shootsToRemove.push_back(i);
                 }
             }
+
+            for (size_t i = 0; i < shootsToRemove.size(); ++i) {
+                size_t index = shootsToRemove[i] - i;
+                enemyShoot.erase(enemyShoot.begin() + index);
+            }
         }
+
+
 
         void spawnEnemiesAtInterval(float deltaTime) {
             enemySpawnTimer += deltaTime;
@@ -182,7 +183,6 @@ class GameECS {
         void update(float deltaTime) {
             spawnEnemiesAtInterval(deltaTime);
             sys.shoot_system_ennemies(m_ecs);
-            createShoot();
             sys.position_system(m_ecs);
             updatePositionEnemys();
             updatePositionShoots();

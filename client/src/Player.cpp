@@ -101,6 +101,9 @@ void Player::handleInput()
         state = sf::Keyboard::isKeyPressed(key);
     }
 
+    static std::map<int, bool> joystickButtonStates = {
+        {0, false}, {1, false}, {2, false}, {3, false}, {4, false}, {5, false}};
+
     if (sf::Joystick::isConnected(0)) {
         sf::Joystick::update();
         float xAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
@@ -120,11 +123,49 @@ void Player::handleInput()
             currentDirection = &rightDirection;
         }
 
-        if (sf::Joystick::isButtonPressed(0, 0)) {
-            static NmpClient::DIRECTION shootDirection = NmpClient::DIRECTION::SHOOT;
-            currentDirection = &shootDirection;
+        for (int button = 0; button <= 5; ++button) {
+            bool isPressed = sf::Joystick::isButtonPressed(0, button);
+            if (isPressed && !joystickButtonStates[button]) {
+                joystickButtonStates[button] = true;
+
+                switch (button) {
+                    case 0: {
+                        static NmpClient::DIRECTION shootDirection = NmpClient::DIRECTION::SHOOT;
+                        currentDirection = &shootDirection;
+                        break;
+                    }
+                    case 1: {
+                        static NmpClient::DIRECTION shoot1Direction = NmpClient::DIRECTION::SHOOT1;
+                        currentDirection = &shoot1Direction;
+                        break;
+                    }
+                    case 2: {
+                        static NmpClient::DIRECTION shoot2Direction = NmpClient::DIRECTION::SHOOT2;
+                        currentDirection = &shoot2Direction;
+                        break;
+                    }
+                    case 3: {
+                        static NmpClient::DIRECTION shoot3Direction = NmpClient::DIRECTION::SHOOT3;
+                        currentDirection = &shoot3Direction;
+                        break;
+                    }
+                    case 4: {
+                        static NmpClient::DIRECTION shoot4Direction = NmpClient::DIRECTION::SHOOT4;
+                        currentDirection = &shoot4Direction;
+                        break;
+                    }
+                    case 5: {
+                        static NmpClient::DIRECTION shoot5Direction = NmpClient::DIRECTION::SHOOT5;
+                        currentDirection = &shoot5Direction;
+                        break;
+                    }
+                }
+            } else if (!isPressed) {
+                joystickButtonStates[button] = false;
+            }
         }
     }
+
 
     if (currentDirection != nullptr)
     {

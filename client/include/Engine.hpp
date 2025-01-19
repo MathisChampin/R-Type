@@ -8,6 +8,7 @@
 #include "Game.hpp"
 #include "OptionsMenu.hpp"
 #include "CustomMenu.hpp"
+#include "SettingsMenu.hpp"
 // #include "SoundManager.hpp"
 #include "ParallaxBackground.hpp"
 #include "State.hpp"
@@ -33,11 +34,13 @@ private:
     void renderPopup();
     void renderDeathPopup(int score);
 
+    bool gameCreated{false};
     sf::RenderWindow m_window;
     sf::Font m_font;
     std::unique_ptr<Menu> m_menu;
     std::unique_ptr<OptionsMenu> m_optionsMenu;
     std::unique_ptr<CustomMenu> m_customMenu;
+    std::unique_ptr<SettingsMenu> m_settingsMenu;
     SoundManager m_soundManager;
     std::unique_ptr<Game> m_game;
     std::unique_ptr<Infos> m_infoSection;
@@ -47,6 +50,7 @@ private:
     std::unique_ptr<ParallaxBackground> m_infosBackground;
     std::unique_ptr<ParallaxBackground> m_playingBackground;
     std::unique_ptr<ParallaxBackground> m_customBackground;
+    std::unique_ptr<ParallaxBackground> m_settingsBackground;
 
     GameState m_currentState;
     sf::Clock m_clock;

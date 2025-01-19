@@ -24,6 +24,63 @@ public:
         position.y = config["position"]["y"];
         size.x = config["size"]["width"];
         size.y = config["size"]["height"];
+        if (config["type"] == "player")
+        {
+            m_type = Type::Player;
+        }
+        else if (config["type"] == "enemy")
+        {
+            m_type = Type::Enemy;
+        }
+        else if (config["type"] == "shoot1Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "powerup_life")
+        {
+            m_type = Type::PowerupLife;
+        }
+        else if (config["type"] == "powerup_move")
+        {
+            m_type = Type::PowerupMove;
+        }
+        else if (config["type"] == "shoot4Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot2Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot3Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot5Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot2Enemy")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot1Enemy")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot3Enemy")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot4Enemy")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot5Enemy")
+        {
+            m_type = Type::Bullet;
+        }
+
 
         if (config["type"] == "player" || config["type"] == "enemy" || config["type"] == "shoot1Player" ||
             config["type"] == "powerup_life" || config["type"] == "powerup_move" || config["type"] == "shoot4Player" ||

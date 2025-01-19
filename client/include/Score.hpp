@@ -16,7 +16,10 @@ public:
     }
 
 private:
+    void updateBackground();
+
     sf::Text m_scoreText;
+    sf::RectangleShape m_backgroundRect;
     int m_currentScore;
 };
 

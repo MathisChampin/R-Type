@@ -30,6 +30,24 @@ void create_shoot(Entity entity, registry &reg)
     reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
+void create_shoot11(Entity entity, registry &reg)
+{
+    Entity shoot = reg.spawn_entity();
+
+    auto &positions = reg.get_components<component::position>();
+    auto &pos = positions[entity.get_id()];
+
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot11});
+    reg.add_component<component::position>(shoot, {pos.x + 50, pos.y - 15});
+    reg.add_component<component::controllable>(shoot, {component::controllable::NoKey});
+    reg.add_component<component::velocity>(shoot, {15, 15});
+    reg.add_component<component::size>(shoot, {50, 50});
+    reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
+}
+
 void create_shoot3(Entity entity, registry &reg)
 {
     Entity shoot = reg.spawn_entity();
@@ -238,6 +256,12 @@ void System::shoot_system_player_5(registry &reg, size_t i)
 {
     Entity player = reg.get_entity(i);
     create_shoot6(player, reg);
+}
+
+void System::shoot_system_player_6(registry &reg, size_t i)
+{
+    Entity player = reg.get_entity(i);
+    create_shoot11(player, reg);
 }
 
 void System::shoot_system_ennemies(registry &reg)

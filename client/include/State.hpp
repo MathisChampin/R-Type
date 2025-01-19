@@ -11,7 +11,8 @@ enum class GameState
     AnimationLevel,
     Infos,
     AnimationLevelGame,
-    GameOver
+    GameOver,
+    Settings
 };
 
 #endif // STATE_HPP
