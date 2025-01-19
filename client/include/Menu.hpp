@@ -18,6 +18,11 @@ public:
     /// @param callback Function called when the user selects this option.
     void addOption(const std::string &text, std::function<void()> callback);
 
+    /// @brief Adds a settings menu to the menu.
+    /// @param text The text displayed for this option.
+    /// @param callback Function called when the user selects this option.
+    void addSettingsMenu(const std::string &text, std::function<void()> callback);
+
     /// @brief Handles events for the menu.
     /// @param event The event to be handled.
     void handleEvent(const sf::Event &event);
