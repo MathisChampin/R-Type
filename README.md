@@ -91,13 +91,13 @@ Les informations de connexion UDP pour rejoindre un lobby peuvent être récupé
 Les diagrammes suivants illustrent l'architecture de l'ECS, du Client et du Serveur pour mieux comprendre leur interaction. Vous pouvez consulter les diagrammes complets dans le dossier `docs` à la racine du projet.
 
 - **ECS Architecture Diagram** :  
-  ![ECS Diagram](docs/ecs_architecture.png)
+  ![ECS Diagram](docs/diagramme_ecs.png)
   
 - **Client Architecture Diagram** :  
-  ![Client Diagram](docs/client_architecture.png)
+  ![Client Diagram](docs/diagramme_client.png)
   
 - **Server Architecture Diagram** :  
-  ![Server Diagram](docs/server_architecture.png)
+  ![Server Diagram](docs/diagramme_server.png)
 
 
 ---
