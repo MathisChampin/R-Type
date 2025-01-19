@@ -37,6 +37,47 @@ Les entités sont des identifiants uniques et les fonctions principales pour les
 - spawn_entity : Crée une nouvelle entité.
 - kill_entity : Supprime une entité et tous les composants qui lui sont associés.
 
+## Liste des Composants
+
+Les composants sont des structures de données associées aux entités. Chaque composant représente une propriété ou un état spécifique d'une entité. Voici la liste complète des composants disponibles :
+
+### Composants Disponibles
+
+1. **`attribute.hpp`**
+   - Définit le type ou les attributs de l'entité, comme un joueur, un ennemi, ou un tir.
+
+2. **`controllable.hpp`**
+   - Indique si l'entité peut être contrôlée par des entrées utilisateur (ex. touches de clavier ou de souris).
+
+3. **`idPlayer.hpp`**
+   - Stocke l'identifiant unique associé à un joueur pour les entités spécifiques à un joueur.
+
+4. **`level.hpp`**
+   - Gère le niveau d'une entité ou la progression dans un jeu.
+
+5. **`life.hpp`**
+   - Suit le nombre de points de vie d'une entité. Les entités avec 0 points de vie peuvent être marquées pour suppression.
+
+6. **`position.hpp`**
+   - Contient les coordonnées `(x, y)` d'une entité dans le monde.
+
+7. **`score.hpp`**
+   - Stocke le score d'une entité, souvent utilisé pour les joueurs.
+
+8. **`shoot_type.hpp`**
+   - Définit le type de projectile ou de tir associé à une entité, comme un tir normal ou spécial.
+
+9. **`size.hpp`**
+   - Gère les dimensions `(largeur, hauteur)` d'une entité pour les collisions ou le rendu.
+
+10. **`state.hpp`**
+    - Indique l'état actuel d'une entité, comme `Alive`, `Dead`, `Win` ou `Lose`.
+
+11. **`velocity.hpp`**
+    - Contient les vecteurs de mouvement `(dx, dy)` pour calculer les déplacements des entités.
+
+---
+
 ## SparseArray
 
 Le SparseArray est une structure de données optimisée pour stocker les composants. Il est utilisé pour associer efficacement des composants aux entités et offre des opérations rapides pour accéder aux données.
@@ -72,8 +113,61 @@ Itération sur les composants :
         // Utilisez chaque composant
     }
 ```
-  - Permet de parcourir tous les composants présents.
- 
+- Permet de parcourir tous les composants présents.
+
+Vérification d'existence d’un composant
+```cpp
+bool exists = sparseArray.contains(entityId);
+```
+- Retourne true si un composant est associé à l'entité, sinon false.
+
+Récupération sécurisée d’un composant
+```cpp
+auto &component = sparseArray.get(entityId);
+```
+- Retourne le composant associé à l'entité, ou nullptr si aucun composant n'est associé.
+
+Taille actuelle
+```cpp
+size_t size = sparseArray.size();
+```
+- Retourne le nombre de composants actuellement présents dans le SparseArray.
+
+### Exemple d'utilisation
+Voici un exemple illustrant comment utiliser le SparseArray :
+```cpp
+#include "SparseArray.hpp"
+
+// Définition d'un composant exemple
+struct Position {
+    float x, y;
+};
+
+int main() {
+    SparseArray<Position> sparseArray;
+
+    // Ajout d'un composant
+    sparseArray.insert(1, Position{100.0f, 200.0f});
+    sparseArray.insert(2, Position{300.0f, 400.0f});
+
+    // Récupération d'un composant
+    if (sparseArray.contains(1)) {
+        auto& pos = sparseArray[1];
+        std::cout << "Position: " << pos.x << ", " << pos.y << std::endl;
+    }
+
+    // Suppression d'un composant
+    sparseArray.erase(2);
+
+    // Itération sur les composants
+    for (auto& pos : sparseArray) {
+        std::cout << "Position: " << pos.x << ", " << pos.y << std::endl;
+    }
+
+    return 0;
+}
+```
+
 ## Registry
 
 Le registre (Registry) est le cœur du système ECS. Il gère la création des entités, leur destruction, ainsi que l’ajout et la gestion des composants.
@@ -92,6 +186,7 @@ Ajouter un composant :
 registry.addComponent(entity, MyComponent{...});
 ```
   - Associe un composant à une entité.
+- Si un composant du même type existe déjà pour cette entité, il sera remplacé.
 
 Récupérer un composant :
 
@@ -114,59 +209,42 @@ registry.kill_entity(entity);
 ```
   - Supprime une entité ainsi que tous ses composants associés.
 
-## Composants
-
-Les composants sont des structures de données associées aux entités. Ils définissent les propriétés et les états des entités.
-
-Exemple de composant :
-```
-struct Position {
-    float x, y;
-};
-```
-Pour associer un composant à une entité, utilisez le registre :
-
-```
-registry.addComponent(entity, Position{10.0f, 20.0f});
-```
 
 ## Exemple complet
 
-Voici un exemple illustrant comment utiliser le système ECS :
+Voici un exemple illustrant comment utiliser le Registry :
+``` cpp
+#include "Registry.hpp"
+#include "position.hpp"
+#include "velocity.hpp"
 
-# Étape 1 : Créer une entité
+int main() {
+    // Création d'un registre
+    Registry registry;
 
-```
-Entity player = registry.spawn_entity();
-```
+    // Création d'une entité
+    Entity entity = registry.spawn_entity();
 
-# Étape 2 : Ajouter des composants
+    // Ajout de composants
+    registry.add_component(entity, Position{100.0f, 200.0f});
+    registry.add_component(entity, Velocity{5.0f, -3.0f});
 
-```
-struct Position { float x, y; };
-struct Velocity { float dx, dy; };
+    // Vérification de la présence d'un composant
+    if (registry.has_component<Position>(entity)) {
+        // Récupération et modification d'un composant
+        auto& position = registry.get_component<Position>(entity);
+        position.x += 10.0f;
+        position.y += 20.0f;
+    }
 
-registry.addComponent(player, Position{100.0f, 200.0f});
-registry.addComponent(player, Velocity{1.0f, 1.5f});
-```
+    // Suppression d'un composant
+    registry.remove_component<Velocity>(entity);
 
-# Étape 3 : Modifier un composant
+    // Destruction de l'entité
+    registry.kill_entity(entity);
 
-```
-Position& pos = registry.getComponent<Position>(player);
-pos.x += 10.0f; // Déplace l'entité de 10 unités sur l'axe X.
-```
-
-# Étape 4 : Supprimer un composant
-
-```
-registry.removeComponent<Velocity>(player);
-```
-
-# Étape 5 : Détruire une entité
-
-```
-registry.kill_entity(player);
+    return 0;
+}
 ```
 
 ## Systèmes
@@ -176,78 +254,160 @@ Liste des systèmes dans le projet
 
 1. Collision System
 
-    Rôle : Gère les collisions entre les entités.
-    Fonctionnement :
-        Parcourt les entités ayant des composants de type Position et BoundingBox.
-        Vérifie si deux entités se chevauchent.
-        Applique des actions comme arrêter un mouvement ou infliger des dégâts.
-    Exemple d'utilisation :
-    ```
-    System sys;
-    sys.collision_system(registry);
-    ```
+- Rôle : Gère les collisions entre les entités.
+- Fonctionnement :
+    - Parcourt les entités ayant des composants de type Position et BoundingBox.
+    - Vérifie si deux entités se chevauchent.
+    - Applique des actions comme arrêter un mouvement ou infliger des dégâts.
+  
+Exemple d'utilisation :
+```cpp
+System sys;
+sys.collision_system(registry);
+```
 
 2. Controllable System
 
-    Rôle : Permet de manipuler les entités contrôlées par un joueur
-    Fonctionnement :
-        Parcourt les entités avec un composant Controllable.
-        Applique les commandes (déplacement, actions) basées sur les entrées utilisateur ou une logique définie.
-    Exemple d'utilisation :
-    ```
-    System sys;
-    sys.controllable_system(registry);
-    ```
+- Rôle : Permet de manipuler les entités contrôlées par un joueur.
+
+- Fonctionnement :
+    - Parcourt les entités avec un composant Controllable.
+    - Applique les commandes (déplacement, actions) basées sur les entrées utilisateur ou une logique définie.
+  
+Exemple d'utilisation :
+```cpp
+System sys;
+sys.controllable_system(registry);
+```
 
 3. Kill System
 
-    Rôle : Supprime les entités marquées comme "mortes" ou inutilisées.
-    Fonctionnement :
-        Parcourt les entités ayant un composant Health.
-        Supprime celles ayant des points de vie inférieurs ou égaux à zéro.
-    Exemple d'utilisation :
-    ```
-    System sys;
-    sys.kill_system(registry);
-    ```
+- Rôle : Supprime les entités marquées comme "mortes" ou inutilisées.
+- Fonctionnement :
+    - Parcourt les entités ayant un composant Health.
+    - Supprime celles ayant des points de vie inférieurs ou égaux à zéro.
+  
+Exemple d'utilisation :
+``` cpp
+System sys;
+sys.kill_system(registry);
+```
 
 4. Level System
 
-    Rôle : Gère la progression et les changements de niveau.
-    Fonctionnement :
-        Parcourt les entités ayant un composant Level.
-        Applique des effets ou met à jour les statistiques en fonction du niveau.
-    Exemple d'utilisation :
-    ```
-    System sys;
-    sys.level_system(registry);
-    ```
+- Rôle : Gère la progression et les changements de niveau.
+- Fonctionnement :
+    - Parcourt les entités ayant un composant Level.
+    - Applique des effets ou met à jour les statistiques en fonction du niveau.
+  
+Exemple d'utilisation :
+```cpp
+System sys;
+sys.level_system(registry);
+```
 
 5. Position System
 
-    Rôle : Met à jour la position des entités en fonction de leur vitesse et de leur direction.
-    Fonctionnement :
-        Parcourt les entités avec les composants Position et Velocity.
-        Calcule la nouvelle position en appliquant des vecteurs de déplacement.
-    Exemple d'utilisation :
-    ```
-    System sys;
-    sys.position_system(registry);
-    ```
+- Rôle : Met à jour la position des entités en fonction de leur vitesse et de leur direction.
+- Fonctionnement :
+    - Parcourt les entités avec les composants Position et Velocity.
+    - Calcule la nouvelle position en appliquant des vecteurs de déplacement.
+
+Exemple d'utilisation :
+```cpp
+System sys;
+sys.position_system(registry);
+```
 
 6. Shoot System
 
-    Rôle : Gère le tir de projectiles par les entités.
-    Fonctionnement :
-        Parcourt les entités avec un composant Shooter.
-        Crée de nouvelles entités "projectiles" avec des composants Position et Velocity.
-    Exemple d'utilisation :
-    ```
-    System sys;
-    sys.shoot_sytem(registry);
-    ```
+- Rôle : Gère le tir de projectiles par les entités.
+- Fonctionnement :
+    - Parcourt les entités avec un composant Shooter.
+    - Crée de nouvelles entités "projectiles" avec des composants Position et Velocity.
+  
+Exemple d'utilisation :
+```cpp
+System sys;
+sys.shoot_sytem(registry);
+```
 
-Comment ajouter un nouveau système ?
+7. Collision Power-Up System
+- Rôle : Gère les collisions entre les entités et les power-ups.
+- Fonctionnement :
+    - Vérifie si une entité avec un composant Position entre en collision avec un power-up.
+    - Crée de nouvelles entités "projectiles" avec des composants
+    - Position et Velocity.
+
+Exemple d'utilisation :
+```cpp
+System sys;
+sys.collision_power_up(registry);
+```
+
+8. Create Power-Up System
+- Rôle : Crée et gère les power-ups dans le jeu.
+- Fonctionnement :
+    - Génère des entités "power-up" avec des composants spécifiques..
+    - Les power-ups peuvent inclure des effets comme l'augmentation de la vitesse, de la vie, etc.
+
+Exemple d'utilisation :
+```cpp
+System sys;
+sys.create_power_up(registry);
+```
+
+9. Life Power-Up System
+- Rôle : Applique les effets de power-ups qui augmentent les points de vie.
+- Fonctionnement :
+    - Parcourt les entités ayant un composant Life.
+    - Ajoute des points de vie en fonction des collisions avec des power-ups.
+
+Exemple d'utilisation :
+```cpp
+System sys;
+sys.life_power_up_life(registry);
+```
+
+10. Velocity Power-Up System
+- Rôle : Gère les power-ups qui augmentent la vitesse des entités.
+- Fonctionnement :
+    - Parcourt les entités ayant un composant Velocity.
+    - Augmente la vitesse des entités en fonction des collisions avec des power-ups.
+
+Exemple d'utilisation :
+```cpp
+System sys;
+sys.velocity_power_up_move(registry);
+```
+
+11. Lose System
+- Rôle : Détecte les conditions de défaite.
+- Fonctionnement :
+    - Parcourt les entités avec un composant State.
+    - Change l’état des entités en Lose si certaines conditions sont remplies (par exemple, lorsque les points de vie sont à zéro).
+
+Exemple d'utilisation :
+
+```cpp
+System sys;
+sys.lose_system(registry);
+```
+
+11. Win System
+- Rôle : Détecte les conditions de victoire.
+- Fonctionnement :
+    - Parcourt les entités avec un composant Level.
+    - Change l’état des entités en Win lorsque le niveau final est atteint.
+
+Exemple d'utilisation :
+
+```cpp
+System sys;
+sys.win_system(registry);
+```
+
+### Comment ajouter un nouveau système ?
 
 ajout de la méthode dans la class système :
     Implémentez une fonction qui parcourt les entités et applique une logique.
@@ -266,6 +426,36 @@ Instanciez et appelez le système dans votre boucle principale.
 ```
 System sys;
 sys.exemple_system(registry);
+```
+### Exemple d'utilisation des systemes
+
+```cpp
+#include "Registry.hpp"
+#include "System.hpp"
+
+int main() {
+    registry reg;
+
+    // Création d'entités
+    Entity player = reg.spawn_entity();
+    reg.add_component(player, component::Position{100, 200});
+    reg.add_component(player, component::Velocity{5, 0});
+    reg.add_component(player, component::Life{100});
+
+    // Initialisation des systèmes
+    System sys;
+
+    // Mise à jour des positions
+    sys.position_system(reg);
+
+    // Gestion des collisions
+    sys.collision_system(reg);
+
+    // Vérification des conditions de victoire
+    sys.win_system(reg);
+
+    return 0;
+}
 ```
 
 ### Conclusion
