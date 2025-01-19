@@ -33,6 +33,7 @@ private:
     void triggerPopup(const std::string &, const std::string &);
     void renderPopup();
 
+    bool gameCreated{false};
     sf::RenderWindow m_window;
     sf::Font m_font;
     std::unique_ptr<Menu> m_menu;

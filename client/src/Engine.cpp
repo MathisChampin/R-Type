@@ -80,9 +80,15 @@ void Engine::triggerPopup(const std::string& spritePath, const std::string& mess
 
 void Engine::setupMenuOptions()
 {
-    m_menu->addOption("Play", [this]() {
-        std::cout << "Démarrage du jeu..." << std::endl;
-        m_game = std::make_unique<Game>(m_creatorIp, m_window, m_customMenu.get()->getSelectedSkin(), m_font, *m_playingBackground, m_soundManager);
+
+    m_menu->addOption("Play", [this]() { 
+        if (!gameCreated) {
+            std::cout << "Création du jeu..." << std::endl;
+            m_game = std::make_unique<Game>(m_creatorIp, m_window, m_customMenu.get()->getSelectedSkin(), m_font, *m_playingBackground, m_soundManager);
+            gameCreated = true; 
+        } else {
+            std::cout << "Reprise du jeu..." << std::endl;
+        }
         m_currentState = GameState::Playing;
     });
 
