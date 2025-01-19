@@ -192,7 +192,7 @@ void OptionsMenu::connectTcpClient(const std::string& ipAddress, const std::stri
 
 void OptionsMenu::setupButtons()
 {
-    std::vector<std::string> buttonLabels = {"Connexion", "Créer un lobby", "Rejoindre un lobby", "Quitter le lobby", "Lister les lobbies"};
+    std::vector<std::string> buttonLabels = {"Connect", "Create a lobby", "Join a lobby", "Leave the lobby", "List lobbies"};
     float yOffset = 550;
 
     for (const auto &label : buttonLabels) {
@@ -391,7 +391,7 @@ void OptionsMenu::createLobby()
 {
     if (m_tcpClient.has_value()) {
         if (m_lobbyNameInput.empty()) {
-            m_lobbyListText.setString("Erreur : le nom du lobby est vide.");
+            m_lobbyListText.setString("Erreur : lobby name is empty.");
             return;
         }
 
@@ -407,8 +407,8 @@ void OptionsMenu::createLobby()
             if (responseStr.find("ERROR:") == 0) {
                 m_lobbyListText.setString(responseStr);
             } else {
-                m_lobbyListText.setString("Lobby créé avec succès.");
-                m_lobbyNameInput.clear();
+                    m_lobbyListText.setString("Lobby created successfully.");
+                    m_lobbyNameInput.clear();
                 if (friendlyFireStr == "1")
                     ff = true;
                 if (difficultyStr == "Easy")
@@ -419,10 +419,10 @@ void OptionsMenu::createLobby()
                     start_udp(NmpServer::Difficulty::Hard, ff);
             }
         } else {
-            m_lobbyListText.setString("Erreur lors de la création du lobby.");
+            m_lobbyListText.setString("Error create lobby.");
         }
     } else {
-        m_lobbyListText.setString("Erreur : Client TCP non initialisé.");
+        m_lobbyListText.setString("Error: TCP client not initialized.");
     }
 }
 
@@ -455,7 +455,7 @@ void OptionsMenu::joinLobby() {
                     if (udpInfoResponseStr.find("ERROR:") == 0) {
                         m_lobbyListText.setString(udpInfoResponseStr);
                     } else {
-                        m_lobbyListText.setString("Infos UDP reçues : " + udpInfoResponseStr);
+                        m_lobbyListText.setString("Info UDP : " + udpInfoResponseStr);
                         creatorIp.emplace(udpInfoResponseStr);
                     }
                 } else {
@@ -467,7 +467,7 @@ void OptionsMenu::joinLobby() {
             m_lobbyListText.setString("Erreur en rejoignant le lobby.");
         }
     } else {
-        m_lobbyListText.setString("Erreur : Client TCP non initialisé.");
+        m_lobbyListText.setString("Error: TCP client not initialized.");
     }
 }
 
@@ -478,14 +478,14 @@ void OptionsMenu::leaveLobby()
         m_tcpClient.value().send("LEAVE_LOBBY");
         auto response = m_tcpClient.value().receive();
         if (response.has_value()) {
-            m_lobbyListText.setString("Lobby quitté avec succès.");
+        m_lobbyListText.setString("Successfully left the lobby.");
             m_chatHistory.clear();
             m_chatHistoryText.setString("");
         } else {
             m_lobbyListText.setString("Erreur en quittant le lobby.");
         }
     } else {
-        m_lobbyListText.setString("Erreur : Client TCP non initialisé.");
+        m_lobbyListText.setString("Error: TCP client not initialized.");
     }
 }
 
@@ -505,7 +505,7 @@ void OptionsMenu::listLobbies()
             m_lobbyListText.setString("Erreur en listant les lobbies.");
         }
     } else {
-        m_lobbyListText.setString("Erreur : Client TCP non initialisé.");
+        m_lobbyListText.setString("Error: TCP client not initialized.");;
     }
 }
 
@@ -517,8 +517,7 @@ void OptionsMenu::sendMessage()
             getChatHistory();
         }
     } else {
-        m_lobbyListText.setString("Erreur : Client TCP non initialisé.");
-    }
+        m_lobbyListText.setString("Error: TCP client not initialized.");    }
 }
 
 void OptionsMenu::getChatHistory()
@@ -530,8 +529,7 @@ void OptionsMenu::getChatHistory()
             updateChatHistory(response.value());
         }
     } else {
-        m_lobbyListText.setString("Erreur : Client TCP non initialisé.");
-    }
+        m_lobbyListText.setString("Error: TCP client not initialized.");    }
 }
 
 void OptionsMenu::updateChatHistory(const std::string& chatHistory)
