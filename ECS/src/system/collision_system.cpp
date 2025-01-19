@@ -37,6 +37,43 @@ bool is_enemy(const component::attribute &attribute)
     }
 }
 
+bool check_collision_boss(sparse_array<component::position> &positions,
+    sparse_array<component::size> &sizes,
+    sparse_array<component::attribute> &attributes,
+    size_t entity1,
+    size_t entity2)
+{
+    auto &pos1 = positions[entity1];
+    auto &size1 = sizes[entity1];
+    auto &pos2 = positions[entity2];
+    auto &size2 = sizes[entity2];
+
+    const float enemy5_zone_x_min = 700.0f;
+    const float enemy5_zone_x_max = 800.0f;
+    const float enemy5_zone_y_min = 500.0f;
+    const float enemy5_zone_y_max = 900.0f;
+    bool collision_x = false;
+    bool collision_y = false;
+
+    if (attributes[entity1]._type == component::attribute::Ennemies5) {
+        if (pos1.x >= enemy5_zone_x_min && pos1.x + size1.x <= enemy5_zone_x_max &&
+            pos1.y >= enemy5_zone_y_min && pos1.y + size1.y <= enemy5_zone_y_max) {
+            
+            collision_x = (pos1.x < pos2.x + size2.x) && (pos1.x + size1.x > pos2.x);
+            collision_y = (pos1.y < pos2.y + size2.y) && (pos1.y + size1.y > pos2.y);
+        }
+    } 
+    if (attributes[entity2]._type == component::attribute::Ennemies5) {
+        if (pos2.x >= enemy5_zone_x_min && pos2.x + size2.x <= enemy5_zone_x_max &&
+            pos2.y >= enemy5_zone_y_min && pos2.y + size2.y <= enemy5_zone_y_max) {
+            
+            collision_x = (pos2.x < pos1.x + size1.x) && (pos2.x + size2.x > pos1.x);
+            collision_y = (pos2.y < pos1.y + size1.y) && (pos2.y + size2.y > pos1.y);
+        }
+    }
+    return collision_x && collision_y;
+}
+
 bool check_collision(sparse_array<component::position> &positions,
     sparse_array<component::size> &sizes,
     sparse_array<component::attribute> &attributes,
@@ -49,13 +86,14 @@ bool check_collision(sparse_array<component::position> &positions,
     auto &size2 = sizes[entity2];
 
     if (is_enemy(attributes[entity1])) {
-        size1.x = size1.x / 2;
-        size1.y = size1.x / 2;
+        size1.x = size1.x;
+        size1.y = size1.y;
     }
     if (is_enemy(attributes[entity2])) {
-        size2.x = size2.x / 2;
-        size2.y = size2.x / 2;
+        size2.x = size2.x;
+        size2.y = size2.y;
     }
+
     bool collision_x = (pos1.x < pos2.x + size2.x) && (pos1.x + size1.x > pos2.x);
 
     bool collision_y = (pos1.y < pos2.y + size2.y) && (pos1.y + size1.y > pos2.y);
@@ -425,6 +463,9 @@ void System::collision_system(registry &reg)
                 continue;
             if (!check_collision(positions, sizes, attributes, i, j))
                 continue;
+            //if (!check_collision_boss(positions, sizes, attributes, i, j)) {
+            //    continue;
+            //}
             if (attributes[j]._type == component::attribute::Player1)
                 handle_collision_with_player1(i, shoot_id.id, j, lifes, states, attributes, reg);
             if (attributes[j]._type == component::attribute::Player2)
@@ -434,7 +475,7 @@ void System::collision_system(registry &reg)
             if (attributes[j]._type == component::attribute::Player4)
                 handle_collision_with_player4(i, shoot_id.id, j, lifes, states, attributes, reg);
             if (is_enemy(attributes[j]))
-                        handle_collision_with_enemy(i, shoot_id.id, j, scores, states, lifes, attributes, reg);
+                handle_collision_with_enemy(i, shoot_id.id, j, scores, states, lifes, attributes, reg);
         }
     }
 }
@@ -467,6 +508,9 @@ void System::collision_system_with_frendly_fire(registry &reg)
                 continue;
             if (!check_collision(positions, sizes, attributes, i, j))
                 continue;
+            //if (!check_collision_boss(positions, sizes, attributes, i, j)) {
+            //    continue;
+            //}
             if (attributes[j]._type == component::attribute::Player1)
                 handle_collision_with_fire_player1(i, j, lifes, states, attributes);
             if (attributes[j]._type == component::attribute::Player2)
@@ -476,7 +520,7 @@ void System::collision_system_with_frendly_fire(registry &reg)
             if (attributes[j]._type == component::attribute::Player4)
                 handle_collision_with_fire_player4(i, j, lifes, states, attributes);
             if (is_enemy(attributes[j]))
-                        handle_collision_with_enemy(i, shoot_id.id, j, scores, states, lifes, attributes, reg);
+                handle_collision_with_enemy(i, shoot_id.id, j, scores, states, lifes, attributes, reg);
         }
     }
 }

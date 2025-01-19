@@ -236,7 +236,7 @@ namespace NmpServer
             _ecs.add_component<component::attribute>(ennemies, {component::attribute::Ennemies5});
             _ecs.add_component<component::size>(ennemies, {900, 800});
             _ecs.add_component<component::velocity>(ennemies, {0, 0});
-            _ecs.add_component<component::life>(ennemies, {10});
+            _ecs.add_component<component::life>(ennemies, {30});
         }
 
         _ecs.add_component<component::level>(ennemies, {component::level::Level0});
