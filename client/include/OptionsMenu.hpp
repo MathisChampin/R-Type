@@ -7,6 +7,8 @@
 #include <string>
 #include <optional>
 #include "client/TcpClient.hpp"
+#include "../../server/include/ProceduralLevel.hpp"
+
 
 class OptionsMenu
 {
@@ -85,7 +87,7 @@ private:
     void sendMessage();
     void getChatHistory();
     void updateChatHistory(const std::string& chatHistory);
-    int start_udp();
+    int start_udp(const NmpServer::Difficulty diff, const bool friendlyFire);
 };
 
 #endif // OPTIONS_MENU_HPP

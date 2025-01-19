@@ -3,6 +3,7 @@
 #include <cctype>
 #include "../../server/include/Server.hpp"
 #include "../../server/include/ProtocolHandler.hpp"
+//#include "../../server/include/ProceduralLevel.hpp"
 
 OptionsMenu::OptionsMenu(sf::RenderWindow &window)
     : m_window(window),
@@ -368,11 +369,11 @@ void OptionsMenu::handleEvent(const sf::Event &event)
     }
 }
 
-int OptionsMenu::start_udp() {
+int OptionsMenu::start_udp(const NmpServer::Difficulty diff, const bool friendlyFire) {
     try {
-        std::thread serverThread([this]() {
+        std::thread serverThread([this, diff, friendlyFire]() {
             try {
-                NmpServer::Server server;
+                NmpServer::Server server(diff, friendlyFire);
 
                 server.run();
             } catch (const std::exception& e) {
@@ -391,6 +392,7 @@ int OptionsMenu::start_udp() {
 
 
 
+
 void OptionsMenu::createLobby()
 {
     if (m_tcpClient.has_value()) {
@@ -402,7 +404,7 @@ void OptionsMenu::createLobby()
         std::string lobbyNameCopy = m_lobbyNameInput;
         std::string difficultyStr = std::to_string(m_difficulty);
         std::string friendlyFireStr = m_friendlyFire ? "1" : "0";
-
+        bool ff{false};
         m_tcpClient.value().send("CREATE_LOBBY " + lobbyNameCopy);
 
         auto response = m_tcpClient.value().receive();
@@ -413,7 +415,14 @@ void OptionsMenu::createLobby()
             } else {
                 m_lobbyListText.setString("Lobby créé avec succès.");
                 m_lobbyNameInput.clear();
-                start_udp();
+                if (friendlyFireStr == "1")
+                    ff = true;
+                if (difficultyStr == "Easy")
+                    start_udp(NmpServer::Difficulty::Easy, ff);
+                else if (difficultyStr == "Meduim")
+                    start_udp(NmpServer::Difficulty::Medium, ff);
+                else
+                    start_udp(NmpServer::Difficulty::Hard, ff);
             }
         } else {
             m_lobbyListText.setString("Erreur lors de la création du lobby.");

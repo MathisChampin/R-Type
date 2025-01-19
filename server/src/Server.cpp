@@ -5,7 +5,9 @@
 
 namespace NmpServer
 {
-    Server::Server() : 
+    Server::Server(const Difficulty difficulty, const bool friendlyFire) :
+        _difficulty(difficulty),
+        _friendlyFire(friendlyFire),
         _running(false),
         _io_context(),
         _socketRead(_io_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 8080)),
@@ -14,10 +16,10 @@ namespace NmpServer
         _parser("../../server/configFile/level1.json")
     {
         _bufferAsio.fill(0);
-        _prodLevel.generateLevel(2);
+        _prodLevel.generateLevel(2, Difficulty::Easy);
         _parser.parseConfig();
-        //_ptp.loadEnnemiesFromconfig(_parser.getVector());
         _vecSpawn = _parser.getVector();
+        std::cout << "test ff: " << _friendlyFire << std::endl;
     }
 
     Server::~Server()
@@ -206,17 +208,23 @@ namespace NmpServer
         int difficulty{2};
         clock.start();
         
+
         auto frameDuration = std::chrono::milliseconds(40);
         while (_running) {
             {
                 std::unique_lock<std::mutex> lock(_pauseMutex);
                 _pauseCv.wait(lock, [this] { return !_paused.load(); });
             }
+            auto &ecs = _ptp.getECS();
             {
+            if (_friendlyFire) {
+                std::cout << "ff" << std::endl;
+                sys.collision_system_with_frendly_fire(ecs);
+            } else {
+                sys.collision_system(ecs);
+            }
                 std::lock_guard<std::mutex> lock(_ecsMutex);
                 delaySpawn(clock);
-                auto &ecs = _ptp.getECS();
-                sys.collision_system(ecs);
                 sys.position_system(ecs);
                 sys.shoot_system_ennemies(ecs);
                 sys.lose_system(ecs);
@@ -233,7 +241,7 @@ namespace NmpServer
                     _ptp.clearPlayer();
                     std::cout << "new level" << std::endl;
 
-                    _prodLevel.generateLevel(difficulty);
+                    _prodLevel.generateLevel(difficulty, Difficulty::Easy);
                     _parser.loadNewLevel("../../server/configFile/level1.json");
                     _vecSpawn = _parser.getVector();
 

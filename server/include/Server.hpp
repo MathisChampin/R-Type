@@ -17,7 +17,7 @@
 namespace NmpServer {
     class Server : public IServer {
         public:
-            Server();
+            Server(const Difficulty difficulty, const bool friendlyFire);
             ~Server();
 
             void run() override;
@@ -43,6 +43,8 @@ namespace NmpServer {
             void pauseThreads();
             void resumeThreads();
 
+            Difficulty _difficulty;
+            bool _friendlyFire;
             std::atomic<bool> _paused{false};
             std::mutex _pauseMutex;
             std::condition_variable _pauseCv;
@@ -55,6 +57,7 @@ namespace NmpServer {
             std::mutex _playerMutex;
             std::condition_variable _cv;
             std::condition_variable _cvShoot;
+    
             asio::io_context _io_context;
             asio::ip::udp::socket _socketRead;
             asio::ip::udp::socket _socketSend;
