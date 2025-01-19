@@ -12,8 +12,7 @@ public:
     void updateLevel(int newLevel);
     bool checkLevel()
     {
-        if (m_currentLevel == 3 || m_currentLevel == 4 || m_currentLevel == 5 ||
-        m_currentLevel == 6)
+        if (m_currentLevel == 3 || m_currentLevel == 4 || m_currentLevel == 5 || m_currentLevel == 6)
             return true;
         return false;
     }
@@ -24,8 +23,11 @@ public:
     void render(sf::RenderWindow &window);
 
 private:
+    void updateBackground();
+
     sf::Text m_levelText;
+    sf::RectangleShape m_backgroundRect; 
     int m_currentLevel;
 };
 
-#endif // SCORE_HPP
+#endif // LEVEL_HPP
