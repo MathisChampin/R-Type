@@ -6,10 +6,7 @@ Ce repo contient la structure d’un projet **R-Type** avec un **client**,  **se
 
 # Compatibilité :
 
-![windows logo](./images/windows-logo.jpg) ![linux logo](./images/linux-logo.png) ![apple logo](./images/apple-logo.png)  
-The project runs on Windows and Unix systems, using [CMake](https://cmake.org/).  
-
-
+Linux & WINDOWS par Cmake
 
 ## Structure du projet
 
