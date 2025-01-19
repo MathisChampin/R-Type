@@ -107,14 +107,15 @@ namespace NmpServer
         auto &att = _attributes[i];
         auto &lvl = _levels[i];
 
-        if (st._stateKey == component::state::stateKey::Lose) {
+        static std::vector<bool> playerLoseTracked(_attributes.size(), false);
+
+        if (st._stateKey == component::state::stateKey::Lose && !playerLoseTracked[i]) {
             std::cout << "connard" << std::endl;
             _playerLose++;
+            playerLoseTracked[i] = true;
         }
-        // std::cout << "lEVEL: " << lvl._levelKey << std::endl;
         Packet packet(EVENT::INFO, l.life, s.score, lvl._levelKey);
         if (att._type == component::attribute::Player1) {
-            std::cout << "send life player 1" << std::endl;
             send_data(packet, _vecPlayer[0]);
         } else if (att._type == component::attribute::Player2) {
             send_data(packet, _vecPlayer[1]);
@@ -129,7 +130,6 @@ namespace NmpServer
     {
         int id = 0;
         _sizePlayer = getLenVecPLayer();
-        //std::cout << "BEGIN SEND ENTITY" << std::endl;
         for (size_t i = 0; i < _states.size() && i < _attributes.size(); i++) {
             auto &st = _states[i];
             auto &att = _attributes[i];
