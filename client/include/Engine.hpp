@@ -29,6 +29,8 @@ private:
     void handleEvents();
     void update(float deltaTime);
     void render(float deltaTime);
+    void triggerPopup(const std::string &, const std::string &);
+    void renderPopup();
 
     sf::RenderWindow m_window;
     sf::Font m_font;
@@ -40,6 +42,7 @@ private:
     std::unique_ptr<Infos> m_infoSection;
 
     std::unique_ptr<ParallaxBackground> m_menuBackground;
+    std::unique_ptr<ParallaxBackground> m_levelBackground;
     std::unique_ptr<ParallaxBackground> m_infosBackground;
     std::unique_ptr<ParallaxBackground> m_playingBackground;
     std::unique_ptr<ParallaxBackground> m_customBackground;
@@ -49,6 +52,11 @@ private:
     std::string m_creatorIp;
     int level;
     float m_animationTime;
+    sf::Clock m_popupClock;
+    bool m_showPopup;                      
+    sf::Texture m_popupTexture;            
+    sf::Sprite m_popupSprite;          
+    std::string m_popupMessage;
 };
 
 #endif // ENGINE_HPP
