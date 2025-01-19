@@ -45,37 +45,137 @@ Les composants sont des structures de données associées aux entités. Chaque c
 
 1. **`attribute.hpp`**
    - Définit le type ou les attributs de l'entité, comme un joueur, un ennemi, ou un tir.
+```cpp
+namespace component {
+    struct attribute {
+        enum Type { Player, Enemy, Shoot } _type;
+    };
+}
 
-2. **`controllable.hpp`**
+// Ajouter un attribut à une entité
+registry.add_component<component::attribute>(entity, {component::attribute::Player});
+```
+
+1. **`controllable.hpp`**
    - Indique si l'entité peut être contrôlée par des entrées utilisateur (ex. touches de clavier ou de souris).
+```cpp
+namespace component {
+    struct controllable {
+        enum Key { Left, Right, Shoot, None } active_key;
+    };
+}
 
+// Ajouter un composant contrôlable
+registry.add_component<component::controllable>(entity, {component::controllable::None});
+```
 3. **`idPlayer.hpp`**
    - Stocke l'identifiant unique associé à un joueur pour les entités spécifiques à un joueur.
+```cpp
+namespace component {
+    struct idPlayer {
+        int id;
+    };
+}
 
+// Ajouter un identifiant de joueur
+registry.add_component<component::idPlayer>(entity, {1});
+```
 4. **`level.hpp`**
    - Gère le niveau d'une entité ou la progression dans un jeu.
+```cpp
+namespace component {
+    struct level {
+        enum LevelKey { Level1, Level2, Level3 } _levelKey;
+    };
+}
 
+// Ajouter un composant de niveau
+registry.add_component<component::level>(entity, {component::level::Level1});
+```
 5. **`life.hpp`**
    - Suit le nombre de points de vie d'une entité. Les entités avec 0 points de vie peuvent être marquées pour suppression.
+```cpp
+namespace component {
+    struct life {
+        int life;
+    };
+}
 
+// Ajouter des points de vie
+registry.add_component<component::life>(entity, {100});
+```
 6. **`position.hpp`**
    - Contient les coordonnées `(x, y)` d'une entité dans le monde.
+```cpp
+namespace component {
+    struct position {
+        int x, y;
+    };
+}
 
+// Ajouter une position
+registry.add_component<component::position>(entity, {50, 100});
+```
 7. **`score.hpp`**
    - Stocke le score d'une entité, souvent utilisé pour les joueurs.
+```cpp
+namespace component {
+    struct score {
+        int points;
+    };
+}
 
+// Ajouter un score
+registry.add_component<component::score>(entity, {0});
+```
 8. **`shoot_type.hpp`**
    - Définit le type de projectile ou de tir associé à une entité, comme un tir normal ou spécial.
+```cpp
+namespace component {
+    struct shoot_type {
+        component::attribute _type;
+    };
+}
+
+registry.add_component<component::shoot_type>(entity, {component::shoot_type::Normal});
+```
 
 9. **`size.hpp`**
    - Gère les dimensions `(largeur, hauteur)` d'une entité pour les collisions ou le rendu.
+```cpp
+namespace component {
+    struct size {
+        float width, height;
+    };
+}
 
+// Ajouter une taille
+registry.add_component<component::size>(entity, {50.0f, 100.0f});
+```
 10. **`state.hpp`**
     - Indique l'état actuel d'une entité, comme `Alive`, `Dead`, `Win` ou `Lose`.
+```cpp
+namespace component {
+    struct state {
+        enum StateKey { Alive, Dead, Win, Lose } _stateKey;
+    };
+}
 
+// Ajouter un état
+registry.add_component<component::state>(entity, {component::state::Alive});
+```
 11. **`velocity.hpp`**
     - Contient les vecteurs de mouvement `(dx, dy)` pour calculer les déplacements des entités.
+```cpp
+namespace component {
+    struct velocity {
+        float dx, dy;
+    };
+}
 
+// Ajouter une vélocité
+registry.add_component<component::velocity>(entity, {1.0f, 0.0f});
+```
 ---
 
 ## SparseArray
