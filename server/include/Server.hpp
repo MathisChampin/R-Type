@@ -26,7 +26,8 @@ namespace NmpServer {
             void extract_bytes(std::size_t &bytes, std::vector<int> &vec) override;
             void broadcast(Packet &packet) override;
             void sendScoreLife(int i, component::state &st);
-            void checkGameOver(component::state &st);
+            void stop();
+            void killSocket();
             asio::ip::udp::endpoint getLastEndpoint() const;
 
             std::vector<asio::ip::udp::endpoint> _vecPlayer;

@@ -370,24 +370,18 @@ void OptionsMenu::handleEvent(const sf::Event &event)
 }
 
 int OptionsMenu::start_udp(const NmpServer::Difficulty diff, const bool friendlyFire) {
-    try {
-        std::thread serverThread([this, diff, friendlyFire]() {
-            try {
-                NmpServer::Server server(diff, friendlyFire);
+    std::cout << "create udp" << std::endl;
 
-                server.run();
-            } catch (const std::exception& e) {
-                std::cerr << "Erreur lors de l'exécution du serveur : " << e.what() << std::endl;
-            }
-        });
+    // Créer un thread pour le serveur
+    std::thread serverThread([this, diff, friendlyFire]() {
+        NmpServer::Server server(diff, friendlyFire);
+        server.run();
+    });
 
-        serverThread.detach();
-
-        return 0;
-    } catch (const std::exception& e) {
-        std::cerr << "Exception lors de la création du thread du serveur : " << e.what() << std::endl;
-        return -1;
-    }
+    // Détacher le thread pour exécution indépendante
+    serverThread.detach();
+    std::cout << "ca kill" << std::endl;
+    return 0;
 }
 
 
