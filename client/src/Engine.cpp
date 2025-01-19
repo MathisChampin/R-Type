@@ -198,7 +198,7 @@ void Engine::handleEvents()
     sf::Event event;
     while (m_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
-            if (m_currentState == GameState::Custom || m_currentState == GameState::Options) {
+            if (m_currentState == GameState::Custom || m_currentState == GameState::Options || m_currentState == GameState::Infos) {
                 m_currentState = GameState::Menu;
             } else {
                 m_window.close();
