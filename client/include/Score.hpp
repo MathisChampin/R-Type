@@ -13,7 +13,10 @@ public:
     void render(sf::RenderWindow &window);
 
 private:
+    void updateBackground();
+
     sf::Text m_scoreText;
+    sf::RectangleShape m_backgroundRect;
     int m_currentScore;
 };
 
