@@ -81,15 +81,21 @@ void Engine::triggerPopup(const std::string& spritePath, const std::string& mess
 void Engine::setupMenuOptions()
 {
 
-    m_menu->addOption("Play", [this]() { 
-        if (!gameCreated) {
-            std::cout << "Création du jeu..." << std::endl;
-            m_game = std::make_unique<Game>(m_creatorIp, m_window, m_customMenu.get()->getSelectedSkin(), m_font, *m_playingBackground, m_soundManager);
-            gameCreated = true; 
-        } else {
-            std::cout << "Reprise du jeu..." << std::endl;
-        }
-        m_currentState = GameState::Playing;
+    m_menu->addOption("Play", [this]() {
+        std::cout << "Création du jeu..." << std::endl;
+
+        // Création d'une instance unique de `Game`
+        m_game = std::make_unique<Game>(
+            m_creatorIp,                          // Adresse IP du créateur
+            m_window,                             // Fenêtre principale
+            m_customMenu->getSelectedSkin(),      // Skin sélectionné
+            m_font,                               // Police utilisée
+            *m_playingBackground,                 // Fond de jeu
+            m_soundManager                        // Gestionnaire de sons
+        );
+
+    // Basculer à l'état de jeu
+    m_currentState = GameState::Playing;
     });
 
     m_menu->addOption("Multiplayer", [this]() {
@@ -205,7 +211,7 @@ void Engine::handleEvents()
     sf::Event event;
     while (m_window.pollEvent(event)) {
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-            if (m_currentState == GameState::Custom || m_currentState == GameState::Options || m_currentState == GameState::Settings || m_currentState == GameState::Infos || m_currentState == GameState::Playing) {
+            if (m_currentState == GameState::Custom || m_currentState == GameState::Options || m_currentState == GameState::Settings || m_currentState == GameState::Infos || m_currentState == GameState::Playing || m_currentState == GameState::GameOver) {
                 m_currentState = GameState::Menu;
             } else if (m_currentState == GameState::Menu) {
                 m_window.close();
@@ -326,6 +332,13 @@ void Engine::update(float deltaTime)
         m_levelBackground->update(deltaTime);
         m_animationTime += deltaTime;
         if (m_animationTime >= 3.0f) {
+            m_currentState = GameState::Playing;
+        }
+        break;
+    case GameState::GameOver:
+        m_levelBackground->update(deltaTime);
+        m_animationTime += deltaTime;
+        if (m_animationTime >= 5.0f) {
             m_currentState = GameState::Playing;
         }
         break;

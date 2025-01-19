@@ -24,7 +24,7 @@ namespace NmpServer
 
     Server::~Server()
     {
-
+    
     }
 
     void Server::run()
@@ -39,6 +39,50 @@ namespace NmpServer
         inputThread.join();
         systemThread.join();
         handleInputThread.join();
+    }
+
+    void Server::killSocket()
+    {
+        _running = false;
+
+        if (!_io_context.stopped()) {
+            _io_context.stop();
+            std::cout << "Contexte IO arrêté." << std::endl;
+        }
+
+        if (_socketRead.is_open()) {
+            _socketRead.close();
+            std::cout << "Socket de lecture fermé." << std::endl;
+        }
+        if (_socketSend.is_open()) {
+            _socketSend.close();
+            std::cout << "Socket d'envoi fermé." << std::endl;
+        }
+
+        {
+            std::lock_guard<std::mutex> lock(_queueMutex);
+            while (!_queue.empty()) {
+                _queue.pop();
+            }
+        }
+        std::cout << "Files d'attente nettoyées." << std::endl;
+
+        std::cout << "Données ECS nettoyées." << std::endl;
+
+        std::cout << "Serveur détruit avec succès." << std::endl;
+    }
+
+    void Server::stop()
+    {
+        std::cout << "Arrêt du serveur..." << std::endl;    
+
+        _running = false;   
+
+        std::cout << "Signal d'arrêt envoyé à tous les threads." << std::endl;
+
+        std::cout << "Destruction du serveur..." << std::endl;
+
+
     }
 
     void Server::pauseThreads()
@@ -92,14 +136,6 @@ namespace NmpServer
         return i;
     }
 
-    // void Server::checkGameOver(component::state &st)
-    // {
-    //     std::size_t sizePLayer = _vecPlayer.size();
-    //     for (auto player : _vecPlayer) {
-
-    //     }
-    // }
-
     void Server::sendScoreLife(int i, component::state &st)
     {
         auto &l = _lifes[i];
@@ -111,7 +147,6 @@ namespace NmpServer
             std::cout << "connard" << std::endl;
             _playerLose++;
         }
-        // std::cout << "lEVEL: " << lvl._levelKey << std::endl;
         Packet packet(EVENT::INFO, l.life, s.score, lvl._levelKey);
         if (att._type == component::attribute::Player1) {
             std::cout << "send life player 1" << std::endl;
@@ -129,7 +164,6 @@ namespace NmpServer
     {
         int id = 0;
         _sizePlayer = getLenVecPLayer();
-        //std::cout << "BEGIN SEND ENTITY" << std::endl;
         for (size_t i = 0; i < _states.size() && i < _attributes.size(); i++) {
             auto &st = _states[i];
             auto &att = _attributes[i];
@@ -149,16 +183,15 @@ namespace NmpServer
                 sendScoreLife(i, st);
             }
         }
-        if (_playerLose == _sizePlayer) {
+        if (_playerLose == _sizePlayer && _sizePlayer > 0) {
             Packet packet(EVENT::OVER);
             std::cout << "game over" << std::endl;
             broadcast(packet);
+
+        stop();
         }
         Packet packet(EVENT::EOI);
             broadcast(packet);
-        std::cout << "size vec " << _sizePlayer << std::endl;
-        std::cout << "size lose " << _playerLose << std::endl;
-        //std::cout << "END SEND ENTITY" << std::endl;
     }
 
     bool Server::check_level_player(registry &_ecs)
@@ -196,7 +229,7 @@ namespace NmpServer
 
     void Server::threadInput()
     {
-        while (true) {
+        while (_running) {
             {
                 std::unique_lock<std::mutex> lock(_pauseMutex);
                 _pauseCv.wait(lock, [this] { return !_paused.load(); });
@@ -208,7 +241,7 @@ namespace NmpServer
     void Server::threaEvalInput()
     {
         Packet packet;
-        while (true) {
+        while (_running) {
             {
                 std::unique_lock<std::mutex> lock(_pauseMutex);
                 _pauseCv.wait(lock, [this] { return !_paused.load(); });
@@ -231,6 +264,7 @@ namespace NmpServer
                 _ptp.executeOpCode();
             }
         }
+
     }
 
     void Server::threadSystem()
@@ -250,7 +284,6 @@ namespace NmpServer
             auto &ecs = _ptp.getECS();
             {
             if (_friendlyFire) {
-                std::cout << "ff" << std::endl;
                 sys.collision_system_with_frendly_fire(ecs);
             } else {
                 sys.collision_system(ecs);
@@ -268,17 +301,14 @@ namespace NmpServer
                 if (!check_level(ecs) && isLevelReady()) {
                     difficulty += 3;
                     clock.start();
-                    std::cout << "reset: " << clock.elapsedSeconds() << std::endl;
 
                     _ptp.clearPlayer();
-                    std::cout << "new level" << std::endl;
 
                     if (level != 10) {
                         _prodLevel.generateLevel(difficulty, Difficulty::Easy);
                         _parser.loadNewLevel("../../server/configFile/level1.json");
                         _vecSpawn = _parser.getVector();
                     } else {
-                        //_prodLevel.generateLevel(difficulty, Difficulty::Easy);
                         _parser.loadNewLevel("../../server/configFile/test.json");
                         _parser.parseConfig();
                         _ptp.loadEnnemiesFromconfig(_parser.getVector());
@@ -293,8 +323,14 @@ namespace NmpServer
                 }
             }
             send_entity();
+            if (_playerLose == _sizePlayer && _sizePlayer > 0) {
+                sys.kill_system(ecs);
+                killSocket();
+
+            }
             std::this_thread::sleep_for(frameDuration);
         }
+
     }
 
     void Server::delaySpawn(ClockManager &clock)
@@ -317,12 +353,6 @@ namespace NmpServer
 
     void Server::send_data(Packet &packet, asio::ip::udp::endpoint endpoint)
     {
-        // std::cout << "send packet" << std::endl;
-
-        // std::cout << "Sending to remote endpoint: " 
-        //           << endpoint.address().to_string() << ":"
-        //           << endpoint.port() << std::endl;
-
         _binary.serialize(packet, _bufferSerialize);
         _socketSend.send_to(asio::buffer(_bufferSerialize), endpoint);
         _bufferSerialize.clear();
@@ -340,14 +370,8 @@ namespace NmpServer
             bytes = _socketRead.receive_from(asio::buffer(_bufferAsio), _remote_endpoint, 0, ignored_error);
 
             if (bytes > 0) {
-                // std::cout << "Received data from remote endpoint: " 
-                //           << _remote_endpoint.address().to_string() << ":"
-                //           << _remote_endpoint.port() << std::endl;
-
-                // std::cout << "bytes: " << bytes << std::endl;
 
                 extract_bytes(bytes, rawData);
-                                // std::cout << "afterbytes: " << bytes << std::endl;
 
                 NmpServer::Packet packet = _binary.deserialize(rawData);
 
@@ -380,7 +404,6 @@ namespace NmpServer
 
     void Server::broadcast(Packet &packet)
     {
-        //auto &_vecPlayer = _ptp.get_vector();
         for (const auto &endpoint : _vecPlayer) {
             send_data(packet, endpoint);
         }
