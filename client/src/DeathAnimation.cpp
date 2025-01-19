@@ -3,7 +3,12 @@
 #include <sstream>
 
 DeathAnimation::DeathAnimation()
-    : m_frameCount(0), m_maxAnimations(0), m_animationDuration(1.0f), m_frameTime(0.0f) {}
+    : m_frameCount(0), m_maxAnimations(0), m_animationDuration(1.0f), m_frameTime(0.0f) {
+    if (!m_soundBuffer.loadFromFile("./assets/sound/allezlom.mp3")) {
+        std::cerr << "Erreur : Impossible de charger le son de mort !" << std::endl;
+    }
+    m_sound.setBuffer(m_soundBuffer);
+}
 
 DeathAnimation::~DeathAnimation() {}
 
@@ -17,14 +22,14 @@ void DeathAnimation::initialize(const std::string &basePath, int frameCount, int
         sf::Texture texture;
         std::ostringstream path;
         path << basePath << i << ".png";
-        
+
         if (!texture.loadFromFile(path.str())) {
-            std::cerr << "Error: Unable to load texture " << path.str() << std::endl;
+            std::cerr << "Erreur : Impossible de charger la texture " << path.str() << std::endl;
             path.str("");
             path << basePath << "/explosions/" << i << ".png";
-            
+
             if (!texture.loadFromFile(path.str())) {
-                throw std::runtime_error("Failed to load animation texture: " + path.str());
+                throw std::runtime_error("Échec du chargement de la texture d'animation : " + path.str());
             }
         }
         m_textures.push_back(std::move(texture));
@@ -41,7 +46,7 @@ void DeathAnimation::initialize(const std::string &basePath, int frameCount, int
 
 void DeathAnimation::triggerAnimation(int index) {
     if (index < 0 || index >= m_maxAnimations) {
-        std::cerr << "Error: Invalid animation index!" << std::endl;
+        std::cerr << "Erreur : Index d'animation invalide !" << std::endl;
         return;
     }
     m_animations[index].second = m_animationDuration;
@@ -70,6 +75,7 @@ void DeathAnimation::update(float deltaTime) {
 void DeathAnimation::render(sf::RenderWindow &window) {
     for (const auto &animation : m_animations) {
         if (animation.second > 0.f) {
+                m_sound.play();
             window.draw(animation.first);
         }
     }

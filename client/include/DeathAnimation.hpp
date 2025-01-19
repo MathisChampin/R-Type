@@ -2,6 +2,7 @@
 #define DEATHANIMATION_HPP
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <vector>
 #include <string>
 
@@ -18,12 +19,16 @@ public:
     void setAnimationPosition(sf::Vector2f position);
 
 private:
-    std::vector<sf::Texture> m_textures;
-    std::vector<std::pair<sf::Sprite, float>> m_animations;
-    int m_frameCount;
-    int m_maxAnimations;
-    float m_animationDuration;
-    float m_frameTime;
+    void SoundOfDeath();
+
+    std::vector<sf::Texture> m_textures;                       
+    std::vector<std::pair<sf::Sprite, float>> m_animations; 
+    int m_frameCount;                                         
+    int m_maxAnimations;                                    
+    float m_animationDuration;                                 
+    float m_frameTime;                                         
+    sf::SoundBuffer m_soundBuffer;                            
+    sf::Sound m_sound;                                       
 };
 
 #endif // DEATHANIMATION_HPP
