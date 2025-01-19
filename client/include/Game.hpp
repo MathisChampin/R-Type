@@ -45,7 +45,12 @@ public:
     int getLevelGame() const {
         return m_level_game;
     }
+
+    bool getDead() const {
+        return m_dead;
+    }
     void handler_packets();
+    Score m_score;
 
 private:
     // Initialization
@@ -141,11 +146,11 @@ private:
     };
 
     Life m_life;
-    Score m_score;
     Level m_level;
     int m_level_game{0};
     int m_level_previous_game{0};
     int m_previousLevel;
+    bool m_dead{false};
 };
 
 #endif // GAME_HPP

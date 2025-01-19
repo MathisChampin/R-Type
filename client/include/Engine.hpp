@@ -31,6 +31,7 @@ private:
     void render(float deltaTime);
     void triggerPopup(const std::string &, const std::string &);
     void renderPopup();
+    void renderDeathPopup(int score);
 
     sf::RenderWindow m_window;
     sf::Font m_font;
