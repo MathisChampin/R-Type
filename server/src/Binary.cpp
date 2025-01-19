@@ -41,7 +41,7 @@ namespace NmpBinary
         } else if (opcode == NmpServer::EVENT::JOIN) { 
             buffer.push_back(static_cast<int>(opcode));
             buffer.push_back(static_cast<int>(id));
-        } else if (opcode == NmpServer::EVENT::EOI) {
+        } else if (opcode == NmpServer::EVENT::EOI || opcode == NmpServer::EVENT::OVER) {
             buffer.push_back(static_cast<int>(opcode));
         } else if (opcode == NmpServer::EVENT::INFO) {
             int life = packet.getLife();

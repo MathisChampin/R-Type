@@ -23,6 +23,10 @@ void Game::handler_packets()
     if (!data.has_value()) {return;}
 
     auto p = data.value();
+    if (p.getOpCode() == NmpClient::EVENT::OVER) {
+        m_dead = true;
+        std::cout << "wsh" << std::endl;
+    }
     if (p.getOpCode() == NmpClient::EVENT::EOI)
     {
         std::cout << "END OF FRAME" << std::endl;
@@ -54,7 +58,7 @@ void Game::handler_packets()
         _spriteMng.eraseAll();
         //m_client._id = p.getId();
         std::cout << "new id" << p.getId() << std::endl;
-    }
+    } 
     if (p.getOpCode() == NmpClient::EVENT::SPRITE) {
         auto spriteInf = p.getSpriteInfo();
         _containerEndFrameId.insert(spriteInf.idClient);

@@ -25,7 +25,8 @@ namespace NmpServer {
             void send_data(Packet &packet, asio::ip::udp::endpoint enpoint) override;
             void extract_bytes(std::size_t &bytes, std::vector<int> &vec) override;
             void broadcast(Packet &packet) override;
-            void sendScoreLife(int i);
+            void sendScoreLife(int i, component::state &st);
+            void checkGameOver(component::state &st);
             asio::ip::udp::endpoint getLastEndpoint() const;
 
             std::vector<asio::ip::udp::endpoint> _vecPlayer;
@@ -42,7 +43,10 @@ namespace NmpServer {
             int getId(component::attribute &att);
             void pauseThreads();
             void resumeThreads();
+            int getLenVecPLayer();
 
+            int _sizePlayer;
+            int _playerLose;
             Difficulty _difficulty;
             bool _friendlyFire;
             std::atomic<bool> _paused{false};

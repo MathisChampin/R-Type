@@ -11,6 +11,7 @@ enum class GameState
     AnimationLevel,
     Infos,
     AnimationLevelGame,
+    GameOver,
     Settings
 };
 

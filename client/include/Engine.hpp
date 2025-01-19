@@ -32,6 +32,7 @@ private:
     void render(float deltaTime);
     void triggerPopup(const std::string &, const std::string &);
     void renderPopup();
+    void renderDeathPopup(int score);
 
     bool gameCreated{false};
     sf::RenderWindow m_window;

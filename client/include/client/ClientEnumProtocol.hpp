@@ -4,15 +4,15 @@
 
 namespace NmpClient
 {
-    enum class EVENT : int
-    {
+    enum class EVENT : int {
         MOVE = 1,
         SHOOT = 2,
         QUIT = 3,
         SPRITE = 4,
         JOIN = 5,
         EOI = 6,
-        INFO = 7
+        INFO = 7,
+        OVER = 8,
     };
 
     enum class DIRECTION : int
