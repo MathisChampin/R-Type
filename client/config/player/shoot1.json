@@ -11,5 +11,5 @@
     "texture9": "assets/bullet/player/tir_player_1_9.png",
     "texture10": "assets/bullet/player/tir_player_1_10.png",
     "position": { "x": 800, "y": 400 },
-    "size": { "width": 150, "height": 150 }
+    "size": { "width": 70, "height": 50 }
 }
