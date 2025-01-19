@@ -1,11 +1,11 @@
-![Screencastfrom2025-01-1903-24-50online-video-cutter com-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/73fdfeef-8ca9-4c00-a7e4-26242d0fa5d6)
-![image](https://github.com/user-attachments/assets/8374e1d0-3a4c-4b1d-ab8e-54bacc5ad5d7)
-![image](https://github.com/user-attachments/assets/5babec44-5c9d-449f-865e-27b9339a7abd)
-
-
 # Projet R-Type
 
 Ce repo contient la structure d’un projet **R-Type** avec un **client**,  **serveur** et un **ECS** chacun dans son propre répertoire. Le projet utilise **CMake** pour gérer la configuration et la compilation. Le projet est compilable sur Linux et Windows.
+
+## Compatibilité
+
+![Linux Logo](https://github.com/user-attachments/assets/8374e1d0-3a4c-4b1d-ab8e-54bacc5ad5d7){width=100px height=100px}
+![Windows Logo](https://github.com/user-attachments/assets/5babec44-5c9d-449f-865e-27b9339a7abd){width=100px height=100px}
 
 ## Structure du projet
 
@@ -44,6 +44,7 @@ cd build/server
 ```bash
 cd build/client
 ./r_type_client
-``` 
+```
 
---- 
+---
+
