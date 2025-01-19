@@ -84,6 +84,24 @@ Les informations de connexion UDP pour rejoindre un lobby peuvent être récupé
 
 ---
 
+## Diagrammes
+
+### Diagrammes de l’Architecture
+
+Les diagrammes suivants illustrent l'architecture de l'ECS, du Client et du Serveur pour mieux comprendre leur interaction. Vous pouvez consulter les diagrammes complets dans le dossier `docs` à la racine du projet.
+
+- **ECS Architecture Diagram** :  
+  ![ECS Diagram](docs/ecs_architecture.png)
+  
+- **Client Architecture Diagram** :  
+  ![Client Diagram](docs/client_architecture.png)
+  
+- **Server Architecture Diagram** :  
+  ![Server Diagram](docs/server_architecture.png)
+
+
+---
+
 ## Lien de la norme de commit
 
 Le projet suit la norme de commit définie par **commitlint** avec la configuration **@commitlint/config-conventional**.
