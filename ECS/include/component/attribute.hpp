@@ -24,6 +24,7 @@ namespace component {
             Shoot8,
             Shoot9,
             Shoot10,
+            Shoot11,
             Clear,
             PowerUpMove,
             PowerUpLife,

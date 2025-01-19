@@ -32,6 +32,7 @@ class System {
         void shoot_system_player_3(registry &reg, size_t i);
         void shoot_system_player_4(registry &reg, size_t i);
         void shoot_system_player_5(registry &reg, size_t i);
+        void shoot_system_player_6(registry &reg, size_t i);
 
         void shoot_system_ennemies(registry &reg);
         void kill_system(registry &reg);

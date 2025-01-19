@@ -455,7 +455,8 @@ void System::collision_system(registry &reg)
         attributes[i]._type != component::attribute::Shoot8 &&
         attributes[i]._type != component::attribute::Shoot9 &&
         attributes[i]._type != component::attribute::Shoot10 &&
-        attributes[i]._type != component::attribute::Shoot1)
+        attributes[i]._type != component::attribute::Shoot1 &&
+        attributes[i]._type != component::attribute::Shoot11)
             continue;
         auto &shoot_id = idPlayers[i];
         for (size_t j = 0; j < attributes.size(); j++) {
