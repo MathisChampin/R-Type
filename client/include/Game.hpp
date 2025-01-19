@@ -49,6 +49,11 @@ public:
     bool getDead() const {
         return m_dead;
     }
+
+    void setDead(bool b) {
+        m_dead = b;
+    }
+
     void handler_packets();
     Score m_score;
 

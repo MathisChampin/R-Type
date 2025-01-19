@@ -78,133 +78,139 @@ void Engine::triggerPopup(const std::string& spritePath, const std::string& mess
     }
 }
 
-void Engine::setupMenuOptions()
-{
+    void Engine::setupMenuOptions()
+    {
+        m_menu->addOption("Play", [this]() {
+        if (!m_created) {
+            std::cout << "Création du jeu..." << std::endl;
 
-    m_menu->addOption("Play", [this]() {
-        std::cout << "Création du jeu..." << std::endl;
+            m_game = std::make_unique<Game>(
+                m_creatorIp,
+                m_window,                           
+                m_customMenu->getSelectedSkin(),     
+                m_font,                               
+                *m_playingBackground,                
+                m_soundManager                        
+            );
 
-        // Création d'une instance unique de `Game`
-        m_game = std::make_unique<Game>(
-            m_creatorIp,                          // Adresse IP du créateur
-            m_window,                             // Fenêtre principale
-            m_customMenu->getSelectedSkin(),      // Skin sélectionné
-            m_font,                               // Police utilisée
-            *m_playingBackground,                 // Fond de jeu
-            m_soundManager                        // Gestionnaire de sons
-        );
+        // Marquer le jeu comme créé
+        m_created = true;
+        } else {
+        std::cout << "Reprise du jeu..." << std::endl;
+        }
 
-    // Basculer à l'état de jeu
-    m_currentState = GameState::Playing;
-    });
+    // Changer l'état actuel à Playing
+        m_currentState = GameState::Playing;
+        });
 
-    m_menu->addOption("Multiplayer", [this]() {
-        std::cout << "Ouverture des options..." << std::endl;
-        m_currentState = GameState::Options;
-    });
 
-    m_menu->addOption("Infos", [this]() {
-        std::cout << "Infos..." << std::endl;
-        m_currentState = GameState::Infos;
-    
-        // Player Section
-        m_infoSection->addText("Player", sf::Color::White, 30, true);
-        auto playerTexture = std::make_shared<sf::Texture>();
-        if (playerTexture->loadFromFile("./assets/player/sprite_1.png")) {
-            m_infoSection->addItem(playerTexture, "Player", false, 2.0f, 2.0f);
-        }
-    
-        // Enemies Section
-        m_infoSection->addText("Enemies", sf::Color::White, 30, true);
-        auto enemyTexture1 = std::make_shared<sf::Texture>();
-        if (enemyTexture1->loadFromFile("./assets/enemy/sprite_1.png")) {
-            m_infoSection->addItem(enemyTexture1, "Enemy 1", false, 2.0f, 2.0f);
-        }
-        auto enemyTexture2 = std::make_shared<sf::Texture>();
-        if (enemyTexture2->loadFromFile("./assets/enemy/Dove_part_1_rotated.png")) {
-            m_infoSection->addItem(enemyTexture2, "Enemy 2 - Dove", false, 2.0f, 2.0f);
-        }
-        auto enemyTexture3 = std::make_shared<sf::Texture>();
-        if (enemyTexture3->loadFromFile("./assets/enemy/Ligher_part_1_rotated.png")) {
-            m_infoSection->addItem(enemyTexture3, "Enemy 3 - Ligher", false, 2.0f, 2.0f);
-        }
-        auto enemyTexture4 = std::make_shared<sf::Texture>();
-        if (enemyTexture4->loadFromFile("./assets/enemy/Lightning_part_1_rotated.png")) {
-            m_infoSection->addItem(enemyTexture4, "Enemy 4 - Lightning", false, 2.0f, 2.0f);
-        }
-    
-        // Boss Section
-        m_infoSection->addText("Boss", sf::Color::White, 30, true);
-        auto bossTexture = std::make_shared<sf::Texture>();
-        if (bossTexture->loadFromFile("./assets/boss/boss_1_1.png")) {
-            m_infoSection->addItem(bossTexture, "Boss", false, 0.5f, 0.5f);
-        }
-    
-        // Powerups Section
-        m_infoSection->addText("Powerups", sf::Color::White, 30, true);
-        auto powerupTexture1 = std::make_shared<sf::Texture>();
-        if (powerupTexture1->loadFromFile("./assets/powerup/life/powerup_life_1.png")) {
-            m_infoSection->addItem(powerupTexture1, "Power Up Life", false, 0.7f, 0.7f);
-        }
-        auto powerupTexture2 = std::make_shared<sf::Texture>();
-        if (powerupTexture2->loadFromFile("./assets/powerup/move/powerup_move_1.png")) {
-            m_infoSection->addItem(powerupTexture2, "Power Up Move", false, 0.9f, 0.9f);
-        }
-    
-        // Shoots Section
-        auto shootsTitle = std::make_shared<sf::Text>();
-        shootsTitle->setString("Shoots");
-        shootsTitle->setFont(m_font);
-        shootsTitle->setCharacterSize(30);
-        shootsTitle->setFillColor(sf::Color::White);
-        shootsTitle->setStyle(sf::Text::Bold);
+        m_menu->addOption("Multiplayer", [this]() {
+            std::cout << "Ouverture des options..." << std::endl;
+            m_currentState = GameState::Options;
+        });
 
-        sf::Vector2u windowSize = m_window.getSize();
-        float titleX = windowSize.x - shootsTitle->getGlobalBounds().width - 50.0f;
-        float titleY = 50.0f;
-        shootsTitle->setPosition(titleX, titleY);
+        m_menu->addOption("Infos", [this]() {
+            std::cout << "Infos..." << std::endl;
+            m_currentState = GameState::Infos;
 
-        m_infoSection->addCustomText(shootsTitle);
+            // Player Section
+            m_infoSection->addText("Player", sf::Color::White, 30, true);
+            auto playerTexture = std::make_shared<sf::Texture>();
+            if (playerTexture->loadFromFile("./assets/player/sprite_1.png")) {
+                m_infoSection->addItem(playerTexture, "Player", false, 2.0f, 2.0f);
+            }
 
-        float shootYOffset = -700.0f;
+            // Enemies Section
+            m_infoSection->addText("Enemies", sf::Color::White, 30, true);
+            auto enemyTexture1 = std::make_shared<sf::Texture>();
+            if (enemyTexture1->loadFromFile("./assets/enemy/sprite_1.png")) {
+                m_infoSection->addItem(enemyTexture1, "Enemy 1", false, 2.0f, 2.0f);
+            }
+            auto enemyTexture2 = std::make_shared<sf::Texture>();
+            if (enemyTexture2->loadFromFile("./assets/enemy/Dove_part_1_rotated.png")) {
+                m_infoSection->addItem(enemyTexture2, "Enemy 2 - Dove", false, 2.0f, 2.0f);
+            }
+            auto enemyTexture3 = std::make_shared<sf::Texture>();
+            if (enemyTexture3->loadFromFile("./assets/enemy/Ligher_part_1_rotated.png")) {
+                m_infoSection->addItem(enemyTexture3, "Enemy 3 - Ligher", false, 2.0f, 2.0f);
+            }
+            auto enemyTexture4 = std::make_shared<sf::Texture>();
+            if (enemyTexture4->loadFromFile("./assets/enemy/Lightning_part_1_rotated.png")) {
+                m_infoSection->addItem(enemyTexture4, "Enemy 4 - Lightning", false, 2.0f, 2.0f);
+            }
 
-        auto shootTexture1 = std::make_shared<sf::Texture>();
-        if (shootTexture1->loadFromFile("./assets/lettre_a.png")) {
-            m_infoSection->addItem(shootTexture1, "Shoot of level 1", true, 0.1f, 0.1f, shootYOffset);
-        }
-        auto shootTexture2 = std::make_shared<sf::Texture>();
-        if (shootTexture2->loadFromFile("./assets/lettre_z.png")) {
-            m_infoSection->addItem(shootTexture2, "Shoot of level 3", true, 0.1f, 0.1f, shootYOffset);
-        }
-        auto shootTexture3 = std::make_shared<sf::Texture>();
-        if (shootTexture3->loadFromFile("./assets/lettre_e.png")) {
-            m_infoSection->addItem(shootTexture3, "Shoot of level 4", true, 0.1f, 0.1f, shootYOffset);
-        }
-        auto shootTexture4 = std::make_shared<sf::Texture>();
-        if (shootTexture4->loadFromFile("./assets/lettre_r.png")) {
-            m_infoSection->addItem(shootTexture4, "Shoot of level 5", true, 0.1f, 0.1f, shootYOffset);
-        }
-        auto shootTexture5 = std::make_shared<sf::Texture>();
-        if (shootTexture5->loadFromFile("./assets/lettre_t.png")) {
-            m_infoSection->addItem(shootTexture5, "Shoot of level 6", true, 0.1f, 0.1f, shootYOffset);
-        }
-    });
+            // Boss Section
+            m_infoSection->addText("Boss", sf::Color::White, 30, true);
+            auto bossTexture = std::make_shared<sf::Texture>();
+            if (bossTexture->loadFromFile("./assets/boss/boss_1_1.png")) {
+                m_infoSection->addItem(bossTexture, "Boss", false, 0.5f, 0.5f);
+            }
 
-    m_menu->addOption("Los Santos Custom", [this]() {
-        std::cout << "Custom..." << std::endl;
-        m_currentState = GameState::Custom;
-    });
+            // Powerups Section
+            m_infoSection->addText("Powerups", sf::Color::White, 30, true);
+            auto powerupTexture1 = std::make_shared<sf::Texture>();
+            if (powerupTexture1->loadFromFile("./assets/powerup/life/powerup_life_1.png")) {
+                m_infoSection->addItem(powerupTexture1, "Power Up Life", false, 0.7f, 0.7f);
+            }
+            auto powerupTexture2 = std::make_shared<sf::Texture>();
+            if (powerupTexture2->loadFromFile("./assets/powerup/move/powerup_move_1.png")) {
+                m_infoSection->addItem(powerupTexture2, "Power Up Move", false, 0.9f, 0.9f);
+            }
 
-    m_menu->addOption("Settings", [this]() {
-        std::cout << "Settings..." << std::endl;
-        m_currentState = GameState::Settings;
-    });
+            // Shoots Section
+            auto shootsTitle = std::make_shared<sf::Text>();
+            shootsTitle->setString("Shoots");
+            shootsTitle->setFont(m_font);
+            shootsTitle->setCharacterSize(30);
+            shootsTitle->setFillColor(sf::Color::White);
+            shootsTitle->setStyle(sf::Text::Bold);
 
-    m_menu->addOption("Leave", [this]() {
-        std::cout << "Fermeture du jeu..." << std::endl;
-        m_window.close();
-    });
-}
+            sf::Vector2u windowSize = m_window.getSize();
+            float titleX = windowSize.x - shootsTitle->getGlobalBounds().width - 50.0f;
+            float titleY = 50.0f;
+            shootsTitle->setPosition(titleX, titleY);
+
+            m_infoSection->addCustomText(shootsTitle);
+
+            float shootYOffset = -700.0f;
+
+            auto shootTexture1 = std::make_shared<sf::Texture>();
+            if (shootTexture1->loadFromFile("./assets/lettre_a.png")) {
+                m_infoSection->addItem(shootTexture1, "Shoot of level 1", true, 0.1f, 0.1f, shootYOffset);
+            }
+            auto shootTexture2 = std::make_shared<sf::Texture>();
+            if (shootTexture2->loadFromFile("./assets/lettre_z.png")) {
+                m_infoSection->addItem(shootTexture2, "Shoot of level 3", true, 0.1f, 0.1f, shootYOffset);
+            }
+            auto shootTexture3 = std::make_shared<sf::Texture>();
+            if (shootTexture3->loadFromFile("./assets/lettre_e.png")) {
+                m_infoSection->addItem(shootTexture3, "Shoot of level 4", true, 0.1f, 0.1f, shootYOffset);
+            }
+            auto shootTexture4 = std::make_shared<sf::Texture>();
+            if (shootTexture4->loadFromFile("./assets/lettre_r.png")) {
+                m_infoSection->addItem(shootTexture4, "Shoot of level 5", true, 0.1f, 0.1f, shootYOffset);
+            }
+            auto shootTexture5 = std::make_shared<sf::Texture>();
+            if (shootTexture5->loadFromFile("./assets/lettre_t.png")) {
+                m_infoSection->addItem(shootTexture5, "Shoot of level 6", true, 0.1f, 0.1f, shootYOffset);
+            }
+        });
+
+        m_menu->addOption("Los Santos Custom", [this]() {
+            std::cout << "Custom..." << std::endl;
+            m_currentState = GameState::Custom;
+        });
+
+        m_menu->addOption("Settings", [this]() {
+            std::cout << "Settings..." << std::endl;
+            m_currentState = GameState::Settings;
+        });
+
+        m_menu->addOption("Leave", [this]() {
+            std::cout << "Fermeture du jeu..." << std::endl;
+            m_window.close();
+        });
+    }
 
 void Engine::handleEvents()
 {
@@ -226,7 +232,6 @@ void Engine::handleEvents()
             m_optionsMenu->handleEvent(event);
             if (m_optionsMenu.get()->creatorIp.has_value()) {
                 m_creatorIp = m_optionsMenu.get()->creatorIp.value();
-                // std::cout << "oh le boos" << m_creatorIp << std::endl;
             }
             break;
         case GameState::Infos:
@@ -338,7 +343,8 @@ void Engine::update(float deltaTime)
     case GameState::GameOver:
         m_levelBackground->update(deltaTime);
         m_animationTime += deltaTime;
-        if (m_animationTime >= 5.0f) {
+        if (m_animationTime >= 3.0f) {
+            m_created = false;
             m_currentState = GameState::Playing;
         }
         break;

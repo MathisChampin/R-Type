@@ -58,7 +58,8 @@ private:
     int level;
     float m_animationTime;
     sf::Clock m_popupClock;
-    bool m_showPopup;                      
+    bool m_showPopup;  
+    bool m_created{false};                    
     sf::Texture m_popupTexture;            
     sf::Sprite m_popupSprite;          
     std::string m_popupMessage;

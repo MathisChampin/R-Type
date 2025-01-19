@@ -13,13 +13,6 @@ namespace NmpServer
         if (it != _mapFctOpCode.end()) {
             it->second();
         }
-            std::cout << "OK PROTOCOLE" << std::endl;
-        //createEnnemies(); //en fraire un thread 
-        //shootEnnemies();  //en fraire un thread
-        //sys.position_system(_ecs);
-        //std::cout << "position system" << std::endl;
-        //sys.collision_system(_ecs);
-        //sys.kill_system(_ecs);
     }
 
     registry &ProtocoleHandler::getECS() {
@@ -79,8 +72,6 @@ namespace NmpServer
                 _ecs.emplace_component<component::controllable>(player, control);
                 sys.control_system_p4(_ecs);
             }
-            //Packet packetPos(EVENT::MOVE, pos.x, pos.y);
-            //_refServer.get().send_data(packetPos, foundEndpoint.value());
         } else {
             std::cout << "no endpoint found for this client" << std::endl;
             std::cout << "pos x: " << pos.x << " pos y: " << pos.y << std::endl;
@@ -135,7 +126,6 @@ namespace NmpServer
             updateMoveEcs(player, control, position, att);
         } else 
             std::cout << "x " << position.x << " y " << position.y << std::endl;
-            //std::cout << "NO KEY" << std::endl;
     }
 
     void ProtocoleHandler::evalQuit()
@@ -154,7 +144,6 @@ namespace NmpServer
         std::cout << "send new id: " << lastPlayer.get_id() << std::endl;
         Packet joinPacket(lastPlayer.get_id(), EVENT::JOIN);
         _refServer.get().send_data(joinPacket, lastEndpoint);
-        //_refServer.get()._vecPlayer = _vecPlayer;
     }
 
     void ProtocoleHandler::initComponents()
@@ -198,7 +187,6 @@ namespace NmpServer
         _ecs.add_component<component::velocity>(player, {5, 5});
         _ecs.add_component<component::idPlayer>(player, {player.get_id()});
         _ecs.add_component<component::shoot_type>(player, {component::attribute::Shoot});
-        //_refServer.get()._vecPlayer.push_back(std::make_pair(player, lastEndpoint));
         _vecPlayer.push_back(std::make_pair(player, lastEndpoint));  
     }
 
@@ -265,7 +253,6 @@ namespace NmpServer
 
     void ProtocoleHandler::clearPlayer()
     {
-        //_vecPlayer.clear();
         for (auto elem : _refServer.get()._vecPlayer) {
             std::cout << "send new id" << std::endl;
             joinNewLevel(elem);
