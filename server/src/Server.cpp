@@ -81,12 +81,36 @@ namespace NmpServer
         return 0;
     }
 
-    void Server::sendScoreLife(int i)
+    int Server::getLenVecPLayer()
+    {
+        int i = 0;
+        for (auto elem : _vecPlayer) {
+            (void)elem;
+            i++;
+        
+        }
+        return i;
+    }
+
+    // void Server::checkGameOver(component::state &st)
+    // {
+    //     std::size_t sizePLayer = _vecPlayer.size();
+    //     for (auto player : _vecPlayer) {
+
+    //     }
+    // }
+
+    void Server::sendScoreLife(int i, component::state &st)
     {
         auto &l = _lifes[i];
         auto &s = _scores[i];
         auto &att = _attributes[i];
         auto &lvl = _levels[i];
+
+        if (st._stateKey == component::state::stateKey::Lose) {
+            std::cout << "connard" << std::endl;
+            _playerLose++;
+        }
         // std::cout << "lEVEL: " << lvl._levelKey << std::endl;
         Packet packet(EVENT::INFO, l.life, s.score, lvl._levelKey);
         if (att._type == component::attribute::Player1) {
@@ -104,6 +128,7 @@ namespace NmpServer
     void Server::send_entity()
     {
         int id = 0;
+        _sizePlayer = getLenVecPLayer();
         //std::cout << "BEGIN SEND ENTITY" << std::endl;
         for (size_t i = 0; i < _states.size() && i < _attributes.size(); i++) {
             auto &st = _states[i];
@@ -121,11 +146,18 @@ namespace NmpServer
                  att._type == component::attribute::Player2 || 
                  att._type == component::attribute::Player3 || 
                  att._type == component::attribute::Player4 )) {
-                sendScoreLife(i);
+                sendScoreLife(i, st);
             }
+        }
+        if (_playerLose == _sizePlayer) {
+            Packet packet(EVENT::OVER);
+            std::cout << "game over" << std::endl;
+            broadcast(packet);
         }
         Packet packet(EVENT::EOI);
             broadcast(packet);
+        std::cout << "size vec " << _sizePlayer << std::endl;
+        std::cout << "size lose " << _playerLose << std::endl;
         //std::cout << "END SEND ENTITY" << std::endl;
     }
 

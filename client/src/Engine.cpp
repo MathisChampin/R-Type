@@ -271,10 +271,15 @@ void Engine::update(float deltaTime)
             }
         }
         if (m_game.get()->AnimationLevelGame()) {
-            std::cout << "je suis dans le update du jeu pour changer de level" << std::endl;
             m_currentState = GameState::AnimationLevelGame;
             m_animationTime = 0.0f;
-        } else {
+        } 
+        if (m_game.get()->getDead()) {
+            m_currentState = GameState::GameOver;
+            m_animationTime = 0.0f;
+        }
+
+        else {
             m_playingBackground->update(deltaTime);
             m_game.get()->update(deltaTime);
             if (m_game.get()->AnimationLevel()) {
@@ -406,6 +411,60 @@ void Engine::renderPopup()
     m_window.draw(popupText);
 }
 
+void Engine::renderDeathPopup(int score)
+{
+    // Vérifiez si la popup doit être affichée
+
+    // Charger la texture
+    sf::Texture deathTexture;
+    if (!deathTexture.loadFromFile("./assets/over.png")) {
+        std::cerr << "Erreur : impossible de charger la texture './assets/over.png'" << std::endl;
+        return;
+    }
+
+    // Créer le sprite et lui appliquer la texture
+    sf::Sprite deathSprite;
+    deathSprite.setTexture(deathTexture);
+
+    // Récupérer les dimensions de la fenêtre
+    sf::Vector2u windowSize = m_window.getSize();
+
+    // Centrer l'image au milieu de l'écran
+    sf::FloatRect spriteBounds = deathSprite.getLocalBounds();
+    deathSprite.setOrigin(spriteBounds.width / 2, spriteBounds.height / 2);
+    deathSprite.setPosition(windowSize.x / 2, windowSize.y / 2);
+
+    // Configurer le texte "You Died"
+    sf::Text deathText;
+    deathText.setFont(m_font);
+    deathText.setString("You Died");
+    deathText.setCharacterSize(40); // Taille du texte
+    deathText.setFillColor(sf::Color::Red); // Couleur rouge pour la mort
+
+    // Centrer "You Died" sous l'image
+    sf::FloatRect deathTextBounds = deathText.getLocalBounds();
+    deathText.setOrigin(deathTextBounds.width / 2, deathTextBounds.height / 2);
+    deathText.setPosition(windowSize.x / 2, (windowSize.y / 2) + spriteBounds.height / 2 + 20);
+
+    // Configurer le texte du score
+    sf::Text scoreText;
+    scoreText.setFont(m_font);
+    scoreText.setString("Score: " + std::to_string(score));
+    scoreText.setCharacterSize(30); // Taille légèrement plus petite
+    scoreText.setFillColor(sf::Color::White); // Couleur blanche pour le score
+
+    // Centrer le texte du score sous "You Died"
+    sf::FloatRect scoreTextBounds = scoreText.getLocalBounds();
+    scoreText.setOrigin(scoreTextBounds.width / 2, scoreTextBounds.height / 2);
+    scoreText.setPosition(windowSize.x / 2, deathText.getPosition().y + deathTextBounds.height + 20);
+
+    // Dessiner les éléments
+    m_window.draw(deathSprite);
+    m_window.draw(deathText);
+    m_window.draw(scoreText);
+}
+
+
 
 
 void Engine::render(float deltaTime)
@@ -450,6 +509,12 @@ void Engine::render(float deltaTime)
         //m_game.get()->render(deltaTime);
         int l = m_game.get()->getLevelGame();
         renderAnimationNewFile(m_window, m_font, l);
+        break;
+    }
+    case GameState::GameOver:
+    {
+        int score = m_game.get()->m_score.getScore();
+        renderDeathPopup(score);
         break;
     }
     case GameState::Settings:

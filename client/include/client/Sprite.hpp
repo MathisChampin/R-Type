@@ -162,6 +162,11 @@ public:
         return m_type;
     }
 
+    sf::Sprite getSprite() const
+    {
+        return sprite;
+    }
+
 private:
     void updateSpriteScale()
     {

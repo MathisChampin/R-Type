@@ -65,7 +65,10 @@ namespace NmpBinary
         } 
         else if (event == NmpClient::EVENT::EOI) {
             return NmpClient::Packet(NmpClient::EVENT::EOI);
-        } 
+        } else if (event == NmpClient::EVENT::OVER) {
+            std::cout << "create over" << std::endl;
+            return NmpClient::Packet(NmpClient::EVENT::OVER);
+        }
         else if (event == NmpClient::EVENT::INFO) {
             int life = static_cast<int>(buffer[1]);
             int score = static_cast<int>(buffer[2]);
