@@ -116,12 +116,6 @@ Le style de codage C++20 utilisé par **cppcheck** pour l’analyse du code est 
 
 ---
 
-### Licence
-
-Ce projet est sous **Licence MIT**, voir le fichier `LICENSE` pour plus de détails.
-
----
-
 ## Contributeurs
 
 Merci à tous les contributeurs qui ont participé à ce projet :
