@@ -14,6 +14,7 @@ namespace component {
             Shoot3,
             Shoot4,
             Shoot5,
+            Shoot6,
             Clear,
             NoKey,
         };

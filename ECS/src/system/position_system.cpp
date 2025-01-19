@@ -75,6 +75,7 @@ void position_shoot(
     switch (att._type) {
         case component::attribute::Shoot:
         case component::attribute::Shoot1:
+        case::component::attribute::Shoot11:
         case component::attribute::Shoot2:
             pos.x += vel.x;
             if (pos.x <= -30 || pos.x >= 1930) {

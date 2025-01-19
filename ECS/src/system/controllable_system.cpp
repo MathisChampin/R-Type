@@ -89,6 +89,9 @@ void System::control_system_p1(registry& reg) {
                 if (type.value == component::attribute::Shoot5)
                     shoot_system_player_4(reg, i);
             }
+            if (ctl.active_key == component::controllable::Key::Shoot6) {
+                shoot_system_player_6(reg, i); 
+            }
             if (ctl.active_key == component::controllable::Clear)
                 attributes[i]._type = component::attribute::Clear;
             pos.x = move_player_x(ctl.active_key, vel.x, pos.x);
