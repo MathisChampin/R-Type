@@ -25,7 +25,7 @@ Engine::Engine() : m_currentState(GameState::Menu), m_animationTime(0.0f)
     m_menuBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
     m_playingBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), playingLayers);
     m_levelBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), levelLayers);
-
+    m_settingsBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
     m_customBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), playingLayers);
     m_infosBackground = std::make_unique<ParallaxBackground>(m_window.getSize(), menuLayers);
 
@@ -33,6 +33,7 @@ Engine::Engine() : m_currentState(GameState::Menu), m_animationTime(0.0f)
     m_menu = std::make_unique<Menu>(m_window);
     m_optionsMenu = std::make_unique<OptionsMenu>(m_window);
     m_customMenu = std::make_unique<CustomMenu>(m_window);
+    m_settingsMenu = std::make_unique<SettingsMenu>(m_window, m_soundManager);
 
     // Infos
     m_infoSection = std::make_unique<Infos>(m_window, m_font);
@@ -84,11 +85,6 @@ void Engine::setupMenuOptions()
         m_game = std::make_unique<Game>(m_creatorIp, m_window, m_customMenu.get()->getSelectedSkin(), m_font, *m_playingBackground, m_soundManager);
         m_currentState = GameState::Playing;
     });
-
-    // m_menu->addOption("Créer un lobby", [this]() {
-    //     std::cout << "Création du lobby..." << std::endl;
-    //     m_currentState = GameState::PlayingInLobby;
-    // });
 
     m_menu->addOption("Multiplayer", [this]() {
         std::cout << "Ouverture des options..." << std::endl;
@@ -187,6 +183,11 @@ void Engine::setupMenuOptions()
         m_currentState = GameState::Custom;
     });
 
+    m_menu->addOption("Settings", [this]() {
+        std::cout << "Settings..." << std::endl;
+        m_currentState = GameState::Settings;
+    });
+
     m_menu->addOption("Leave", [this]() {
         std::cout << "Fermeture du jeu..." << std::endl;
         m_window.close();
@@ -197,10 +198,10 @@ void Engine::handleEvents()
 {
     sf::Event event;
     while (m_window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
-            if (m_currentState == GameState::Custom || m_currentState == GameState::Options) {
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+            if (m_currentState == GameState::Custom || m_currentState == GameState::Options || m_currentState == GameState::Settings || m_currentState == GameState::Infos || m_currentState == GameState::Playing) {
                 m_currentState = GameState::Menu;
-            } else {
+            } else if (m_currentState == GameState::Menu) {
                 m_window.close();
             }
         }
@@ -230,6 +231,8 @@ void Engine::handleEvents()
             break;
         case GameState::AnimationLevelGame:
             break;
+        case GameState::Settings:
+            m_settingsMenu->handleEvent(event);
         default:
             break;
         }
@@ -314,6 +317,10 @@ void Engine::update(float deltaTime)
         if (m_animationTime >= 3.0f) {
             m_currentState = GameState::Playing;
         }
+        break;
+    case GameState::Settings:
+        m_settingsBackground->update(deltaTime);
+        m_settingsMenu->update();
         break;
     default:
         break;
@@ -437,6 +444,12 @@ void Engine::render(float deltaTime)
         //m_game.get()->render(deltaTime);
         int l = m_game.get()->getLevelGame();
         renderAnimationNewFile(m_window, m_font, l);
+        break;
+    }
+    case GameState::Settings:
+    {
+        m_settingsBackground->render(m_window);
+        m_settingsMenu->render();
         break;
     }
     default:
