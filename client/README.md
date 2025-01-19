@@ -1,7 +1,3 @@
-Voici une ébauche structurée de la documentation pour ton projet client, en intégrant des exemples issus des fichiers que tu as partagés. Chaque section comprend une introduction, une explication technique et des extraits de code pour illustrer.
-
----
-
 # **Documentation Client**
 
 ## **Sommaire**
