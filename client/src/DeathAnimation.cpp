@@ -33,7 +33,7 @@ void DeathAnimation::initialize(const std::string &basePath, int frameCount, int
     m_animations.clear();
     for (int i = 0; i < m_maxAnimations; ++i) {
         sf::Sprite sprite(m_textures[0]);
-        sprite.setScale(0.7f, 0.7f);
+        sprite.setScale(0.4f, 0.4f);
         sprite.setPosition(i * (m_textures[0].getSize().x * 0.1f + spacing), 0.f);
         m_animations.emplace_back(sprite, 0.f);
     }

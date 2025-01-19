@@ -5,7 +5,9 @@ enum class Type {
     Player,
     Enemy,
     Bullet,
-    Explosions
+    Explosions,
+    PowerupLife,
+    PowerupMove,
 };
 
 #endif // TYPE_HPP

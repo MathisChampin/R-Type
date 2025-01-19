@@ -21,7 +21,6 @@ namespace NmpClient
             std::cout << "waiting for join response" << std::endl;
             resJoin = this->get_data();
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
         }
         evalResJoin(resJoin.value());
         std::cout << "id client: " << _id << std::endl;
