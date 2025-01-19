@@ -1,9 +1,13 @@
-!Screencastfrom2025-01-1903-24-50online-video-cutter com-ezgif com-video-to-gif-converter
+![Screencastfrom2025-01-1903-24-50online-video-cutter com-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/73fdfeef-8ca9-4c00-a7e4-26242d0fa5d6)
 
 
 # Projet R-Type
 
 Ce repo contient la structure d’un projet **R-Type** avec un **client**, **serveur**, et un **ECS** chacun dans son propre répertoire. Le projet utilise **CMake** pour gérer la configuration et la compilation. Le projet est compilable sur Linux et Windows.
+
+# Compatibilité :
+
+Linux & WINDOWS par Cmake
 
 ## Structure du projet
 
@@ -127,5 +131,3 @@ Merci à tous les contributeurs qui ont participé à ce projet :
 - **Arthur Baudelot**
 - **Pablo Peiro**
 - **Alexandre Lorgeoux**
-
----
