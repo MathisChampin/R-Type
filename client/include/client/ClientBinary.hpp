@@ -28,7 +28,7 @@ namespace NmpBinary
          * @param buffer The buffer containing the serialized data.
          * @return NmpClient::Packet The deserialized packet.
          */
-        NmpClient::Packet deserialize(std::vector<int> &buffer);
+        NmpClient::Packet deserializes(std::vector<int> &buffer);
 
         /**
          * @brief Clears the given buffer.
@@ -46,6 +46,5 @@ namespace NmpBinary
 
     private:
         std::vector<std::string> getAction(std::string &action);
-        uint getOctets(int &code, unsigned int octets);
     };
 }

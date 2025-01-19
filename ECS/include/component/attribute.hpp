@@ -14,12 +14,20 @@ namespace component {
             Ennemies4,
             Ennemies5,
             Shoot,
+            Shoot1,
             Shoot2,
             Shoot3,
+            Shoot4,
             Shoot5,
+            Shoot6,
+            Shoot7,
+            Shoot8,
+            Shoot9,
+            Shoot10,
+            Shoot11,
             Clear,
             PowerUpMove,
-            PowerUpShoot,
+            PowerUpLife,
             None
         };
         entityType _type;

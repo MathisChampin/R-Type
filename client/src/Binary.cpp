@@ -17,14 +17,6 @@ namespace NmpBinary
         return buffAction;
     }
 
-    uint Binary::getOctets(int &code, unsigned int octets)
-    {
-        uint value{0};
-
-        if (octets == 0 || octets == 8 || octets == 16 || octets == 24)
-            value = (code >> 0) & 0xF;
-        return value;
-    }
 
     void Binary::serialize(NmpClient::Packet &packet, std::vector<int> &buffer)
     {
@@ -45,7 +37,7 @@ namespace NmpBinary
         }
     }
 
-    NmpClient::Packet Binary::deserialize(std::vector<int> &buffer)
+    NmpClient::Packet Binary::deserializes(std::vector<int> &buffer)
     {
         NmpClient::EVENT event = static_cast<NmpClient::EVENT>(buffer[0]);
 
@@ -53,7 +45,7 @@ namespace NmpBinary
         {
             int x = static_cast<int>(buffer[1]);
             int y = static_cast<int>(buffer[2]);
-            return NmpClient::Packet(event, x, y);
+            return NmpClient::Packet(event, x, y, 0);
         }
         else if (event == NmpClient::EVENT::SPRITE)
         {
@@ -73,13 +65,17 @@ namespace NmpBinary
         } 
         else if (event == NmpClient::EVENT::EOI) {
             return NmpClient::Packet(NmpClient::EVENT::EOI);
-        } 
+        } else if (event == NmpClient::EVENT::OVER) {
+            std::cout << "create over" << std::endl;
+            return NmpClient::Packet(NmpClient::EVENT::OVER);
+        }
         else if (event == NmpClient::EVENT::INFO) {
             int life = static_cast<int>(buffer[1]);
             int score = static_cast<int>(buffer[2]);
-            return NmpClient::Packet(NmpClient::EVENT::INFO, life, score);
+            int level = static_cast<int>(buffer[3]);
+            return NmpClient::Packet(NmpClient::EVENT::INFO, life, score, level);
         }
-        return NmpClient::Packet(event, 0,0);
+        return NmpClient::Packet(event, 0,0,0);
     }
 
     void Binary::clearBuffer(std::vector<int> &buffer)

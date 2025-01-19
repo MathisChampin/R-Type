@@ -11,9 +11,15 @@ public:
     void initialize(const sf::Font &font, unsigned int characterSize, const sf::Vector2f &position);
     void updateScore(int newScore);
     void render(sf::RenderWindow &window);
+    int getScore() const {
+        return m_currentScore;
+    }
 
 private:
+    void updateBackground();
+
     sf::Text m_scoreText;
+    sf::RectangleShape m_backgroundRect;
     int m_currentScore;
 };
 

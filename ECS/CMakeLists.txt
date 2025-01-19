@@ -3,12 +3,14 @@ project(ECS)
 
 set(CXX g++)
 set(CMAKE_CXX_STANDARD 20)
-if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")  
-    add_definitions(-D_WIN32_WINNT=0x0601) 
-elseif(UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror") 
+
+if(UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -fPIC")
+elseif(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244")
+    add_definitions(-D_WIN32_WINNT=0x0601)
 endif()
+
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(INCLUDE_COMPONENT ${INCLUDE_DIR}/component)
 set(INCLUDE_SYSTEM ${INCLUDE_DIR}/system)
@@ -28,13 +30,16 @@ set(SOURCES
     ${SRC_SYSTEM}/kill_system.cpp
     ${SRC_SYSTEM}/lose_system.cpp
     ${SRC_SYSTEM}/win_system.cpp
-    ${SRC_SYSTEM}/collision_power_up_move_system.cpp
-    ${SRC_SYSTEM}/collision_power_up_shoot_system.cpp
+    ${SRC_SYSTEM}/collision_power_up.cpp
+    ${SRC_SYSTEM}/velocity_power_up_move.cpp
+    ${SRC_SYSTEM}/life_power_up_life.cpp
+    ${SRC_SYSTEM}/create_power_up.cpp
 )
 
 set(MAIN_SOURCES
-    ${SRC_DIR}/main.cpp  
+    ${SRC_DIR}/main.cpp
 )
+
 if(UNIX)
 set(TEST_SOURCES
     ${TEST_DIR}/testsEntity.cpp
@@ -43,12 +48,12 @@ set(TEST_SOURCES
     ${SRC_SYSTEM}/position_system.cpp
     ${SRC_SYSTEM}/controllable_system.cpp
     ${SRC_SYSTEM}/collision_system.cpp
-    ${TEST_SYS}/testsControllable.cpp
     ${TEST_SYS}/testsPosition.cpp
     ${TEST_SYS}/testsCollision.cpp
     ${TEST_SYS}/testsLevel.cpp
-    ${TEST_SYS}/testsShoot.cpp
-    ${TEST_SYS}/testsKill.cpp
+    ${TEST_SYS}/testsCollisionPowerUpLife.cpp
+    ${TEST_SYS}/testsCollisionPowerUpMove.cpp
+    ${TEST_SYS}/testsSpawnPowerUp.cpp
 )
 endif()
 
@@ -74,7 +79,6 @@ if (NOT TARGET unit_tests)
     )
 endif()
 endif()
-
 
 if (NOT TARGET clean_all)
     add_custom_target(clean_all

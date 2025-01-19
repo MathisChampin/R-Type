@@ -14,19 +14,23 @@ void check_level(
 
     if (score.score >= 100)
         level._levelKey = component::level::Level1;
-    if (score.score >= 200)
+    if (score.score >= 600)
         level._levelKey = component::level::Level2;
-    if (score.score >= 300)
+    if (score.score >= 1000) {
         level._levelKey = component::level::Level3;
-    if (score.score >= 400)
+    }
+    if (score.score >= 1500) {
         level._levelKey = component::level::Level4;
-    if (score.score >= 500)
+    }
+    if (score.score >= 2500) {
         level._levelKey = component::level::Level5;
-    if (score.score >= 700)
+    }
+    if (score.score >= 3500) {
         level._levelKey = component::level::Level6;
-    if (score.score >= 900)
+    }
+    if (score.score >= 5000)
         level._levelKey = component::level::Level7;
-    if (score.score >= 1200)
+    if (score.score >= 8000)
         level._levelKey = component::level::Level8;
 }
 

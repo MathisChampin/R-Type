@@ -4,6 +4,8 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include "TextureManager.hpp"
+#include <iostream>
+#include "../Type.hpp"
 
 class Sprite {
 public:
@@ -22,8 +24,69 @@ public:
         position.y = config["position"]["y"];
         size.x = config["size"]["width"];
         size.y = config["size"]["height"];
+        if (config["type"] == "player")
+        {
+            m_type = Type::Player;
+        }
+        else if (config["type"] == "enemy")
+        {
+            m_type = Type::Enemy;
+        }
+        else if (config["type"] == "shoot1Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "powerup_life")
+        {
+            m_type = Type::PowerupLife;
+        }
+        else if (config["type"] == "powerup_move")
+        {
+            m_type = Type::PowerupMove;
+        }
+        else if (config["type"] == "shoot4Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot2Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot3Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot5Player")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot2Enemy")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot1Enemy")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot3Enemy")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot4Enemy")
+        {
+            m_type = Type::Bullet;
+        }
+        else if (config["type"] == "shoot5Enemy")
+        {
+            m_type = Type::Bullet;
+        }
 
-        if (config["type"] == "player" || config["type"] == "enemy" || config["type"] == "shoot")
+
+        if (config["type"] == "player" || config["type"] == "enemy" || config["type"] == "shoot1Player" ||
+            config["type"] == "powerup_life" || config["type"] == "powerup_move" || config["type"] == "shoot4Player" ||
+            config["type"] == "shoot2Player" || config["type"] == "shoot3Player" || config["type"] == "shoot5Player" ||
+            config["type"] == "shoot2Enemy" || config["type"] == "shoot1Enemy" || config["type"] == "shoot3Enemy" ||
+            config["type"] == "shoot4Enemy" || config["type"] == "shoot5Enemy")
         {
             for (int i = 1; i <= 5; ++i)
             {
@@ -39,7 +102,6 @@ public:
             {
                 currentTextureIndex = 0;
                 sprite.setTexture(*m_textures[currentTextureIndex]);
-                animationSpeed = 10.0f; 
             }
         }
         else
@@ -55,10 +117,10 @@ public:
 
     void update(sf::Time deltaTime)
     {
-        if (m_textures.size() > 1)  
+        if (m_textures.size() > 1)
         {
             animationTimer += deltaTime;
-            
+
             if (animationTimer.asSeconds() >= 1.0f / animationSpeed)
             {
                 currentTextureIndex = (currentTextureIndex + 1) % m_textures.size();
@@ -95,6 +157,16 @@ public:
         animationSpeed = framesPerSecond;
     }
 
+    Type getType() const
+    {
+        return m_type;
+    }
+
+    sf::Sprite getSprite() const
+    {
+        return sprite;
+    }
+
 private:
     void updateSpriteScale()
     {
@@ -103,8 +175,7 @@ private:
             auto currentTexture = m_textures[currentTextureIndex];
             sprite.setScale(
                 size.x / currentTexture->getSize().x,
-                size.y / currentTexture->getSize().y
-            );
+                size.y / currentTexture->getSize().y);
         }
     }
 
@@ -112,8 +183,9 @@ private:
     std::vector<std::shared_ptr<sf::Texture>> m_textures;
     sf::Vector2f position;
     sf::Vector2f size;
+    Type m_type;
 
     size_t currentTextureIndex = 0;
-    float animationSpeed = 0.0f;  
+    float animationSpeed = 10.0f;
     sf::Time animationTimer;
 };

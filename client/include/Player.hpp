@@ -20,7 +20,7 @@ public:
      * @param client Reference to the NmpClient::Client object for network communication.
      * @param configPath The path to the configuration file for the player.
      */
-    Player(NmpClient::Client &client);
+    Player( NmpClient::Client &client);
     ~Player() = default;
     
     void updateId(int id) { _id = id; }

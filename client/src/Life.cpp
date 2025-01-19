@@ -5,31 +5,23 @@ Life::Life() : m_currentLife(0), m_maxLife(0) {}
 
 Life::~Life() {}
 
-void Life::initialize(const std::string &texturePath, int maxLife, float spacing) {
+void Life::initialize(const std::string &fullTexturePath, const std::string &midTexturePath, const std::string &lowTexturePath, int maxLife) {
     m_maxLife = maxLife;
 
-    if (!m_heartTexture.loadFromFile(texturePath)) {
-        std::cerr << "Error: Unable to load heart texture!" << std::endl;
-        throw std::runtime_error("Failed to load heart texture");
+    if (!m_fullTexture.loadFromFile(fullTexturePath) ||
+        !m_midTexture.loadFromFile(midTexturePath) ||
+        !m_lowTexture.loadFromFile(lowTexturePath)) {
+        std::cerr << "Error: Unable to load life bar textures!" << std::endl;
+        throw std::runtime_error("Failed to load life bar textures");
     }
 
-    m_hearts.clear();
-    for (int i = 0; i < m_maxLife; ++i) {
-        sf::Sprite heart(m_heartTexture);
-        heart.setScale(0.1f, 0.1f);
-        heart.setPosition(i * (m_heartTexture.getSize().x * 0.1f + spacing), 0.f);
-        m_hearts.emplace_back(heart, false);
-    }
+    m_lifeBar.setTexture(m_fullTexture);
+    m_lifeBar.setScale(1.5f, 1.5f);
+    m_lifeBar.setPosition(0.f, 0.f);
 }
 
 int Life::getNbLife() const {
-    int activeHearts = 0;
-    for (const auto &elem : m_hearts) {
-        if (elem.second) {
-            ++activeHearts;
-        }
-    }
-    return activeHearts;
+    return m_currentLife;
 }
 
 void Life::updateLife(int newLife) {
@@ -39,15 +31,18 @@ void Life::updateLife(int newLife) {
     }
 
     m_currentLife = newLife;
-    for (int i = 0; i < m_maxLife; ++i) {
-        m_hearts[i].second = (i < m_currentLife);
+
+    if (m_currentLife > m_maxLife / 2) {
+        m_lifeBar.setTexture(m_fullTexture);
+    } else if (m_currentLife > m_maxLife / 4) {
+        m_lifeBar.setTexture(m_midTexture);
+    } else if (m_currentLife > 0) {
+        m_lifeBar.setTexture(m_lowTexture);
     }
 }
 
 void Life::render(sf::RenderWindow &window) {
-    for (const auto &heart : m_hearts) {
-        if (heart.second) {
-            window.draw(heart.first);
-        }
+    if (m_currentLife > 0) {
+        window.draw(m_lifeBar);
     }
 }

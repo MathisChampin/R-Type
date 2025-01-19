@@ -2,21 +2,23 @@
 #define LIFE_HPP
 
 #include <SFML/Graphics.hpp>
-#include <vector>
 
 class Life {
 public:
     Life();
     ~Life();
 
-    void initialize(const std::string &texturePath, int maxLife, float spacing = 10.f);
+    void initialize(const std::string &fullTexturePath, const std::string &midTexturePath, const std::string &lowTexturePath, int maxLife);
     void updateLife(int newLife);
     void render(sf::RenderWindow &window);
     int getNbLife() const;
 
 private:
-    sf::Texture m_heartTexture;
-    std::vector<std::pair<sf::Sprite, bool>> m_hearts;
+    sf::Texture m_fullTexture;
+    sf::Texture m_midTexture;
+    sf::Texture m_lowTexture;
+    sf::Sprite m_lifeBar;
+
     int m_currentLife;
     int m_maxLife;
 };

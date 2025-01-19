@@ -6,6 +6,9 @@
 #include "idPlayer.hpp"
 #include "state.hpp"
 #include "size.hpp"
+#include "level.hpp"
+#include <chrono>
+#include <iostream>
 
 void create_shoot(Entity entity, registry &reg)
 {
@@ -13,96 +16,252 @@ void create_shoot(Entity entity, registry &reg)
 
     auto &positions = reg.get_components<component::position>();
     auto &pos = positions[entity.get_id()];
+    auto &size = reg.get_components<component::size>();
+    auto &s = size[entity.get_id()];
 
-    std::cout << "shoot id Player: " << shoot.get_id() << std::endl;
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot});
-    reg.add_component<component::position>(shoot, {pos.x, pos.y - 50});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - s.y});
     reg.add_component<component::controllable>(shoot, {component::controllable::NoKey});
-    reg.add_component<component::velocity>(shoot, {15, 0});
+    reg.add_component<component::velocity>(shoot, {15, 15});
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
     reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
-void create_shoot_ennemie(Entity entity, registry &reg)
+void create_shoot11(Entity entity, registry &reg)
 {
     Entity shoot = reg.spawn_entity();
 
     auto &positions = reg.get_components<component::position>();
     auto &pos = positions[entity.get_id()];
-    std::cout << "shoot id Ennemis: " << shoot.get_id() << std::endl;
 
-    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot});
-    reg.add_component<component::position>(shoot, {pos.x, pos.y - 50});
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot11});
+    reg.add_component<component::position>(shoot, {pos.x + 50, pos.y - 15});
+    reg.add_component<component::controllable>(shoot, {component::controllable::NoKey});
+    reg.add_component<component::velocity>(shoot, {15, 15});
+    reg.add_component<component::size>(shoot, {50, 50});
+    reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
+}
+
+void create_shoot3(Entity entity, registry &reg)
+{
+    Entity shoot = reg.spawn_entity();
+
+    auto &positions = reg.get_components<component::position>();
+    auto &pos = positions[entity.get_id()];
+    auto &size = reg.get_components<component::size>();
+    auto &s = size[entity.get_id()];
+
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot3});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - s.y});
+    reg.add_component<component::controllable>(shoot, {component::controllable::NoKey});
+    reg.add_component<component::velocity>(shoot, {20, -20});
+    reg.add_component<component::size>(shoot, {50, 50});
+    reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
+
+}
+
+void create_shoot4(Entity entity, registry &reg)
+{
+    Entity shoot = reg.spawn_entity();
+    auto &size = reg.get_components<component::size>();
+    auto &s = size[entity.get_id()];
+
+    auto &positions = reg.get_components<component::position>();
+    auto &pos = positions[entity.get_id()];
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot4});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - s.y});
+    reg.add_component<component::controllable>(shoot, {component::controllable::NoKey});
+    reg.add_component<component::velocity>(shoot, {30, 30});
+    reg.add_component<component::size>(shoot, {50, 50});
+    reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
+}
+
+void create_shoot5(Entity entity, registry &reg)
+{
+    Entity shoot = reg.spawn_entity();
+
+    auto &positions = reg.get_components<component::position>();
+    auto &pos = positions[entity.get_id()];
+    auto &size = reg.get_components<component::size>();
+    auto &s = size[entity.get_id()];
+
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot5});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - s.y});
+    reg.add_component<component::controllable>(shoot, {component::controllable::NoKey});
+    reg.add_component<component::velocity>(shoot, {30, 30});
+    reg.add_component<component::size>(shoot, {50, 50});
+    reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
+    reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+}
+
+void create_shoot6(Entity entity, registry &reg)
+{
+    Entity shoot = reg.spawn_entity();
+
+    auto &positions = reg.get_components<component::position>();
+    auto &pos = positions[entity.get_id()];
+    auto &size = reg.get_components<component::size>();
+    auto &s = size[entity.get_id()];
+
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot6});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - s.y});
+    reg.add_component<component::controllable>(shoot, {component::controllable::NoKey});
+    reg.add_component<component::velocity>(shoot, {40, -40});
+    reg.add_component<component::size>(shoot, {50, 50});
+    reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.emplace_component<component::controllable>(entity, component::controllable::NoKey);
+    reg.add_component<component::level>(entity, {component::level::Level0});
+}
+
+void create_shoot_ennemie(Entity entity, registry &reg, int sy)
+{
+    Entity shoot = reg.spawn_entity();
+
+    auto &positions = reg.get_components<component::position>();
+    auto &pos = positions[entity.get_id()];
+
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot1});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - 75 - sy});
     reg.add_component<component::velocity>(shoot, {-20, 0});
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
-void create_shoot_ennemie2(Entity entity, registry &reg)
+void create_shoot_ennemie2(Entity entity, registry &reg, int sy)
 {
     Entity shoot = reg.spawn_entity();
 
     auto &positions = reg.get_components<component::position>();
     auto &pos = positions[entity.get_id()];
-    std::cout << "shoot id Ennemis: " << shoot.get_id() << std::endl;
 
     reg.add_component<component::attribute>(shoot, {component::attribute::Shoot2});
-    reg.add_component<component::position>(shoot, {pos.x, pos.y});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - sy});
     reg.add_component<component::velocity>(shoot, {-25, 0});
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
-void create_shoot_ennemie34(Entity entity, registry &reg)
+void create_shoot_ennemie3(Entity entity, registry &reg, int sy)
 {
     Entity shoot = reg.spawn_entity();
 
     auto &positions = reg.get_components<component::position>();
     auto &pos = positions[entity.get_id()];
+
     std::cout << "shoot id Ennemis: " << shoot.get_id() << std::endl;
 
-    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot3});
-    reg.add_component<component::position>(shoot, {pos.x, pos.y});
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot7});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - sy});
     reg.add_component<component::velocity>(shoot, {-30, -25});
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
-void create_shoot_ennemie5(Entity entity, registry &reg)
+void create_shoot_ennemie4(Entity entity, registry &reg, int sy)
 {
     Entity shoot = reg.spawn_entity();
 
     auto &positions = reg.get_components<component::position>();
     auto &pos = positions[entity.get_id()];
+
     std::cout << "shoot id Ennemis: " << shoot.get_id() << std::endl;
 
-    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot5});
-    reg.add_component<component::position>(shoot, {pos.x, pos.y});
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot8});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - sy});
+    reg.add_component<component::velocity>(shoot, {-30, -25});
+    reg.add_component<component::size>(shoot, {50, 50});
+    reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
+}
+
+void create_shoot_ennemie5(Entity entity, registry &reg, int sy)
+{
+    Entity shoot = reg.spawn_entity();
+
+    auto &positions = reg.get_components<component::position>();
+    auto &pos = positions[entity.get_id()];
+
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot9});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - sy});
     reg.add_component<component::velocity>(shoot, {-40, -30});
     reg.add_component<component::size>(shoot, {50, 50});
     reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
     reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
 }
 
-void System::shoot_system_player(registry &reg)
+void create_shoot_ennemie6(Entity entity, registry &reg, int sy)
 {
-    auto &controllable = reg.get_components<component::controllable>();
-    auto &state = reg.get_components<component::state>();
+    Entity shoot = reg.spawn_entity();
 
-    for (size_t i = 0; i < controllable.size(); i++) {
-        auto &ctrl = controllable[i];
-        auto &st = state[i];
+    auto &positions = reg.get_components<component::position>();
+    auto &pos = positions[entity.get_id()];
 
-        if (ctrl.active_key == component::controllable::Shoot && st._stateKey == component::state::stateKey::Alive) {
-            Entity player = reg.get_entity(i);
-            create_shoot(player, reg);
-        }
-    }
+    reg.add_component<component::attribute>(shoot, {component::attribute::Shoot10});
+    reg.add_component<component::position>(shoot, {pos.x, pos.y - sy});
+    reg.add_component<component::velocity>(shoot, {-40, -30});
+    reg.add_component<component::size>(shoot, {50, 50});
+    reg.add_component<component::idPlayer>(shoot, {entity.get_id()});
+    reg.add_component<component::state>(shoot, {component::state::stateKey::Alive});
+    reg.add_component<component::level>(entity, {component::level::Level0});
+}
+
+void System::shoot_system_player_1(registry &reg, size_t i)
+{
+    Entity player = reg.get_entity(i);
+    create_shoot(player, reg);
+}
+
+void System::shoot_system_player_2(registry &reg, size_t i)
+{
+    Entity player = reg.get_entity(i);
+    create_shoot3(player, reg);
+}
+
+void System::shoot_system_player_3(registry &reg, size_t i)
+{
+    Entity player = reg.get_entity(i);
+    create_shoot4(player, reg);
+}
+
+void System::shoot_system_player_4(registry &reg, size_t i)
+{
+    Entity player = reg.get_entity(i);
+    create_shoot5(player, reg);
+}
+
+void System::shoot_system_player_5(registry &reg, size_t i)
+{
+    Entity player = reg.get_entity(i);
+    create_shoot6(player, reg);
+}
+
+void System::shoot_system_player_6(registry &reg, size_t i)
+{
+    Entity player = reg.get_entity(i);
+    create_shoot11(player, reg);
 }
 
 void System::shoot_system_ennemies(registry &reg)
@@ -110,25 +269,97 @@ void System::shoot_system_ennemies(registry &reg)
     auto &attribute = reg.get_components<component::attribute>();
     auto &state = reg.get_components<component::state>();
 
-    for (size_t i = 0; i < attribute.size(); i++) {
-        auto &att = attribute[i];
-        auto &st = state[i];
-        if (att._type == component::attribute::Ennemies && st._stateKey == component::state::stateKey::Alive) {
-            Entity ennemies = reg.get_entity(i);
-            create_shoot_ennemie(ennemies, reg);
+    using namespace std::chrono;
+    static auto lastSpawnTime1 = steady_clock::now();
+    static auto lastSpawnTime2 = steady_clock::now();
+    static auto lastSpawnTime3 = steady_clock::now();
+    static auto lastSpawnTime5 = steady_clock::now();
+    static auto lastSpawnTime6 = steady_clock::now();
+    static auto lastSpawnTime7 = steady_clock::now();
+    auto currentTime = steady_clock::now();
+    auto &size = reg.get_components<component::size>();
+
+    if (duration_cast<seconds>(currentTime - lastSpawnTime1).count() >= 2) {
+        for (size_t i = 0; i < attribute.size(); i++) {
+            auto &att = attribute[i];
+            auto &st = state[i];
+            auto &s = size[i];
+            if (att._type == component::attribute::Ennemies && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie(ennemies, reg, 0);
+            }
+            if (att._type == component::attribute::Ennemies5 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie(ennemies, reg, (-s.y / 2));
+            }
+        lastSpawnTime1 = currentTime;
+
         }
-        if (att._type == component::attribute::Ennemies2 && st._stateKey == component::state::stateKey::Alive) {
-            Entity ennemies = reg.get_entity(i);
-            create_shoot_ennemie2(ennemies, reg);
-            std::cout  << "je creer shoot for ennemi 2" << std::endl;
+    }
+    if (duration_cast<seconds>(currentTime - lastSpawnTime2).count() >= 4) {
+        for (size_t i = 0; i < attribute.size(); i++) {
+            auto &att = attribute[i];
+            auto &st = state[i];
+            auto &s = size[i];
+            if (att._type == component::attribute::Ennemies2 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie2(ennemies, reg, s.y);
+                std::cout  << "je creer shoot for ennemi 2" << std::endl;
+            }
+            if (att._type == component::attribute::Ennemies5 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie2(ennemies, reg, (-s.y / 2));
+            }
         }
-        if ((att._type == component::attribute::Ennemies3 || att._type == component::attribute::Ennemies4) && st._stateKey == component::state::stateKey::Alive) {
-            Entity ennemies = reg.get_entity(i);
-            create_shoot_ennemie34(ennemies, reg);
+        lastSpawnTime2 = currentTime;
+    }
+    if (duration_cast<seconds>(currentTime - lastSpawnTime3).count() >= 8) {
+        for (size_t i = 0; i < attribute.size(); i++) {
+            auto &att = attribute[i];
+            auto &st = state[i];
+            auto &s = size[i];
+            if (att._type == component::attribute::Ennemies3 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie3(ennemies, reg, s.y);
+            }
+            if (att._type == component::attribute::Ennemies5 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie3(ennemies, reg, (-s.y / 2));
+            }
         }
-        if (att._type == component::attribute::Ennemies5 && st._stateKey == component::state::stateKey::Alive) {
-            Entity ennemies = reg.get_entity(i);
-            create_shoot_ennemie5(ennemies, reg);
+        lastSpawnTime3 = currentTime;
+    }
+    if (duration_cast<seconds>(currentTime - lastSpawnTime6).count() >= 8) {
+        for (size_t i = 0; i < attribute.size(); i++) {
+            auto &att = attribute[i];
+            auto &st = state[i];
+            auto &s = size[i];
+            if (att._type == component::attribute::Ennemies4 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie4(ennemies, reg, s.y);
+            }
+            if (att._type == component::attribute::Ennemies5 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie4(ennemies, reg, (-s.y / 2));
+            }
         }
+        lastSpawnTime6 = currentTime;
+    }
+    if (duration_cast<seconds>(currentTime - lastSpawnTime7).count() >= 15) {
+        spawn_power_up(reg);
+        lastSpawnTime7 = currentTime;
+    }
+    if (duration_cast<seconds>(currentTime - lastSpawnTime5).count() >= 12) {
+        for (size_t i = 0; i < attribute.size(); i++) {
+            auto &att = attribute[i];
+            auto &st = state[i];
+            auto &s = size[i];
+            if (att._type == component::attribute::Ennemies5 && st._stateKey == component::state::stateKey::Alive) {
+                Entity ennemies = reg.get_entity(i);
+                create_shoot_ennemie5(ennemies, reg, (-s.y / 2));
+                create_shoot_ennemie6(ennemies, reg, (-s.y / 2));
+            }
+        }
+        lastSpawnTime5 = currentTime;
     }
 }

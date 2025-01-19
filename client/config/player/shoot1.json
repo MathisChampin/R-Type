@@ -1,0 +1,15 @@
+{
+    "type": "shoot1Player",
+    "texture": "assets/bullet/player/tir_player_1_1.png",
+    "texture2": "assets/bullet/player/tir_player_1_2.png",
+    "texture3": "assets/bullet/player/tir_player_1_3.png",
+    "texture4": "assets/bullet/player/tir_player_1_4.png",
+    "texture5": "assets/bullet/player/tir_player_1_5.png",
+    "texture6": "assets/bullet/player/tir_player_1_6.png",
+    "texture7": "assets/bullet/player/tir_player_1_7.png",
+    "texture8": "assets/bullet/player/tir_player_1_8.png",
+    "texture9": "assets/bullet/player/tir_player_1_9.png",
+    "texture10": "assets/bullet/player/tir_player_1_10.png",
+    "position": { "x": 800, "y": 400 },
+    "size": { "width": 150, "height": 150 }
+}

@@ -11,7 +11,8 @@ namespace NmpServer
         SPRITE = 4,
         JOIN = 5,
         EOI = 6,
-        INFO = 7
+        INFO = 7,
+        OVER = 8,
     };
 
     enum class DIRECTION : int {
@@ -19,7 +20,12 @@ namespace NmpServer
         RIGHT = 2,
         UP = 3,
         DOWN = 4,
-        SHOOT = 5
+        SHOOT = 5,
+        Key1 = 6,
+        Key2 = 7,
+        Key3 = 8,
+        Key4 = 9,
+        Key5 = 10,
     };
 
     struct SpriteInfo {

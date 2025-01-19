@@ -17,14 +17,24 @@ void Player::handleInput()
         {sf::Keyboard::Down, false},
         {sf::Keyboard::Left, false},
         {sf::Keyboard::Right, false},
-        {sf::Keyboard::Space, false}};
+        {sf::Keyboard::Space, false},
+        {sf::Keyboard::A, false},
+        {sf::Keyboard::Z, false},
+        {sf::Keyboard::E, false},
+        {sf::Keyboard::R, false},
+        {sf::Keyboard::T, false}};
 
     const std::vector<std::pair<sf::Keyboard::Key, NmpClient::DIRECTION>> directions = {
         {sf::Keyboard::Up, NmpClient::DIRECTION::UP},
         {sf::Keyboard::Down, NmpClient::DIRECTION::DOWN},
         {sf::Keyboard::Left, NmpClient::DIRECTION::LEFT},
         {sf::Keyboard::Right, NmpClient::DIRECTION::RIGHT},
-        {sf::Keyboard::Space, NmpClient::DIRECTION::SHOOT}};
+        {sf::Keyboard::Space, NmpClient::DIRECTION::SHOOT},
+        {sf::Keyboard::A, NmpClient::DIRECTION::SHOOT1},
+        {sf::Keyboard::Z, NmpClient::DIRECTION::SHOOT2},
+        {sf::Keyboard::E, NmpClient::DIRECTION::SHOOT3},
+        {sf::Keyboard::R, NmpClient::DIRECTION::SHOOT4},
+        {sf::Keyboard::T, NmpClient::DIRECTION::SHOOT5}};
     /**
      * @brief Updates the player's animation based on the elapsed time.
      *
@@ -37,15 +47,14 @@ void Player::handleInput()
     {
         static NmpClient::DIRECTION upDirection = NmpClient::DIRECTION::UP;
         currentDirection = &upDirection;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         static NmpClient::DIRECTION downDirection = NmpClient::DIRECTION::DOWN;
         currentDirection = &downDirection;
     }
 
     if (currentDirection == nullptr)
-    {
+    {    
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
             static NmpClient::DIRECTION leftDirection = NmpClient::DIRECTION::LEFT;
@@ -55,6 +64,29 @@ void Player::handleInput()
         {
             static NmpClient::DIRECTION rightDirection = NmpClient::DIRECTION::RIGHT;
             currentDirection = &rightDirection;
+        }
+    }
+
+    if (currentDirection == nullptr) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            static NmpClient::DIRECTION shoot1 = NmpClient::DIRECTION::SHOOT1;
+            currentDirection = &shoot1;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
+            static NmpClient::DIRECTION shoot2 = NmpClient::DIRECTION::SHOOT2;
+            currentDirection = &shoot2;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
+            static NmpClient::DIRECTION shoot3 = NmpClient::DIRECTION::SHOOT3;
+            currentDirection = &shoot3;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+            static NmpClient::DIRECTION shoot4 = NmpClient::DIRECTION::SHOOT4;
+            currentDirection = &shoot4;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) {
+            static NmpClient::DIRECTION shoot5 = NmpClient::DIRECTION::SHOOT5;
+            currentDirection = &shoot5;
         }
     }
 
@@ -69,11 +101,13 @@ void Player::handleInput()
         state = sf::Keyboard::isKeyPressed(key);
     }
 
-    // Ajout : Gestion de la manette
+    static std::map<int, bool> joystickButtonStates = {
+        {0, false}, {1, false}, {2, false}, {3, false}, {4, false}, {5, false}};
+
     if (sf::Joystick::isConnected(0)) {
         sf::Joystick::update();
-        float xAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::X); // Axe horizontal
-        float yAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::Y); // Axe vertical
+        float xAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+        float yAxis = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
 
         if (yAxis < -50) {
             static NmpClient::DIRECTION upDirection = NmpClient::DIRECTION::UP;
@@ -89,12 +123,49 @@ void Player::handleInput()
             currentDirection = &rightDirection;
         }
 
-        // Bouton pour tirer
-        if (sf::Joystick::isButtonPressed(0, 0)) { // Bouton 0 pour tirer
-            static NmpClient::DIRECTION shootDirection = NmpClient::DIRECTION::SHOOT;
-            currentDirection = &shootDirection;
+        for (int button = 0; button <= 5; ++button) {
+            bool isPressed = sf::Joystick::isButtonPressed(0, button);
+            if (isPressed && !joystickButtonStates[button]) {
+                joystickButtonStates[button] = true;
+
+                switch (button) {
+                    case 0: {
+                        static NmpClient::DIRECTION shootDirection = NmpClient::DIRECTION::SHOOT;
+                        currentDirection = &shootDirection;
+                        break;
+                    }
+                    case 1: {
+                        static NmpClient::DIRECTION shoot1Direction = NmpClient::DIRECTION::SHOOT1;
+                        currentDirection = &shoot1Direction;
+                        break;
+                    }
+                    case 2: {
+                        static NmpClient::DIRECTION shoot2Direction = NmpClient::DIRECTION::SHOOT2;
+                        currentDirection = &shoot2Direction;
+                        break;
+                    }
+                    case 3: {
+                        static NmpClient::DIRECTION shoot3Direction = NmpClient::DIRECTION::SHOOT3;
+                        currentDirection = &shoot3Direction;
+                        break;
+                    }
+                    case 4: {
+                        static NmpClient::DIRECTION shoot4Direction = NmpClient::DIRECTION::SHOOT4;
+                        currentDirection = &shoot4Direction;
+                        break;
+                    }
+                    case 5: {
+                        static NmpClient::DIRECTION shoot5Direction = NmpClient::DIRECTION::SHOOT5;
+                        currentDirection = &shoot5Direction;
+                        break;
+                    }
+                }
+            } else if (!isPressed) {
+                joystickButtonStates[button] = false;
+            }
         }
     }
+
 
     if (currentDirection != nullptr)
     {

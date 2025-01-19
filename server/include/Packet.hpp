@@ -19,7 +19,7 @@ namespace NmpServer
              * @param event The event associated with the packet.
              * @param elem the info to print score or life.
              */
-            Packet(EVENT event, int life, int score);
+            Packet(EVENT event, int life, int score, int level);
 
             Packet& operator=(const Packet &other);
 
@@ -33,6 +33,7 @@ namespace NmpServer
             int getY() const;
             int getLife() const;
             int getScore() const;
+            int getLevel() const;
 
         private:
             EVENT _opCode;
@@ -43,5 +44,6 @@ namespace NmpServer
             int _y{0};
             int _life{0};
             int _score{0};
+            int _level{0};
     };
 }
